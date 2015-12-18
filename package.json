@@ -1,0 +1,22 @@
+{
+  "name": "SMUX",
+  "version": "1.0.0",
+  "description": "smux",
+  "main": "server.js",
+  "scripts": {
+    "test": "console.log('print');",
+    "start": "node server.js"
+  },
+  "author": "soemyatmyat",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.14.1",
+    "connect": "^3.4.0",
+    "ejs": "^2.3.4",
+    "express": "^4.13.3",
+    "express-session": "^1.12.1",
+    "mysql": "^2.10.0",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0"
+  }
+}
