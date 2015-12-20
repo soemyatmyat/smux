@@ -8,6 +8,8 @@ var express = require('express');
 var passport = require('passport');
 // load express session to store user session
 var session = require('express-session');
+// load flash module
+var flash = require('connect-flash');
 
 // CommonJS module - initialize the Express application
 module.exports = function() {
@@ -32,6 +34,9 @@ module.exports = function() {
   // use passport with session (above)
   app.use(passport.initialize());
   app.use(passport.session());
+
+  // use flash
+  app.use(flash());
 
   // template location
   app.set('views', './app/views');

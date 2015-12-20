@@ -9,21 +9,23 @@ module.exports = function(app) {
         .get(users.renderLogin)
         .post(passport.authenticate('local', {
         	successRedirect: '/',
-        	failureRedirect: '/login'
+        	failureRedirect: '/login',
+        	failureFlash: true
         }));
         /*.post(passport.authenticate('local'), function(req,res) { console.log("here2")});*/
 	
 	// logout
 	app.get('/logout', users.logout);
 
-	// list the existing users, create a new user
-	app.route('/users').get(users.list);
+	// list the existing users, C
+	app.route('/api/users')
+		.get(users.list)
+		.post(users.requiresLogin, users.add);
 
-	// add a new user
-	app.route('/add').get(users.register).post(users.add);
-
-	// 
-	//app.route('/users/:username').get(users.read).put(users.update).delete(users.delete);
-	app.route('/:username').get(users.read).post(users.update);
+	// R,U,D
+	app.route('/api/users/:userId')
+		.get(users.requiresLogin, users.read)
+		.put(users.requiresLogin, users.update)
+		.delete(users.requiresLogin, users.delete);
 
 };

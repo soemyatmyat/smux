@@ -13,8 +13,7 @@
 
     <!-- Custom Fonts -->
     <link href="css/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
-    <link href="http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+
 </head>
 <body ng-app="smux">
     <nav class="navbar navbar-default navbar-fixed-top">
@@ -29,9 +28,7 @@
     <!-- Portfolio Grid Section -->
     <section id="portfolio">
         <div class="container">
-            <br>
-            <br>
-            <br>
+            <br><br><br>
             <form class="form-signin" action="/login" method="post">
                 <h2 class="form-signin-heading text-center">Open Sesame!</h2>
                 
@@ -43,8 +40,10 @@
                 
                 <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
             </form>
-
-            <br>
+            <br/><br/>
+            <% for(var i in messages) { %>
+                <div class="flash"><%= messages[i] %></div>
+            <% } %>
 
             
         </div>
@@ -57,12 +56,12 @@
     <script type="text/javascript" src="/js/angular/angular.js"></script>
     <script type="text/javascript" src="/js/angular-route/angular-route.min.js"></script>
     <script type="text/javascript" src="/js/angular-resource/angular-resource.min.js"></script>
-    
-    <!--
+
     <script type="text/javascript" src="/users/users.client.module.js"></script>
-    <script type="text/javascript" src="/users/services/authentication.client.service.js"></script>
+    <script type="text/javascript" src="/users/controllers/users.client.controller.js"></script>
+    <script type="text/javascript" src="/users/services/users.client.service.js"></script>
+    <script type="text/javascript" src="/users/config/users.client.routes.js"></script>
 
-
-    <script type="text/javascript" src="/application.js"></script>-->
+    <script type="text/javascript" src="/application.js"></script>
 </body>
 </html>

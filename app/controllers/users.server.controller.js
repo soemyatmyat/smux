@@ -1,6 +1,21 @@
 
 var mysql = require('../../config/mysql'),
+	bcrypt = require('bcrypt'),
+	SALT_WORK_FACTOR = 10,
 	db = mysql();
+
+////////////////////
+// Error Message //
+//////////////////
+var getErrorMessage = function(err) {
+    if (err.errors) {
+        for (var errName in err.errors) {
+            if (err.errors[errName].message) return err.errors[errName].message;
+        }
+    } else {
+        return 'Unknown server error';
+    }
+};	
 
 /////////////////
 // login form //
@@ -8,8 +23,8 @@ var mysql = require('../../config/mysql'),
 exports.renderLogin = function(req, res, next) {
     if (!req.user) {
         res.render('login', {
-            title: 'Log-in Form'
-            //messages: req.flash('error') || req.flash('info')
+            title: 'Log-in Form',
+            messages: req.flash('error') || req.flash('info')
         });
     } else {
         return res.redirect('/');
@@ -30,17 +45,15 @@ exports.logout = function(req, res) {
 exports.list = function(req, res, next) {
 	if (req.user) {
 		db.connect(function(err, results) {});
-		db.query("SELECT name, email_address, role FROM `users`", function(err,rows){
+		db.query("SELECT _id, name, email_address, role FROM `users`", function(err,rows){
 			if (err) {
-				return next(err);
-			} else {
-				res.render('users', {
-					title: 'SMUX Users',
-					users: rows
+				return res.status(400).send({
+					message: getErrorMessage(err)
 				});
+			} else {
+				res.json(rows);
 			}
 		})
-		//db.end();
 	} else {
 		return res.redirect('/');
 	}
@@ -51,44 +64,44 @@ exports.list = function(req, res, next) {
 // read a user //
 ////////////////
 exports.read = function(req, res) {
-	var username = req.params.username + "@gmail.com";
-	if (req.user) {
-		db.connect(function(err, results) {});
-		db.query("SELECT name, email_address, role FROM `users` WHERE `email_address` = ?", [username], function(err,rows){
-			if (err) {
+	var id = req.params.userId;
+	db.connect(function(err, results) {});
+	var test = db.query("SELECT _id, name, email_address, role FROM `users` WHERE `_id` = ?", [id], function(err,rows){
+		if (err) {
 
-			} else {
-				res.render('users_edit', {
-					user: rows
-				});
-			}	
-		});
-	} else {
-		return res.redirect('/');
-	}
+		} else {
+			res.json(rows[0]);
+		}	
+	});
 };
 
 ////////////////////
 // update a user //
 //////////////////
 exports.update = function(req, res) {
-	if (req.user) {
-		var email = req.body.email;
-		var data = {
-			name:req.body.username,
-			role: req.body.role
-		}
-		db.connect(function(err,results) {});
-		db.query("UPDATE `users` SET ? WHERE `email_address` = ?", [data, email], function(err,rows){
-			if (err) {
-
-			} else {
-				return res.redirect("/" + email.substring(0,email.indexOf('@')) + "");
-			}
-		});
-	} else {
-		return res.redirect("/");
+	var id = req.body._id;
+	var data = {
+		name:req.body.name,
+		email_address: req.body.email_address,
+		role: req.body.role
 	}
+	db.connect(function(err,results) {});
+	test = db.query("UPDATE `users` SET ? WHERE `_id` = ?", [data, id], function(err,rows){
+		if (err) {
+			return res.status(400).send({
+				message: getErrorMessage(err)
+			});
+		} else {
+			data = {
+				_id: id,
+				name:req.body.name,
+				email_address: req.body.email_address,
+				role: req.body.role
+			}
+			res.json(data);
+		}
+	});
+
 };
 
 
@@ -107,25 +120,34 @@ exports.register = function(req, res) {
 // new  user //
 //////////////
 exports.add = function(req, res) {
-
-	if (req.user) {
-		var data = {
-			name:req.body.username,
-			email_address: req.body.email,
-			password: req.body.password,
-			role: req.body.role
-		}
-		db.connect(function(err,results) {});
-		var query = db.query("INSERT INTO `users` SET ? ", data, function(err,rows){
-			if (err) {
-			} else {
-				return res.redirect("/" + data.email_address.substring(0,data.email_address.indexOf('@')) + "");
-			}
-		});
-
-	} else {
-		return res.redirect("/");
+	var pwd = req.body.password;
+	pwd = bcrypt.hashSync(pwd, SALT_WORK_FACTOR);
+	var data = {
+		name:req.body.name,
+		email_address: req.body.email_address,
+		password: pwd,
+		role: req.body.role
 	}
+	db.connect(function(err,results) {});
+	db.query("INSERT INTO `users` SET ? ", data, function(err,rows){
+		if (err) {
+			return res.status(400).send({
+				message: getErrorMessage(err)
+			});
+		} else {
+			db.query("SELECT _id FROM `users` WHERE `email_address` = ?", [data.email_address], function(err,rows){
+				if (err) {
+					return res.status(400).send({
+						message: getErrorMessage(err)
+					});
+				} else {
+					data._id = rows[0]._id;
+					res.json(data);
+				}
+				
+			});
+		}
+	});
 };
 
 
@@ -133,19 +155,31 @@ exports.add = function(req, res) {
 // delete  user //
 /////////////////
 exports.delete = function(req, res) {
-	var username = req.params.username;
-	if (req.user) {
-		db.connect(function(err, results) {});	
-		db.query("DELETE FROM `users` WHERE `email_address` = ?" + [username] , function(err,rows){
-			if (err) {
+	var id = req.params.userId;
+	db.connect(function(err, results) {});	
+	test = db.query("DELETE FROM `users` WHERE `_id` = '" + [id] + "';" , function(err,rows){
+		if (err) {
+			return res.status(400).send({
+				message: getErrorMessage(err)
+			});
+		} else {
+			res.json(req.params.userId);
+		}	
+	});
+};
 
-			} else {
-				return res.redirect('/users');
-			}	
-		});
-	} else {
 
+////////////////////////////
+// Check Authentication  //
+//////////////////////////
+exports.requiresLogin = function(req, res, next) {
+	if (!req.isAuthenticated()) {
+		return res.redirect('/');
+		/*return res.status(401).send({
+			message: 'User is not logged in'
+		});*/
 	}
-}
+	next();
+};
 
 
