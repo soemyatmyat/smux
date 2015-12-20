@@ -47,7 +47,7 @@
 
             <form class="form-signin" action="/login" method="post">
                 <h2 class="form-signin-heading text-center">Open Sesame!</h2>
-
+                <hr>
                 <label for="username" class="sr-only">Username</label>
                 <input type="text" name="username" id="username" class="form-control" placeholder="Username" required autofocus />
                 <br/>
@@ -58,7 +58,7 @@
             </form>
             <br/><br/>
             <% for(var i in messages) { %>
-                <div class="flash"><%= messages[i] %></div>
+                <div class="flash"><span color="red"><%= messages[i] %></span></div>
             <% } %>
 
             
