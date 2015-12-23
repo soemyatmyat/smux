@@ -15,6 +15,21 @@
     <link href="css/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
     <link href="http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+
+    <script type="text/javascript" src="/js/jquery.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/custom.js"></script>
+
+    <script type="text/javascript" src="/js/angular/angular.js"></script>
+    <script type="text/javascript" src="/js/angular-route/angular-route.min.js"></script>
+    <script type="text/javascript" src="/js/angular-resource/angular-resource.min.js"></script>
+
+    <script type="text/javascript" src="/users/users.client.module.js"></script>
+    <script type="text/javascript" src="/users/controllers/users.client.controller.js"></script>
+    <script type="text/javascript" src="/users/services/users.client.service.js"></script>
+    <script type="text/javascript" src="/users/config/users.client.routes.js"></script>
+
+    <script type="text/javascript" src="/application.js"></script>
 <style>
    
 .navbar{
@@ -42,6 +57,11 @@
   width:190px;
 }
 
+
+.datepick{
+  width: 47%;
+  float: left;
+}
 </style>
 </head>
 
@@ -63,14 +83,6 @@
             </h5>
         
         </div>
-      <!--div class="searchform col-md-offset-8 col-md-6 col-sm-6 col-xs-12">
-          <form id="formsearch" name="formsearch" method="post" action="#">
-            <span>
-            <input name="editbox_search" class="editbox_search" id="editbox_search" maxlength="80" value="Search our ste:" type="text" />
-            </span>
-            <input name="button_search" src="images/search_btn.gif" class="button_search" type="image" />
-          </form>
-        </div-->
       <div class="clr"></div>
       
      <nav class="navbar">
@@ -84,23 +96,23 @@
         <li class="dropdown">
           <a href="#" class="menu1 dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Projects <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="project.html?page=availableprojects">Available Projects</a></li>
+            <li><a href="project.html?select=availableprojects">Available Projects</a></li>
             <li role="separator" class="divider"></li>
-            <li><a href="project.html?page=ongoingprojects">Ongoing Projects</a></li>
+            <li><a href="project.html?select=ongoingprojects">Ongoing Projects</a></li>
             <li role="separator" class="divider"></li>
-            <li><a href="project.html?page=projectrequests">Project Requests</a></li>
+            <li><a href="project.html?select=projectrequests">Project Requests</a></li>
             <li role="separator" class="divider"></li>
-            <li><a href="project.html?page=completedprojects">Completed Projects</a></li>
+            <li><a href="project.html?select=completedprojects">Completed Projects</a></li>
           </ul>
         </li>
         <li class="dropdown">
           <a href="#"  class="menu1 dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Faculty Announcement <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="#">New Announcement</a></li>
+            <li><a href="#" data-toggle="modal" data-target="#newAnnouc">New Announcement</a></li>
             <li role="separator" class="divider"></li>
-            <li><a href="announcement.html?page=myannouncements">My Announcements</a></li>
+            <li><a href="announcement.html?select=myannouncements">My Announcements</a></li>
             <li role="separator" class="divider"></li>
-            <li><a href="announcement.html?page=announcementrequests">Requests</a></li>
+            <li><a href="announcement.html?select=announcementrequests">Requests</a></li>
             
           </ul>
         </li>
@@ -149,14 +161,6 @@
 </div>
 
 
-
-    <!--ul class="bxslider col-md-8" style="width=70%;">
-  <li><img src="images/white room.jpg" height="295" class="hbg_img"/></li>
-  <li><img src="images/white room.jpg" height="295" class="hbg_img"/></li>
-  <li><img src="images/white room.jpg" height="295" class="hbg_img"/></li>
-</ul>
-
-    <!--img class="col-md-9" src="images/white room.jpg" height="295" alt="" class="hbg_img" />
     <!--button group-->
     <div class="col-md-3 col-xs-12 col-sm-12">
       <br/>
@@ -261,12 +265,63 @@ View <a href="http://www.smu.edu.sg/campus-map">Map</a> | <a href="http://www.sm
           </div>
           <!---------->
           <div class="form-group col-md-6 col-sm-12">
+            <label for="categoryIn">Category</label>
+            <select class="form-control" ng-model="annoc.category" name="category" id="categoryIn">
+              <option value="volvo">Volvo</option>
+              <option value="saab">Saab</option>
+              <option value="mercedes">Mercedes</option>
+              <option value="audi">Audi</option>
+            </select>
+          </div>
+          <!---------->
+          <div class="form-group col-md-6 col-sm-12">
             <label for="startIn">Start Date</label>
-            <input type="date" ng-model="annoc.start" class="form-control" id="startIn">
+<div class="row col-md-12">
+            <select id="month" ng-model="annoc.startMth" class="form-control datepick year" name="monthStart">
+              <option vlaue=""></option>
+              <option value="Jan">January</option>
+              <option value="Feb">February</option>
+              <option value="Mar">March</option>
+              <option value="Apr">April</option>
+              <option value="May">May</option>
+              <option value="Jun">June</option>
+              <option value="Jul">July</option>
+              <option value="Aug">August</option>
+              <option value="Sep">September</option>
+              <option value="Oct">October</option>
+              <option value="Nov">November</option>
+              <option value="Dec">December</option>
+            </select>
+            <select id="yearSt" ng-model="annoc.startYr" class="form-control datepick pull-right" name="yearStart" >
+              <option value=""></option>
+            </select>
+            </div>
+            
           </div>
           <div class="form-group col-md-6 col-sm-12">
+
             <label for="endIn">End Date</label>
-            <input type="date" ng-model="annoc.end" class="form-control" id="endIn">
+
+<div class="row col-md-12">
+            <select id="month" ng-model="annoc.endMth" class="form-control datepick" name="monthEnd">
+              <option vlaue=""></option>
+              <option value="Jan">January</option>
+              <option value="Feb">February</option>
+              <option value="Mar">March</option>
+              <option value="Apr">April</option>
+              <option value="May">May</option>
+              <option value="Jun">June</option>
+              <option value="Jul">July</option>
+              <option value="Aug">August</option>
+              <option value="Sep">September</option>
+              <option value="Oct">October</option>
+              <option value="Nov">November</option>
+              <option value="Dec">December</option>
+            </select>
+            <select id="yearEnd" ng-model="annoc.endYr" class="form-control datepick pull-right year" name="yearEnd" >
+              <option value=""></option>
+            </select>
+            </div>
           </div>
           <!--change dynamic dropdown-->
           <div class="form-group col-md-6 col-sm-12">
