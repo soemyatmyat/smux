@@ -11,8 +11,11 @@
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
                     <li><a href="/">Home</a></li>
-                    <li class="active"><a href="/users">User Management</a></li>
+                    <li><a href="/#!/users">User Management</a></li>
+                    <li class="active"><a href="/#!/projects">Projects</a></li>
+                    <li><a href="">Faculty Announcements</a></li>
                     <li><a href="/logout">Log Out</a></li>
+                    <li><a href="">{{user.name}}</a></li>
                 </ul>
             </div><!--/ .nav-collapse -->
         </div>
@@ -21,7 +24,7 @@
     <!-- Begin Page Content -->
     <div class="container">
         <br><br><br>
-        <section data-ng-init="view()" class="container">
+        <section data-ng-init="read()" class="container">
             <ol class="breadcrumb"><li><a href="#!/users">Users</a></li><li class="active" data-ng-bind="user.name"></li></ol>
             <p ng-show="{{user === undefined}}">Show this if $scope.user ==== undefined</p>
             <form data-ng-submit="update()" id="user_edit" class="form-horizontal">

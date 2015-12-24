@@ -1,0 +1,117 @@
+<div data-ng-controller="ProjectsController">
+
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <a class="navbar-brand" href="/">SMUX</a>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/#!/users">User Management</a></li>
+                    <li class="active"><a href="/#!/projects">Projects</a></li>
+                    <li><a href="">Faculty Announcements</a></li>
+                    <li><a href="/logout">Log Out</a></li>
+                    <li><a href="">{{user.name}}</a></li>
+                </ul>
+            </div><!--/ .nav-collapse -->
+        </div>
+    </div>
+
+    <!-- Begin Page Content -->
+    <div class="container">
+        <br><br><br>
+        <section class="container">
+            <ol class="breadcrumb"><li><a href="/#!/projects">Projects</a></li><li class="active">New Project</li></ol>
+            <form data-ng-submit="add()" name="projectAdd" class="form-horizontal" novalidate>
+                <div class="form-group">
+                        <label for="title" class="col-sm-1 control-label">Title </label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" data-ng-model="title" name="title" ng-maxlength="100" required/>
+                        </div><!-- Title -->
+                </div> 
+                <div class="form-group">
+                        <label for="category" class="col-sm-1 control-label">Category </label>
+                        <div class="col-sm-9">
+                            <select class="form-control" data-ng-model="category">
+                                <option selected value="aaa">aaa</option>
+                                <option value="bbb">bbb</option>
+                                <option value="ccc">ccc</option>
+                            </select>
+                        </div><!-- Category -->
+                </div>
+                <div class="row">
+                    <label for="name" class="col-sm-1 control-label">Start Date </label>
+                    <div class="col-md-4">
+                        <p class="input-group">
+                          <input 
+                            type="date" 
+                            class="form-control" 
+                            uib-datepicker-popup ng-model="start_date" 
+                            is-open="status.opened" 
+                            min-date="minDate" 
+                            datepicker-options="dateOptions" 
+                            date-disabled="disabled(date, mode)" 
+                            close-text="Close" />
+                          <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                          </span>
+                        </p>
+                    </div>
+                    <label for="name" class="col-sm-1 control-label">End Date </label>
+                    <div class="col-md-4">
+                        <p class="input-group">
+                          <input 
+                            type="date" 
+                            class="form-control" 
+                            uib-datepicker-popup ng-model="end_date" 
+                            is-open="status.opened" 
+                            min-date="minDate" 
+                            datepicker-options="dateOptions" 
+                            date-disabled="disabled(date, mode)" 
+                            close-text="Close" />
+                          <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                          </span>
+                        </p>
+                    </div><!-- Start Date/End Date -->
+                </div><!-- row -->
+                <div class="form-group"><!-- Contact -->
+                        <label for="name" class="col-sm-1 control-label">Contact Name </label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control" data-ng-model="contact_person" name="name" ng-maxlength="100" required/>
+                        </div>
+                        <label for="email" class="col-sm-1 control-label">Email </label>
+                        <div class="col-sm-3">
+                            <input type="email" class="form-control" data-ng-model="contact_email" name="email" required/>
+                        </div>
+                        <label for="HP" class="col-sm-1 control-label">HP </label>
+                        <div class="col-sm-2">
+                            <input type="type" class="form-control" data-ng-model="contact_HP" name="hp"/>
+                        </div>
+                </div> 
+                <div class="form-group"><!-- Description -->
+                        <label for="desc" class="col-sm-1 control-label">Description </label>
+                        <div class="col-sm-9">
+                            <textarea class="form-control" data-ng-model="description" name="description" ng-maxlength="100" required/>
+                        </div>
+                </div> 
+                <div class="col-sm-3 pull-right"><!-- Button -->
+                    <button type="submit" ng-disabled="project_Add.$invalid" class="btn btn-primary">Post</button>  
+                </div>
+                <div data-ng-show="error"><strong data-ng-bind="error"></strong></div>
+            </div>
+            </form>
+        </section>
+
+    <script type="text/javascript" src="/js/jquery.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/custom.js"></script>
+
+    <script type="text/javascript" src="/js/angular/angular.js"></script>
+    <script type="text/javascript" src="/js/angular-route/angular-route.min.js"></script>
+    <script type="text/javascript" src="/js/angular-resource/angular-resource.min.js"></script>
+</body>
+</html>

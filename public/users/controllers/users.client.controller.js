@@ -3,11 +3,18 @@ angular.module('users').controller('UsersController', ['$scope', '$window', '$ro
     function($scope, $window, $routeParams, $location, Users) {
         //alert("client-controller2");
         
+        /*
+        $scope.role = function() {
+            $scope.user.role = "Admin";
+        };
+        $scope.role();*/
+
         $scope.list = function() {
             $scope.users = Users.query();
         };
 
-        $scope.view = function() {
+        $scope.read = function() {
+            alert("read");
             $scope.user = Users.get({
                 userId: $routeParams.userId
             });
@@ -16,7 +23,7 @@ angular.module('users').controller('UsersController', ['$scope', '$window', '$ro
         $scope.update = function() {
             $scope.user.$update(function() {
                 $window.alert('Updated Successfully!');
-                $location.path('users/' + $scope.user._id);
+                //$location.path('users/' + $scope.user._id);
             }, function(errorResponse) {
                 $scope.error = errorResponse.data.message;
             });
@@ -47,11 +54,7 @@ angular.module('users').controller('UsersController', ['$scope', '$window', '$ro
                         }
                     }
                 });
-            } else {
-                user.$remove(function() {
-                    $location.path('users');
-                });
-            }
+            } 
         };
     }
 ]);

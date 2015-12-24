@@ -1,7 +1,7 @@
 
-angular.module('users').config(['$routeProvider', 
+angular.module('users').config(['$routeProvider',
 	function($routeProvider) {
-		//alert("client route");
+
 		$routeProvider.
 		when('/users', {
 			templateUrl: 'users/views/list-users.client.view.html'

@@ -56,9 +56,11 @@
                 <br/>
                 <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
             </form>
-            <br/><br/>
+            <br/>
+
+            <p>For New Organization, please register <a href="/register">here</a>!</p>
             <% for(var i in messages) { %>
-                <div class="flash"><span color="red"><%= messages[i] %></span></div>
+                <div class="flash alert alert-danger"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only"></span> <%= messages[i] %></div>
             <% } %>
 
             
