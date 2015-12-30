@@ -1,7 +1,7 @@
 <div data-ng-controller="ProjectsController">
 
     <!-- Fixed navbar -->
-    <nav class="navbar navbar-inverse" role="navigation">
+    <<nav class="navbar navbar-inverse" role="navigation">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header page-scroll">
             <a class="navbar-brand" href="/">SMUX</a>
@@ -92,8 +92,8 @@
         <div class="form-group"><!-- Description -->
                 <label for="desc" class="col-sm-1 control-label">Description </label>
                 <div class="col-sm-9">
-                    <textarea class="form-control" data-ng-model="description" name="description" ng-maxlength="1500" rows="7" required/>
-                    <span>{{1500-description.length}} characters left</span>
+                    <textarea class="form-control" data-ng-model="description" name="description" ng-maxlength="500" rows="7" required/>
+                    <span>{{500-description.length}} characters left</span>
                 </div>
         </div> 
         <div class="col-sm-3 pull-right"><!-- Button -->
@@ -102,5 +102,5 @@
         <div data-ng-show="error"><strong data-ng-bind="error"></strong></div>
     </div>
     </form>
-    
+
 </div>

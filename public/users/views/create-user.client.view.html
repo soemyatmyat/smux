@@ -1,92 +1,85 @@
 <div data-ng-controller="UsersController">
 
     <!-- Fixed navbar -->
-    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header page-scroll">
-                <a class="navbar-brand" href="/">SMUX</a>
-            </div>
-            <div class="collapse navbar-collapse">
-                <ul class="nav navbar-nav">
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/#!/users">User Management</a></li>
-                    <li class="active"><a href="/#!/projects">Projects</a></li>
-                    <li><a href="">Faculty Announcements</a></li>
-                    <li><a href="/logout">Log Out</a></li>
-                    <li><a href="">{{user.name}}</a></li>
-                </ul>
-            </div><!--/ .nav-collapse -->
+    <nav class="navbar navbar-inverse" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <a class="navbar-brand" href="/">SMUX</a>
         </div>
-    </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/">Home</a></li>
+                <li class="active"><a href="/#!/users">User Management</a></li>
+                <li><a href="/#!/projects">Projects</a></li>
+                <li><a href="">Faculty Announcements</a></li>
+                <li><a href="/logout">Log Out</a></li>
+                <li data-ng-show="authentication.user">
+                    <a href="/logout">Hello <span data-ng-bind="authentication.user.name" data-ng-show="authentication.user"></span>!</a>
+                </li>
+            </ul>
+        </div><!--/ .nav-collapse -->
+    </nav>
 
     <!-- Begin Page Content -->
-    <div class="container">
-        <br><br><br>
-        <section class="container">
-            <ol class="breadcrumb"><li><a href="/#!/users">Users</a></li><li class="active">New User</li></ol>
-            <form data-ng-submit="add()" name="userAdd" class="form-horizontal" novalidate>
-                <div class="form-group">
-                    <label for="name" class="col-sm-1 control-label">Name </label>
-                    <div class="col-sm-5">
-                        <input type="text" class="form-control" data-ng-model="user" name="name" ng-maxlength="100" required/>
-                    </div>
-                    <div class="col-sm-6"><span ng-show="userAdd.name.$invalid && !userAdd.name.$pristine" class="help-block">Name cannot be longer than 100 characters.</span></div>
-                </div> 
-                <div class="form-group">
-                    <label for="email" class="col-sm-1 control-label">Email </label>
-                    <div class="col-sm-5">
-                        <input type="email" class="form-control" data-ng-model="email_address" name="email_address" required/>
-                    </div>
-                    <div class="col-sm-6"><span ng-show="userAdd.email_address.$invalid && !userAdd.email_address.$pristine" class="help-block">Enter a valid email.</span></div>
-                </div>
-                <div class="form-group">
-                    <label for="password" class="col-sm-1 control-label">Password </label>
-                    <div class="col-sm-5">
-                        <input type="password" class="form-control" data-ng-model="password" id="password" ng-minlength="8" ng-maxlength="8" required/>
-                    </div>
-                    <div class="col-sm-6"><span ng-show="userAdd.password.$invalid && !userAdd.name.$pristine" class="help-block">Password must be exactly 8 characters.</span></div>
-                </div>
-                <div class="form-group">
-                    <label for="email" class="col-sm-1 control-label">Confirmed Password </label>
-                    <div class="col-sm-5">
-                        <input type="password" class="form-control" data-ng-model="confirm_password" id="password" required/>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="role" class="col-sm-1 control-label">Role </label>
-                    <div class="col-sm-5">
-                        <select class="form-control" data-ng-model="role" id="role">
-                            <option selected value="Admin">Admin</option>
-                            <option value="Faculty">Faculty</option>
-                            <option value="Organization">Organization</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-sm-7 pull-right">
-                    <button type="submit" ng-disabled="userAdd.$invalid" class="btn btn-primary">Add</button>  
-                </div>  
-                <div data-ng-show="error"><strong data-ng-bind="error"></strong></div>
-            </form>
-        </section>
-    </div>
 
-    <style type="text/css">
-  .css-form input.data-ng-invalid.ng-touched {
-    background-color: #FA787E;
-  }
+    <ol class="breadcrumb"><li><a href="/#!/users">Users</a></li><li class="active">New User</li></ol>
 
-  .css-form input.data-ng-valid.ng-touched {
-    background-color: #78FA89;
-  }
-</style>
+    <!-- FORM -->
+    <form data-ng-submit="add()" name="userAdd" class="form-horizontal" novalidate>
+        <!-- NAME -->
+        <div class="form-group" ng-class="{'has-error': userAdd.name.$invalid && !userAdd.name.$pristine}">
+            <label for="name" class="col-sm-2 control-label">Name </label>
+            <div class="col-sm-5">
+                <input type="text" class="form-control" data-ng-model="user" name="name" ng-maxlength="100" required autofocus/>
+            </div>
+            <div class="col-sm-5"><span ng-show="!userAdd.name.$pristine && userAdd.name.$invalid && userAdd.name.$touched" class="help-block">Name cannot be empty.</span><span ng-show="userAdd.name.$error.maxlength && userAdd.name.$touched && !userAddname.$pristine" class="help-block">Name cannot be longer than 100 characters.</span></div>
+        </div> 
 
-    <script type="text/javascript" src="/js/jquery.js"></script>
-    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/js/custom.js"></script>
+        <!-- EMAIL -->
+        <div class="form-group" ng-class="{'has-error' : userAdd.email_address.$invalid && !userAdd.email_address.$pristine}">
+            <label for="email" class="col-sm-2 control-label">Email </label>
+            <div class="col-sm-5">
+                <input type="email" class="form-control" data-ng-model="email_address" name="email_address" required/>
+            </div>
+            <div class="col-sm-5"><span ng-show="userAdd.email_address.$invalid && !userAdd.email_address.$pristine && userAdd.email_address.$touched" class="help-block">Enter a valid email.</span></div>
+        </div>
 
-    <script type="text/javascript" src="/js/angular/angular.js"></script>
-    <script type="text/javascript" src="/js/angular-route/angular-route.min.js"></script>
-    <script type="text/javascript" src="/js/angular-resource/angular-resource.min.js"></script>
-</body>
-</html>
+        <!-- PASSWORD -->
+        <div class="form-group" ng-class="{'has-error' : userAdd.password.$invalid && !userAdd.password.$pristine}">
+            <label for="password" class="col-sm-2 control-label">Password </label>
+            <div class="col-sm-5">
+                <input type="password" class="form-control" data-ng-model="password" id="password" ng-minlength="8" ng-maxlength="8" required/>
+            </div>
+            <div class="col-sm-5"><span ng-show="userAdd.password.$invalid && !userAdd.name.$pristine" class="help-block">Password must be exactly 8 characters.</span></div>
+        </div>
+
+        <!-- CONFIRM PASSWORD -->
+        <div class="form-group" ng-class="{'has-error' : userAdd.cfmpassword.$invalid && !userAdd.cfmpassword.$pristine}">
+            <label for="email" class="col-sm-2 control-label">Confirmed Password </label>
+            <div class="col-sm-5">
+                <input type="password" class="form-control" data-ng-model="confirm_password" name="cfmpassword" ng-minlength="8" gn-maxlength="8" pw-check="password" required/>
+            </div>
+            <div class="col-sm-5"><span ng-show="userAdd.password.$invalid && !userAdd.name.$pristine" class="help-block">Password must be exactly 8 characters.</span></div>
+        </div>
+
+        <!-- ROLE -->
+        <div class="form-group">
+            <label for="role" class="col-sm-2 control-label">Role </label>
+            <div class="col-sm-5">
+                <select class="form-control" data-ng-model="role" data-ng-init="Admin" id="role">
+                    <option selected value="Admin">Admin</option>
+                    <option value="Faculty">Faculty</option>
+                    <option value="Organization">Organization</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- SUBMIT BUTTON -->
+        <div class="col-sm-6 pull-right">
+            <button type="submit" ng-disabled="userAdd.$invalid" class="btn btn-primary">Add</button>  
+        </div>  
+        <div data-ng-show="error"><strong data-ng-bind="error"></strong></div>
+    </form>
+
+
+</div>

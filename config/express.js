@@ -51,6 +51,8 @@ module.exports = function() {
   require('../app/routes/users.server.routes.js')(app);
   // load the project by passing the app
   require('../app/routes/projects.server.routes.js')(app);
+  // load the request by passing the app
+  require('../app/routes/requests.server.routes.js')(app);
 
 
   return app;

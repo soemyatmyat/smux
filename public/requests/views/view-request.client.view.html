@@ -1,0 +1,143 @@
+
+<div data-ng-controller="ProjectsController">
+
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-inverse" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <a class="navbar-brand" href="/">SMUX</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/">Home</a></li>
+                <li><a href="/#!/users">User Management</a></li>
+                <li class="active"><a href="/#!/projects">Projects</a></li>
+                <li><a href="">Faculty Announcements</a></li>
+                <li><a href="/logout">Log Out</a></li>
+                <li data-ng-show="authentication.user">
+                    <a href="/logout">Hello <span data-ng-bind="authentication.user.name" data-ng-show="authentication.user"></span>!</a>
+                </li>
+            </ul>
+        </div><!--/ .nav-collapse -->
+    </nav>
+
+    <!-- Begin Page Content -->
+
+    <section data-ng-init="read()">
+        <ol class="breadcrumb"><li><a href="#!/projects">Projects</a></li><li class="active" data-ng-bind="project.title"></li></ol>
+        <p ng-show="{{project === undefined}}">Show this if $scope.project ==== undefined</p>
+        <form data-ng-submit="update()" name="projectEdit" class="form-horizontal" novalidate>
+            <div class="form-group"><!-- Title -->
+                    <label for="title" class="col-sm-1 control-label">Title </label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" data-ng-model="project.title" name="title" ng-maxlength="100" required autofocus/>
+                    </div>
+            </div> 
+            <div class="form-group"><!-- Category -->
+                    <label for="category" class="col-sm-1 control-label">Category </label>
+                    <div class="col-sm-9">
+                        <select class="form-control" data-ng-model="project.category">
+                            <option selected value="aaa">aaa</option>
+                            <option value="bbb">bbb</option>
+                            <option value="ccc">ccc</option>
+                        </select>
+                    </div><!-- Category -->
+            </div>
+            <!--  Start Date/End Date -->
+            <div class="row">
+                <label for="startdate" class="col-sm-1 control-label">Start Date </label>
+                <div class="col-md-4">
+                    <p class="input-group">
+                      <input 
+                        type="date" 
+                        class="form-control" 
+                        uib-datepicker-popup ng-model="project.start_date" 
+                        is-open="status.opened" 
+                        min-date="minDate" 
+                        datepicker-options="dateOptions" 
+                        date-disabled="disabled(date, mode)" 
+                        close-text="Close" />
+                      <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                      </span>
+                    </p>
+                </div>
+                <label for="enddate" class="col-sm-1 control-label">End Date </label>
+                <div class="col-md-4">
+                    <p class="input-group">
+                      <input 
+                        type="date" 
+                        class="form-control" 
+                        uib-datepicker-popup ng-model="project.end_date" 
+                        is-open="status.opened" 
+                        min-date="minDate" 
+                        datepicker-options="dateOptions" 
+                        date-disabled="disabled(date, mode)" 
+                        close-text="Close" />
+                      <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                      </span>
+                    </p>
+                </div>
+            </div><!-- Start Date/End Date: End -->
+            <div class="form-group"><!-- Contact -->
+                    <label for="name" class="col-sm-1 control-label">Contact Name </label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" data-ng-model="project.contact_person" name="name" ng-maxlength="100" required/>
+                    </div>
+                    <label for="email" class="col-sm-1 control-label">Email </label>
+                    <div class="col-sm-3">
+                        <input type="email" class="form-control" data-ng-model="project.contact_email" name="email" required/>
+                    </div>
+                    <label for="HP" class="col-sm-1 control-label">HP </label>
+                    <div class="col-sm-2">
+                        <input type="type" class="form-control" data-ng-model="project.contact_HP" name="hp"/>
+                    </div>
+            </div> 
+            <div class="form-group"><!-- Description -->
+                    <label for="desc" class="col-sm-1 control-label">Description </label>
+                    <div class="col-sm-9">
+                        <textarea class="form-control" data-ng-model="project.description" name="desc" ng-maxlength="500" rows="7" required/>
+                        <span>{{500-project.description.length}} characters left</span>
+                    </div>
+            </div> 
+            <div class="col-sm-5 pull-right"><!-- Button -->
+                <!-- Indicate Interest is only for Faculty -->
+                <button type="button" data-ng-click="openModal()" class="btn btn-primary">Indicate Interest</button>  
+                <!-- Withdraw and Update for Organization -->
+                <button type="button" data-ng-click="delete(project, $event)" class="btn btn-danger">Withdraw</button>  
+                <button type="submit" class="btn btn-primary">Update</button>  
+            </div>
+            <div data-ng-show="error"><strong data-ng-bind="error"></strong></div>
+        </div>
+        </form>
+    </section>
+
+</div>
+
+
+<div data-ng-controller="RequestsController">
+    <script type="text/ng-template" id="request.html">
+        <div class="modal-header"><b> Indicate Interest to Sponsor</b></div>
+        <div class="modal-body">
+            <form data-ng-submit-"" name="requestAdd" class="" novalidate>
+                <div class="form-group">
+                    <label for="courseid">Course ID</label>
+                    <select class="form-control" data-ng-model="courseid" data-ng-init="courseid" id="courseid">
+                        <option selected value="abc">ABC</option>
+                        <option value="def">DEF</option>
+                        <option value="ghi">GHI</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label form="message">Message</label>
+                    <textarea class="form-control" data-ng-model="message" name="" ng-maxlength="500" rows="4" required/>
+                    <span>{{500-message.length}} characters left</span>
+                </div>
+            </form>
+            <button class="btn btn-primary" type="button" ng-click="ok()">Send</button>
+            <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+        </div>
+    </script>
+
+</div>

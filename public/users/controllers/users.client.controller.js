@@ -1,6 +1,6 @@
 //alert("client-controller");
-angular.module('users').controller('UsersController', ['$scope', '$window', '$routeParams', '$location', 'Users',
-    function($scope, $window, $routeParams, $location, Users) {
+angular.module('users').controller('UsersController', ['$scope', 'Authentication', '$window', '$routeParams', '$location', 'Users',
+    function($scope, Authentication, $window, $routeParams, $location, Users) {
         //alert("client-controller2");
         
         /*
@@ -9,12 +9,13 @@ angular.module('users').controller('UsersController', ['$scope', '$window', '$ro
         };
         $scope.role();*/
 
+        $scope.authentication = Authentication;
+
         $scope.list = function() {
             $scope.users = Users.query();
         };
 
         $scope.read = function() {
-            alert("read");
             $scope.user = Users.get({
                 userId: $routeParams.userId
             });
@@ -23,7 +24,6 @@ angular.module('users').controller('UsersController', ['$scope', '$window', '$ro
         $scope.update = function() {
             $scope.user.$update(function() {
                 $window.alert('Updated Successfully!');
-                //$location.path('users/' + $scope.user._id);
             }, function(errorResponse) {
                 $scope.error = errorResponse.data.message;
             });

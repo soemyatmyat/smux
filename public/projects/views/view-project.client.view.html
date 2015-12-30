@@ -2,110 +2,212 @@
 <div data-ng-controller="ProjectsController">
 
     <!-- Fixed navbar -->
-    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header page-scroll">
-                <a class="navbar-brand" href="/">SMUX</a>
-            </div>
-            <div class="collapse navbar-collapse">
-                <ul class="nav navbar-nav">
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/#!/users">User Management</a></li>
-                    <li class="active"><a href="/#!/projects">Projects</a></li>
-                    <li><a href="">Faculty Announcements</a></li>
-                    <li><a href="/logout">Log Out</a></li>
-                    <li><a href="">{{user.name}}</a></li>
-                </ul>
-            </div><!--/ .nav-collapse -->
+    <nav class="navbar navbar-inverse" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <a class="navbar-brand" href="/">SMUX</a>
         </div>
-    </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/">Home</a></li>
+                <li><a href="/#!/users">User Management</a></li>
+                <li class="active"><a href="/#!/projects">Projects</a></li>
+                <li><a href="">Faculty Announcements</a></li>
+                <li><a href="/logout">Log Out</a></li>
+                <li data-ng-show="authentication.user">
+                    <a href="/logout">Hello <span data-ng-bind="authentication.user.name" data-ng-show="authentication.user"></span>!</a>
+                </li>
+            </ul>
+        </div><!--/ .nav-collapse -->
+    </nav>
 
     <!-- Begin Page Content -->
-    <div class="container">
-        <br><br><br>
-        <section data-ng-init="read()" class="container">
-            <ol class="breadcrumb"><li><a href="#!/projects">Projects</a></li><li class="active" data-ng-bind="project.title"></li></ol>
-            <p ng-show="{{project === undefined}}">Show this if $scope.project ==== undefined</p>
-            <form data-ng-submit="update()" name="projectEdit" class="form-horizontal" novalidate>
-                <div class="form-group">
-                        <label for="title" class="col-sm-1 control-label">Title </label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" data-ng-model="project.title" name="title" ng-maxlength="100" required autofocus/>
-                        </div><!-- Title -->
-                </div> 
-                <div class="form-group">
-                        <label for="category" class="col-sm-1 control-label">Category </label>
-                        <div class="col-sm-9">
-                            <select class="form-control" data-ng-model="project.category">
-                                <option selected value="aaa">aaa</option>
-                                <option value="bbb">bbb</option>
-                                <option value="ccc">ccc</option>
-                            </select>
-                        </div><!-- Category -->
+    <section data-ng-init="read()">
+        <ol class="breadcrumb"><li><a href="#!/projects">Projects</a></li><li class="active" data-ng-bind="project.title"></li></ol>
+        <p data-ng-show="{{project === undefined}}">Show this if $scope.project ==== undefined</p>
+        <form data-ng-show="authentication.user.role == 'Admin' || authentication.user.role == 'Organization'" data-ng-submit="update()" name="projectEdit" class="form-horizontal" novalidate>
+            <div data-ng-show="error"><strong data-ng-bind="error"></strong></div>
+            <div class="form-group"><!-- Title -->
+                <label for="title" class="col-sm-1 control-label">Title </label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" data-ng-model="project.title" name="title" ng-maxlength="100" required autofocus/>
                 </div>
-                <div class="row">
-                    <label for="startdate" class="col-sm-1 control-label">Start Date </label>
-                    <div class="col-md-4">
-                        <p class="input-group">
-                          <input 
-                            type="date" 
-                            class="form-control" 
-                            uib-datepicker-popup ng-model="project.start_date" 
-                            is-open="status.opened" 
-                            min-date="minDate" 
-                            datepicker-options="dateOptions" 
-                            date-disabled="disabled(date, mode)" 
-                            close-text="Close" />
-                          <span class="input-group-btn">
-                            <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-                          </span>
-                        </p>
-                    </div>
-                    <label for="enddate" class="col-sm-1 control-label">End Date </label>
-                    <div class="col-md-4">
-                        <p class="input-group">
-                          <input 
-                            type="date" 
-                            class="form-control" 
-                            uib-datepicker-popup ng-model="project.end_date" 
-                            is-open="status.opened" 
-                            min-date="minDate" 
-                            datepicker-options="dateOptions" 
-                            date-disabled="disabled(date, mode)" 
-                            close-text="Close" />
-                          <span class="input-group-btn">
-                            <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-                          </span>
-                        </p>
-                    </div><!-- Start Date/End Date -->
-                </div><!-- row -->
-                <div class="form-group"><!-- Contact -->
-                        <label for="name" class="col-sm-1 control-label">Contact Name </label>
-                        <div class="col-sm-2">
-                            <input type="text" class="form-control" data-ng-model="project.contact_person" name="name" ng-maxlength="100" required/>
-                        </div>
-                        <label for="email" class="col-sm-1 control-label">Email </label>
-                        <div class="col-sm-3">
-                            <input type="email" class="form-control" data-ng-model="project.contact_email" name="email" required/>
-                        </div>
-                        <label for="HP" class="col-sm-1 control-label">HP </label>
-                        <div class="col-sm-2">
-                            <input type="type" class="form-control" data-ng-model="project.contact_HP" name="hp"/>
-                        </div>
-                </div> 
-                <div class="form-group"><!-- Description -->
-                        <label for="desc" class="col-sm-1 control-label">Description </label>
-                        <div class="col-sm-9">
-                            <textarea class="form-control" data-ng-model="project.description" name="desc" ng-maxlength="100" required/>
-                        </div>
-                </div> 
-                <div class="col-sm-4 pull-right"><!-- Button -->
-                    <button type="button" data-ng-click="delete(project, $event)" class="btn btn-danger">Withdrawal</button>  
-                    <button type="submit" ng-disabled="project_Edit.$invalid" class="btn btn-primary">Update</button>  
+            </div> 
+            <div class="form-group"><!-- Category -->
+                <label for="category" class="col-sm-1 control-label">Category </label>
+                <div class="col-sm-9">
+                    <select class="form-control" data-ng-model="project.category">
+                        <option selected value="aaa">aaa</option>
+                        <option value="bbb">bbb</option>
+                        <option value="ccc">ccc</option>
+                    </select>
                 </div>
-                <div data-ng-show="error"><strong data-ng-bind="error"></strong></div>
             </div>
-            </form>
-        </section>
-    </div>
+            <div class="form-group">
+                <label for="startdate" class="col-sm-1 control-label">Start Date </label>
+                <div class="col-md-4">
+                    <p class="input-group">
+                      <input 
+                        type="date" 
+                        class="form-control" 
+                        uib-datepicker-popup ng-model="project.start_date" 
+                        is-open="status.opened" 
+                        min-date="minDate" 
+                        datepicker-options="dateOptions" 
+                        date-disabled="disabled(date, mode)" 
+                        close-text="Close" />
+                      <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                      </span>
+                    </p>
+                </div>
+                <label for="enddate" class="col-sm-1 control-label">End Date </label>
+                <div class="col-md-4">
+                    <p class="input-group">
+                      <input 
+                        type="date" 
+                        class="form-control" 
+                        uib-datepicker-popup ng-model="project.end_date" 
+                        is-open="status.opened" 
+                        min-date="minDate" 
+                        datepicker-options="dateOptions" 
+                        date-disabled="disabled(date, mode)" 
+                        close-text="Close" />
+                      <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                      </span>
+                    </p>
+                </div><!--  Start Date/End Date -->
+            </div>
+            <div class="form-group"><!-- Contact -->
+                <label for="name" class="col-sm-1 control-label">Contact Name </label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control" data-ng-model="project.contact_person" name="name" ng-maxlength="100" required/>
+                </div>
+                <label for="email" class="col-sm-1 control-label">Email </label>
+                <div class="col-sm-3">
+                    <input type="email" class="form-control" data-ng-model="project.contact_email" name="email" required/>
+                </div>
+                <label for="HP" class="col-sm-1 control-label">HP </label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control" data-ng-model="project.contact_HP" name="hp"/>
+                </div>
+            </div> 
+            <div class="form-group"><!-- Description -->
+                <label for="desc" class="col-sm-1 control-label">Description </label>
+                <div class="col-sm-9">
+                    <textarea class="form-control" data-ng-model="project.description" name="desc" ng-maxlength="500" rows="7" required/>
+                    <span>{{500-project.description.length}} characters left</span>
+                </div>
+            </div> 
+            <div class="form-group">
+                <div class="col-sm-3 col-sm-offset-8"><!-- Button -->
+                    <button type="button" data-ng-click="delete(project, $event)" class="btn btn-danger">Withdraw</button>  
+                    <button type="submit" class="btn btn-primary">Update</button>  
+                </div>
+            </div>
+        </form>
+
+        <div class="well" data-ng-show="authentication.user.role == 'Faculty'">
+            <div class="row"><!-- Title -->
+                <label for="title" class="col-sm-2 control-label">Title </label>
+                <div class="col-sm-9">
+                    <span data-ng-bind="project.title"></span>
+                </div>
+            </div> 
+            <div class="row"><!-- Organization -->
+                <label for="title" class="col-sm-2 control-label">Organization </label>
+                <div class="col-sm-9">
+                    <span data-ng-bind="project.title"></span>
+                </div>
+            </div> 
+            <div class="row"><!-- Category -->
+                    <label for="category" class="col-sm-2 control-label">Category </label>
+                    <div class="col-sm-9">
+                        <span data-ng-bind="project.category"></span>
+                    </div><!-- Category -->
+            </div>
+            <div class="row">
+                <label for="startdate" class="col-sm-2 control-label">Expected Start Date </label>
+                <div class="col-sm-9">
+                    <span data-ng-bind="project.start_date"></span>
+                </div><!-- Expected Start Date -->
+            </div>
+            <div class="row">
+                <label for="enddate" class="col-sm-2 control-label">Expected End Date </label>
+                <div class="col-sm-9">
+                    <span data-ng-bind="project.end_date"></span>
+                </div><!-- Expected End Date -->
+            </div>
+            <div class="row">
+                <label for="name" class="col-sm-2 control-label">Contact Name </label>
+                <div class="col-sm-9">
+                    <span data-ng-bind="project.contact_person"></span>
+                </div><!-- Contact Name -->
+            </div>
+            <div class="row">
+                <label for="email" class="col-sm-2 control-label">Email </label>
+                <div class="col-sm-9">
+                    <span data-ng-bind="project.contact_email"></span>
+                </div><!-- Email -->
+            </div>
+            <div class="row">
+                <label for="HP" class="col-sm-2 control-label">HP </label>
+                <div class="col-sm-9">
+                    <span data-ng-bind="project.contact_HP"></span>
+                </div><!-- HP -->
+            </div>
+            <div class="row">
+                <label for="desc" class="col-sm-2 control-label">Description </label>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <span data-ng-bind="project.description"></span>
+                </div><!-- Description -->
+            </div>
+        </div>
+
+        <div class="row" data-ng-show="authentication.user.role == 'Faculty'">
+            <div class="col-sm-2 col-sm-offset-10">
+            <button type="button" data-ng-show="project.status === 'open'" data-ng-click="openModal()" class="btn btn-primary">Indicate Interest</button>  
+            <button type="button" data-ng-show="project.status === 'requested'" data-ng-click="openModal()" class="btn btn-primary">View Request Message</button>  
+        </div>
+    </section>
+
+    <script type="text/ng-template" id="request.html">
+        <div data-ng-controller="RequestsController">
+            <div class="modal-header"><b> Indicate Interest to Sponsor</b></div>
+            <div class="modal-body">
+                <form data-ng-show="project.status === 'open'" data-ng-submit="add()" name="requestAdd" novalidate>
+                    <div class="form-group">
+                        <label for="courseid">Course Code</label>
+                        <select class="form-control" data-ng-model="course_code" data-ng-init="course_code" id="course_code">
+                            <option selected value="abc">abc</option>
+                            <option value="def">def</option>
+                            <option value="ghi">ghi</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label form="message">Message</label>
+                        <textarea class="form-control" data-ng-model="message" name="" ng-maxlength="500" rows="4" required/>
+                        <span>{{500-message.length}} characters left</span>
+                    </div>
+                    <input type="hidden" ng-value=project._id/>
+                    <button type="submit" ng-click="add()" class="btn btn-primary">Send</button> 
+                    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+                </form>
+
+                <form data-ng-show="project.status === 'requested'" data-ng-init="read()" name="requestView" >
+                    <div class="row">
+                        <label for="courseid">Course Code: </label><span data-ng-bind="request.course_code"></span>
+                    </div>
+                    <div class="row">
+                        <label for="message">Message: </label><br/><p data-ng-bind="request.message"></p>
+                    </div>
+                    <button class="btn btn-warning" type="button" ng-click="cancel()">Ok</button>
+                </form>
+            </div>
+        </div>
+    </script>
+
+</div>

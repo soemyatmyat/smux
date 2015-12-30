@@ -15,14 +15,12 @@ module.exports = function() {
             if (err) return done(err);
 
             if (!rows.length) {
-                console.log("not found!");
                 return done(null, false, {message: 'Unknown user'});
             };
             
             // if the user is found but the password is wrong 
             bcrypt.compare(password, rows[0].password, function(err, res) {
                 if (res === false) {
-                    console.log("wrong password");
                     return done(null, false, {message: 'Invalid password'});
                 } else {
                     // all is well, return successful user

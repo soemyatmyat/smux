@@ -2,58 +2,63 @@
 <div data-ng-controller="UsersController">
 
     <!-- Fixed navbar -->
-    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header page-scroll">
-                <a class="navbar-brand" href="/">SMUX</a>
-            </div>
-            <div class="collapse navbar-collapse">
-                <ul class="nav navbar-nav">
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/#!/users">User Management</a></li>
-                    <li class="active"><a href="/#!/projects">Projects</a></li>
-                    <li><a href="">Faculty Announcements</a></li>
-                    <li><a href="/logout">Log Out</a></li>
-                    <li><a href="">{{user.name}}</a></li>
-                </ul>
-            </div><!--/ .nav-collapse -->
+    <nav class="navbar navbar-inverse" role="navigation">            
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <a class="navbar-brand" href="/">SMUX</a>
         </div>
-    </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/">Home</a></li>
+                <li class="active"><a href="/#!/users">User Management</a></li>
+                <li><a href="/#!/projects">Projects</a></li>
+                <li><a href="">Faculty Announcements</a></li>
+                <li><a href="/logout">Log Out</a></li>
+                <li data-ng-show="authentication.user">
+                    <a href="/logout">Hello <span data-ng-bind="authentication.user.name" data-ng-show="authentication.user"></span>!</a>
+                </li>
+            </ul>
+        </div><!--/ .nav-collapse -->
+    </nav>
 
     <!-- Begin Page Content -->
-    <div class="container">
-        <br><br><br>
-        <section data-ng-init="read()" class="container">
-            <ol class="breadcrumb"><li><a href="#!/users">Users</a></li><li class="active" data-ng-bind="user.name"></li></ol>
-            <p ng-show="{{user === undefined}}">Show this if $scope.user ==== undefined</p>
-            <form data-ng-submit="update()" id="user_edit" class="form-horizontal">
-                <div class="form-group">
-                    <label for="name" class="col-sm-1 control-label">Name </label>
-                    <div class="col-sm-5">
-                        <input type="text" class="form-control" data-ng-model="user.name" id="name" required autofocus />
-                    </div>
-                </div> 
-                <div class="form-group">
-                    <label for="email" class="col-sm-1 control-label">Email </label>
-                    <div class="col-sm-5">
-                        <input type="text" class="form-control" data-ng-model="user.email_address" id="email" required/>
-                    </div>
+    <section data-ng-init="read()">
+        <ol class="breadcrumb"><li><a href="#!/users">Users</a></li><li class="active" data-ng-bind="user.name"></li></ol>
+        <p ng-show="{{user === undefined}}">Show this if $scope.user ==== undefined</p>
+        
+        <!-- FORM -->
+        <form data-ng-submit="update()" name="userEdit" class="form-horizontal">
+            <!-- NAME -->
+            <div class="form-group" ng-class="{'has-error': userEdit.name.$invalid && !userEdit.name.$pristine}">
+                <label for="name" class="col-sm-1 control-label">Name </label>
+                <div class="col-sm-5">
+                    <input type="text" class="form-control" data-ng-model="user.name" name="name" ng-maxlength="100" required autofocus />
                 </div>
-                <div class="form-group">
-                    <label for="role" class="col-sm-1 control-label">Role </label>
-                    <div class="col-sm-5">
-                        <select class="form-control" data-ng-model="user.role" id="role">
-                            <option value="Admin">Admin</option>
-                            <option value="Faculty">Faculty</option>
-                            <option value="Organization">Organization</option>
-                        </select>
-                    </div>
+                <div class="col-sm-6"><span ng-show="!userEdit.name.$pristine && userEdit.name.$invalid && userEdit.name.$touched" class="help-block">Name cannot be empty.</span><span ng-show="userEdit.name.$error.maxlength && userEdit.name.$touched && !userAddname.$pristine" class="help-block">Name cannot be longer than 100 characters.</span></div>
+            </div> 
+
+            <!-- EMAIL -->
+            <div class="form-group" ng-class="{'has-error': userEdit.email_address.$invalid && !userEdit.email_address.$pristine}">
+                <label for="email" class="col-sm-1 control-label">Email </label>
+                <div class="col-sm-5">
+                    <input type="text" class="form-control" data-ng-model="user.email_address" name="email_address" required/>
                 </div>
-                <div class="col-sm-7 pull-right">
-                    <button type="submit" class="btn btn-primary">Save</button>  
-                </div>  
-                <div data-ng-show="error"><strong data-ng-bind="error"></strong></div>
-            </form>
-        </section>
-    </div>
+                <div class="col-sm-6"><span ng-show="userEdit.email_address.$invalid && !userEdit.email_address.$pristine && userEdit.email_address.$touched" class="help-block">Enter a valid email.</span></div>
+            </div>
+            <div class="form-group">
+                <label for="role" class="col-sm-1 control-label">Role </label>
+                <div class="col-sm-5">
+                    <select class="form-control" data-ng-model="user.role" name="role">
+                        <option value="Admin">Admin</option>
+                        <option value="Faculty">Faculty</option>
+                        <option value="Organization">Organization</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-7 pull-right">
+                <button type="submit" class="btn btn-primary">Save</button>  
+            </div>  
+            <div data-ng-show="error"><strong data-ng-bind="error"></strong></div>
+        </form>
+    </section>
+</div>

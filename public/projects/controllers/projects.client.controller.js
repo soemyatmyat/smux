@@ -1,6 +1,20 @@
 //alert("client-controller");
-angular.module('projects').controller('ProjectsController', ['$scope', '$window', '$routeParams', '$location', 'Projects',
-    function($scope, $window, $routeParams, $location, Projects) {
+angular.module('projects').controller('ProjectsController', ['$scope', 'Authentication', '$window', '$uibModal', '$routeParams', '$location', 'Projects',
+    function($scope, Authentication, $window, $uibModal, $routeParams, $location, Projects) {
+    	
+    	$scope.authentication = Authentication;
+
+    	$scope.openModal = function() {
+    		var modalInstance = $uibModal.open ({
+    			templateUrl: 'request.html',
+    			controller: 'ModalInstanceCtrl',
+    			resolve: {
+    				project: function() {
+    					return $scope.project;
+    				}
+    			}
+    		});
+    	};
 
     	$scope.update = function() {
 			var yyyy = $scope.project.start_date.getFullYear().toString();
@@ -12,10 +26,11 @@ angular.module('projects').controller('ProjectsController', ['$scope', '$window'
 			dd  = $scope.project.end_date.getDate().toString();
 			$scope.project.end_date = yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
 
-            $scope.project.$update(function() {
+            $scope.project.$update(function(response) {
                 $window.alert('Updated Successfully!');
-                //alert("projectid after update: " + $scope.project._id);
                 //$location.path('projects/' + $scope.project._id);
+		    	//$location.path('projects/' + response._id);
+		    	//$location.path('projects/');
             }, function(errorResponse) {
                 $scope.error = errorResponse.data.message;
             });
@@ -53,16 +68,14 @@ angular.module('projects').controller('ProjectsController', ['$scope', '$window'
 		});*/
 
         $scope.read = function() {
-        	alert("read");
-        	alert("id: " + $routeParams.projectId);
             $scope.project = Projects.get({
                 projectId: $routeParams.projectId
             });
+            $scope.project.start_date = new Date($scope.project.start_date);
+            $scope.project.end_date = new Date($scope.project.end_date);
         };
 
 		$scope.add = function() {
-			//console.log(req);
-
 			var newProject = new Projects();
 			newProject.title = this.title;
 			newProject.category = this.category;
@@ -86,6 +99,7 @@ angular.module('projects').controller('ProjectsController', ['$scope', '$window'
 			});
 		}
 
+		
 		$scope.clear = function () {
 			$scope.dt = null;
 		};
@@ -137,3 +151,14 @@ angular.module('projects').controller('ProjectsController', ['$scope', '$window'
 		};
     }
 ]);
+
+angular.module('projects').controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, project) {
+
+	$scope.project = project;
+
+	$scope.cancel = function () {
+		$uibModalInstance.dismiss('cancel');
+	};
+
+});
+
