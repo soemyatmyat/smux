@@ -16,6 +16,12 @@ angular.module('projects').controller('ProjectsController', ['$scope', 'Authenti
     		});
     	};
 
+    	$scope.toggleBtn = function(category,id){
+			$("." +category + id).text(function(i, text){
+	          return text === "View More" ? "View Less" : "View More";
+	      });
+		};
+
     	$scope.update = function() {
 			var yyyy = $scope.project.start_date.getFullYear().toString();
 			var mm = ($scope.project.start_date.getMonth()+1).toString(); // getMonth() is zero-based

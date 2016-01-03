@@ -1,49 +1,695 @@
-<div data-ng-controller="ProjectsController">
+<style>
 
-    <!-- Fixed navbar -->
-    <nav class="navbar navbar-inverse" role="navigation">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header page-scroll">
-            <a class="navbar-brand" href="/">SMUX</a>
+
+
+.menu1{
+  color:white;
+  width:190px;
+}
+
+.listdiv{
+  padding: 2%;
+}
+
+.expandItem{
+  margin: 1% 0;
+  padding: 1% 0;
+  background-color: #C8D7EC;
+  border-radius: 10px;
+}
+
+.well{
+  margin:7% 0 2% 0;
+  width:100%;
+}
+.item{
+
+  padding: 0% 2%;
+}
+.datepick{
+  width: 47%;
+  float: left;
+}
+
+
+.projects{
+  list-style: none;
+}
+</style>
+<div class="main" data-ng-controller="ProjectsController">
+
+    <div class="header col-md-12 col-sm-12 col-xs-12">
+        <div class="header_resize col-md-12 col-sm-12 col-xs-12">
+          <div class="logo col-md-6 col-sm-6 col-xs-12" >
+            <a href="#"><img class="img-responsive" src="images/smu_logo.png" style="max-width : 40%; padding:4% 6%"/></a> 
+          </div>
+          <div class="profile-bar col-md-offset-2 col-md-4 col-sm-6 col-xs-12 pull-right" >
+            <span>
+            <h5>
+              <a href="#"><img src="images/userpic.gif"/></a>
+              Welcome, Prof. John William     
+              <button type="button" class="btn btn-small pull-right">Log Out</button>
+            </h5>
+            </span>
+          </div>
+          <div class="clr"></div>
+
+
+          <nav class="navbar">
+            <div class="container-fluid">
+              <!-- Collect the nav links, forms, and other content for toggling -->
+              <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                  <li><a href="/">Home </a></li>
+                  <!--show only if the user is admin-->
+                  <li><a href="/#!/users">User Management</a></li>
+                  <!---->
+                  <li class="active" ><a href="/#!/projects">Projects <span class="sr-only">(current)</span></a></li>
+                  <li ><a href="/">Faculty Announcements</a></li>
+                  <li class="dropdown">
+                    <a href="#" class="menu1 dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Projects <span class="caret"></span></a>
+                      <ul class="dropdown-menu">
+                        <li><a href="project.html?select=availableprojects">Available Projects</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="project.html?select=ongoingprojects">Ongoing Projects</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="project.html?select=projectrequests">Project Requests</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="project.html?select=completedprojects">Completed Projects</a></li>
+                      </ul>
+                  </li>
+                  <li class="dropdown">
+                    <a href="#"  class="menu1 dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Faculty Announcement <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                      <li><a href="#" data-toggle="modal" data-target="#newAnnouc">New Announcement</a></li>
+                      <li role="separator" class="divider"></li>
+                      <li><a href="announcement.html?select=myannouncements">My Announcements</a></li>
+                      <li role="separator" class="divider"></li>
+                      <li><a href="announcement.html?select=announcementrequests">Requests</a></li>
+                      
+                    </ul>
+                  </li>
+                  <li><a class="menu1"  href="faq.html">FAQ</a></li>
+                </ul>
+              </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+          </nav>
         </div>
-        <div class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-                <li><a href="/">Home</a></li>
-                <li><a href="/#!/users">User Management</a></li>
-                <li class="active"><a href="/#!/projects">Projects</a></li>
-                <li><a href="">Faculty Announcements</a></li>
-                <li><a href="/logout">Log Out</a></li>
-                <li data-ng-show="authentication.user">
-                    <a href="/logout">Hello <span data-ng-bind="authentication.user.name" data-ng-show="authentication.user"></span>!</a>
-                </li>
-            </ul>
-        </div><!--/ .nav-collapse -->
-    </nav>
+    </div>
     
-    <section data-ng-init="list()">
-        <p><a class="btn" href="/#!/projects/create">Add A New Project</a> </p>
-        <p>Sort By Category:
-        <button type="button" class="btn btn-default btn-sm" ng-click="tabs[0].active = true">Category1</button>
-        <button type="button" class="btn btn-default btn-sm" ng-click="tabs[0].active = true">Category2</button>
-        <button type="button" class="btn btn-default btn-sm" ng-click="tabs[0].active = true">Category3</button> 
-        <button type="button" class="btn btn-default btn-sm" ng-click="tabs[0].active = true">Category1</button>
-        <button type="button" class="btn btn-default btn-sm" ng-click="tabs[0].active = true">Category1</button>
-        Search Box
+    <section data-ng-init="list(); tab = 'available';category=['aaa', 'bbb', 'ccc']" class="main-content-body col-md-12" >
+        <br/>
+
+        <p >
+            <button type="button" ng-class="{ active:tab === 'available'}" class="btn btn-default btn-sm" ng-click="tab = 'available'">My Available Projects</button>
+            <button type="button" ng-class="{ active:tab === 'ongoing'}"  class="btn btn-default btn-sm" ng-click="tab = 'ongoing'">My Ongoing Projects</button>
+            <button type="button" ng-class="{ active:tab === 'completed'}" class="btn btn-default btn-sm" ng-click="tab = 'completed'">My Completed Projects</button> 
+            <button type="button" ng-class="{ active:tab === 'requests'}" class="btn btn-default btn-sm" ng-click="tab = 'requests'">My Project Requests</button>
+            <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#createProject" href="/#!/projects/create">Add A New Project</button>
         </p>
-        <!--- Project Lists -->    
-        <div class = "panel panel-default">
-            <div class = "panel-heading">My Available Projects</div>
-        
-            <ul class="list-group">
-                <li class="list-group-item" data-ng-repeat="project in projects">
-                    <p>
-                        <a data-ng-href="#!/projects/{{project._id}}"><h4>{{project.title}}</a> <em class="small pull-right">Posted on: {{project.posted_date}}</em></h4>
-                        <span data-ng-bind="project.description"></span><!-- this should be limited to first 150 characters -->
-                    </p>
+
+        <!--tabs-->
+
+        <!--- Available projects -->  
+        <div class="listdiv" ng-show="tab === 'available'">
+            
+            <!--Header-->
+            <h3 class="mainTitle"><strong>My Available Projects</strong></h3>
+
+            <hr/>
+
+            <!--Search-->
+            <div class="row">
+                <label class="col-md-offset-1 col-md-1 control-label" for="searchText">Search:</label> 
+                <div class=" col-md-4">
+                    <select class="form-control">
+                        <option value="">Category</option>
+                        <option ng-repeat="cat in category"  value={{cat}}>{{cat}}</option>
+                    </select>
+                </div>
+                <div class=" col-md-4">
+                  <input class="form-control" name="searchText" id="searchText" type="text" ng-model="query">
+                </div>
+            </div>
+
+            <br/>
+            <br/>
+            <!--List of projects-->
+            <ul class="projects">
+                <!--To add status filter-->
+                <li class="listItem col-md-12 col-sm-12 col-xs-12" data-ng-repeat="project in projects | filter:query">
+                    <div>
+                        <p><h4><strong>{{project.title}} hello</strong></h4></p>
+                        <h6><strong>Description</strong><p class="pull-right">Posted On: {{project.posted_date}}</p></h6>
+                        <p>{{project.description | limitTo : 150}}</p>
+                        <button class="btn btn-primary togglebtn detailsbtn avail{{project._id}} pull-right" type="button" ng-click="toggleBtn('avail', project._id)" data-toggle="collapse" href="#{{project._id}}" aria-expanded="false" aria-controls="project">View More</button>
+                    </div>
+
+                    <!-- view details -->
+                    <div class="well collapse" id="{{project._id}}">
+                        
+                        <div class="row item">
+                            <h3 class="col-md-8 col-sm-12 col-xs-12"><strong>{{project.title}}</strong></h3>
+                            <p class="col-md-4 col-sm-12 col-xs-12 text-right"><strong>Posted on:</strong>{{project.posted_date}}</p>
+                        </div>
+                        <div class="row item">
+                            <p class="col-md-3 col-sm-4"><strong>Organization:</strong></p><p class="col-md-3 col-sm-8">{{project.org_id}}</p> <!-- change to name-->
+                            <p class="col-md-3 col-sm-4"><strong>Category:</strong></p><p class="col-md-3 col-sm-8">{{project.category}}</p>
+                        </div>
+                        <div class="row item">
+                            <p class="col-md-3 col-sm-4"><strong>Expected Start Date:</strong></p><p class="col-md-3 col-sm-8">{{project.start_date}}</p>
+                            <p class="col-md-3 col-sm-4"><strong>Expected End Date:</strong></p><p class="col-md-3 col-sm-8">{{project.end_date}}</p>
+                        </div>
+                        <div class="row item" >
+                            <p class="col-md-3 col-sm-4"><strong>Course ID:</strong></p><p class="col-md-3 col-sm-8">{{project.course_id}}</p>
+                            <p class="col-md-3 col-sm-4"><strong>Course Name:</strong></p><p class="col-md-3 col-sm-8">Analytical Skills</p><!--Show only if the project is taken-->
+                        </div>
+                        <div class="row item">
+                            <p class="col-md-3 col-sm-4"><strong>Primary Contact Name:</strong></p><p class="col-md-9 col-sm-8">{{project.contact_person}}</p>
+                        </div>
+                        <div class="row item">
+                            <p class="col-md-3 col-sm-4"><strong>Primary Contact Email:</strong></p><p class="col-md-3 col-sm-8">{{project.contact_email}}</p>
+                            <p class="col-md-3 col-sm-4"><strong>Primary Contact Phone:</strong></p><p class="col-md-3 col-sm-8">{{project.contact_HP}}</p>
+                          </div>
+                      
+                      <p class="item"><strong>Description</strong></p>
+                      <p class="item">{{project.description}}</p>
+                      <div class="item col-md-offset-9" style="padding-bottom: 3%">
+                        <div class="col-md-4 ">
+                          <button type="button" 
+                          class="btn btn-default togglebtn" 
+                          ng-click="toggleBtn('avail', project._id)" 
+                          data-toggle="collapse" 
+                          href="#{{project._id}}">Close</button>
+                        </div>
+                        <div class=" col-md-4">
+                          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#interestModal">Indicate Interest</button><!-- Call modal box and send message to organization-->
+                        </div>
+                      </div>
+                    </div>
+                    <br/>
+                    <hr/>
                 </li>
             </ul>
         </div>
+
+        <!--- Completed projects -->  
+        <div class="listdiv" ng-show="tab === 'completed'">
+            
+            <!--Header-->
+            <h3 class="mainTitle"><strong>My Completed Projects</strong></h3>
+
+            <hr/>
+
+            <!--Search-->
+            <div class="row">
+                <label class="col-md-offset-1 col-md-1 control-label" for="searchText">Search:</label> 
+                <div class=" col-md-4">
+                    <select class="form-control">
+                        <option value="">Category</option>
+                        <option ng-repeat="cat in category"  value={{cat}}>{{cat}}</option>
+                    </select>
+                </div>
+                <div class=" col-md-4">
+                  <input class="form-control" name="searchText" id="searchText" type="text" ng-model="query">
+                </div>
+            </div>
+
+            <br/>
+            <br/>
+            <!--List of projects-->
+            <ul class="projects">
+                <!--To add status filter-->
+                <li class="listItem col-md-12 col-sm-12 col-xs-12" data-ng-repeat="project in projects | filter:query">
+                    <div>
+                        <p><h4><strong>{{project.title}} hello</strong></h4></p>
+                        <h6><strong>Description</strong><p class="pull-right">Posted On: {{project.posted_date}}</p></h6>
+                        <p>{{project.description | limitTo : 150}}</p>
+                        <button class="btn btn-primary togglebtn detailsbtn cpl{{project._id}} pull-right" type="button" ng-click="toggleBtn('cpl',project._id)" data-toggle="collapse" href="#cpl{{project._id}}" aria-expanded="false" aria-controls="project">View More</button>
+                    </div>
+
+                    <!-- view details -->
+                    <div class="well collapse" id="cpl{{project._id}}">
+                        
+                        <div class="row item">
+                            <h3 class="col-md-8 col-sm-12 col-xs-12"><strong>{{project.title}}</strong></h3>
+                            <p class="col-md-4 col-sm-12 col-xs-12 text-right"><strong>Posted on:</strong>{{project.posted_date}}</p>
+                        </div>
+                        <div class="row item">
+                            <p class="col-md-3 col-sm-4"><strong>Organization:</strong></p><p class="col-md-3 col-sm-8">{{project.org_id}}</p> <!-- change to name-->
+                            <p class="col-md-3 col-sm-4"><strong>Category:</strong></p><p class="col-md-3 col-sm-8">{{project.category}}</p>
+                        </div>
+                        <div class="row item">
+                            <p class="col-md-3 col-sm-4"><strong>Expected Start Date:</strong></p><p class="col-md-3 col-sm-8">{{project.start_date}}</p>
+                            <p class="col-md-3 col-sm-4"><strong>Expected End Date:</strong></p><p class="col-md-3 col-sm-8">{{project.end_date}}</p>
+                        </div>
+                        <div class="row item" >
+                            <p class="col-md-3 col-sm-4"><strong>Course ID:</strong></p><p class="col-md-3 col-sm-8">{{project.course_id}}</p>
+                            <p class="col-md-3 col-sm-4"><strong>Course Name:</strong></p><p class="col-md-3 col-sm-8">Analytical Skills</p><!--Show only if the project is taken-->
+                        </div>
+                        <div class="row item">
+                            <p class="col-md-3 col-sm-4"><strong>Primary Contact Name:</strong></p><p class="col-md-9 col-sm-8">{{project.contact_person}}</p>
+                        </div>
+                        <div class="row item">
+                            <p class="col-md-3 col-sm-4"><strong>Primary Contact Email:</strong></p><p class="col-md-3 col-sm-8">{{project.contact_email}}</p>
+                            <p class="col-md-3 col-sm-4"><strong>Primary Contact Phone:<strong></p><p class="col-md-3 col-sm-8">{{project.contact_HP}}</p>
+                          </div>
+                      
+                      <p class="item"><strong>Description</strong></p>
+                      <p class="item">{{project.description}}</p>
+                      <div class="item col-md-offset-9" style="padding-bottom: 3%">
+                        <div class="col-md-4 ">
+                            <button type="button" class="btn btn-default togglebtn" data-toggle="collapse" href="#cpl{{project._id}}" ng-click="toggleBtn('cpl',project._id)" >Close</button>
+                        </div>
+                        <div class=" col-md-4">
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#feedbacks">View Feedbacks</button>
+                        </div>
+                      </div>
+                    </div>
+                    <br/>
+                    <hr/>
+                </li>
+            </ul>
+        </div>
+
+        <!--- Ongoing projects -->  
+        <div class="listdiv" ng-show="tab === 'ongoing'">
+            
+            <!--Header-->
+            <h3 class="mainTitle"><strong>My Ongoing Projects</strong></h3>
+
+            <hr/>
+
+            <!--Search-->
+            <div class="row">
+                <label class="col-md-offset-1 col-md-1 control-label" for="searchText">Search:</label> 
+                <div class=" col-md-4">
+                    <select class="form-control">
+                        <option value="">Category</option>
+                        <option ng-repeat="cat in category"  value={{cat}}>{{cat}}</option>
+                    </select>
+                </div>
+                <div class=" col-md-4">
+                  <input class="form-control" name="searchText" id="searchText" type="text" ng-model="query">
+                </div>
+            </div>
+
+            <br/>
+            <br/>
+            <!--List of projects-->
+            <ul class="projects">
+                <!--To add status filter-->
+                <li class="listItem col-md-12 col-sm-12 col-xs-12" data-ng-repeat="project in projects | filter:query">
+                    <div>
+                        <p><h4><strong>{{project.title}} hello</strong></h4></p>
+                        <h6><strong>Description</strong><p class="pull-right">Posted On: {{project.posted_date}}</p></h6>
+                        <p>{{project.description | limitTo : 150}}</p>
+                        <button 
+                        class="btn btn-primary togglebtn detailsbtn og{{project._id}} pull-right"
+                        type="button" 
+                        ng-click="toggleBtn('og', project._id)" data-toggle="collapse" 
+                        href="#og{{project._id}}" 
+                        aria-expanded="false" 
+                        aria-controls="project">View More</button>
+                    </div>
+
+                    <!-- view details -->
+                    <div class="well collapse" id="og{{project._id}}">
+                        
+                        <div class="row item">
+                            <h3 class="col-md-8 col-sm-12 col-xs-12"><strong>{{project.title}}</strong></h3>
+                            <p class="col-md-4 col-sm-12 col-xs-12 text-right"><strong>Posted on:</strong>{{project.posted_date}}</p>
+                        </div>
+                        <div class="row item">
+                            <p class="col-md-3 col-sm-4"><strong>Organization:</strong></p><p class="col-md-3 col-sm-8">{{project.org_id}}</p> <!-- change to name-->
+                            <p class="col-md-3 col-sm-4"><strong>Category:</strong></p><p class="col-md-3 col-sm-8">{{project.category}}</p>
+                        </div>
+                        <div class="row item">
+                            <p class="col-md-3 col-sm-4"><strong>Expected Start Date:</strong></p><p class="col-md-3 col-sm-8">{{project.start_date}}</p>
+                            <p class="col-md-3 col-sm-4"><strong>Expected End Date:</strong></p><p class="col-md-3 col-sm-8">{{project.end_date}}</p>
+                        </div>
+                        <div class="row item" >
+                            <p class="col-md-3 col-sm-4"><strong>Course ID:</strong></p><p class="col-md-3 col-sm-8">{{project.course_id}}</p>
+                            <p class="col-md-3 col-sm-4"><strong>Course Name:</strong></p><p class="col-md-3 col-sm-8">Analytical Skills</p><!--Show only if the project is taken-->
+                        </div>
+                        <div class="row item">
+                            <p class="col-md-3 col-sm-4"><strong>Primary Contact Name:</strong></p><p class="col-md-9 col-sm-8">{{project.contact_person}}</p>
+                        </div>
+                        <div class="row item">
+                            <p class="col-md-3 col-sm-4"><strong>Primary Contact Email:</strong></p><p class="col-md-3 col-sm-8">{{project.contact_email}}</p>
+                            <p class="col-md-3 col-sm-4"><strong>Primary Contact Phone:</strong></p><p class="col-md-3 col-sm-8">{{project.contact_HP}}</p>
+                          </div>
+                      
+                      <p class="item"><strong>Description</strong></p>
+                      <p class="item">{{project.description}}</p>
+                      <div class="item col-md-offset-6" style="padding-bottom: 3%;">
+                            <div class="col-md-2">
+                                <button type="button" 
+                                class="btn btn-default"  
+                                data-toggle="collapse" 
+                                ng-click="toggleBtn('og', project._id)" 
+                                href="#og{{project._id}}">Close</button>
+                            </div>
+                            <div class="col-md-6">
+                                <button type="button" class="btn btn-primary togglebtn" data-toggle="modal" data-target="#sendMsg">Send Message to Organization</button>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#closeProj">Close & Feedback</button>
+                            </div>
+                          </div>
+                    </div>
+                    <br/>
+                    <hr/>
+                </li>
+            </ul>
+        </div>
+
+
+        <!--- project requests -->  
+        <div class="listdiv" ng-show="tab === 'requests'">
+            
+            <!--Header-->
+            <h3 class="mainTitle"><strong>Project Requests</strong></h3>
+
+            <hr/>
+
+            <!--Search-->
+            <div class="row">
+                <label class="col-md-offset-1 col-md-1 control-label" for="searchText">Search:</label> 
+                <div class=" col-md-4">
+                    <select class="form-control">
+                        <option value="">Category</option>
+                        <option ng-repeat="cat in category"  value={{cat}}>{{cat}}</option>
+                    </select>
+                </div>
+                <div class=" col-md-4">
+                  <input class="form-control" name="searchText" id="searchText" type="text" ng-model="query">
+                </div>
+            </div>
+
+            <br/>
+            <br/>
+            <!--List of projects-->
+            <ul class="projects">
+                <!--To add status filter-->
+                <li class="listItem col-md-12 col-sm-12 col-xs-12" data-ng-repeat="project in projects | filter:query">
+                    <div>
+                        <p><h4><strong>{{project.title}} hello</strong></h4></p>
+                        <h6><strong>Description</strong><p class="pull-right">Posted On: {{project.posted_date}}</p></h6>
+                        <p>{{project.description | limitTo : 150}}</p>
+                        <button class="btn btn-primary togglebtn detailsbtn {{project._id}} pull-right" type="button" ng-click="toggleBtn('req', project._id)" data-toggle="collapse" href="#req{{project._id}}" aria-expanded="false" aria-controls="project">View More</button>
+                    </div>
+
+                    <!-- view details -->
+                    <div class="well collapse" id="req{{project._id}}">
+                        
+                        <div class="row item">
+                            <h3 class="col-md-8 col-sm-12 col-xs-12"><strong>{{project.title}}</strong></h3>
+                            <p class="col-md-4 col-sm-12 col-xs-12 text-right"><strong>Posted on:</strong>{{project.posted_date}}</p>
+                        </div>
+                        <div class="row item">
+                            <p class="col-md-3 col-sm-4"><strong>Organization:</strong></p><p class="col-md-3 col-sm-8">{{project.org_id}}</p> <!-- change to name-->
+                            <p class="col-md-3 col-sm-4"><strong>Category:</strong></p><p class="col-md-3 col-sm-8">{{project.category}}</p>
+                        </div>
+                        <div class="row item">
+                            <p class="col-md-3 col-sm-4"><strong>Expected Start Date:</strong></p><p class="col-md-3 col-sm-8">{{project.start_date}}</p>
+                            <p class="col-md-3 col-sm-4"><strong>Expected End Date:</strong></p><p class="col-md-3 col-sm-8">{{project.end_date}}</p>
+                        </div>
+                        <div class="row item" >
+                            <p class="col-md-3 col-sm-4"><strong>Course ID:</strong></p><p class="col-md-3 col-sm-8">{{project.course_id}}</p>
+                            <p class="col-md-3 col-sm-4"><strong>Course Name:</strong></p><p class="col-md-3 col-sm-8">Analytical Skills</p><!--Show only if the project is taken-->
+                        </div>
+                        <div class="row item">
+                            <p class="col-md-3 col-sm-4"><strong>Primary Contact Name:</strong></p><p class="col-md-9 col-sm-8">{{project.contact_person}}</p>
+                        </div>
+                        <div class="row item">
+                            <p class="col-md-3 col-sm-4"><strong>Primary Contact Email:</strong></p><p class="col-md-3 col-sm-8">{{project.contact_email}}</p>
+                            <p class="col-md-3 col-sm-4">Primary Contact Phone:</p><p class="col-md-3 col-sm-8">{{project.contact_HP}}</p>
+                          </div>
+                      
+                      <p class="item"><strong>Description</strong></p>
+                      <p class="item">{{project.description}}</p>
+                      
+                    </div>
+                    <br/>
+                    <hr/>
+                </li>
+            </ul>
+        </div>
+
         <pagination ng-model="currentPage" total-items="todos.length" max-size="maxSize"  boundary-links="true"></pagination>
     </section>
 
+    <div class="footer">
+        <div class="footer_resize center" style="align:centre">
+            <p class="lf" >&copy; Copyright 2015 Singapore Management University. All Rights Reserved</p>
+      
+        </div>
+    </div>
+
+    <!--Modals-->
+
+    <!--Create Project Modal-->
+    <div class="modal fade modal-lg" id="createProject" tabindex="-1" role="dialog" aria-labelledby="newProjLabel" style="z-index: 2147483647;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="newProjLabel"><strong>Add New Project</strong></h4>
+                </div>
+
+                <div class="modal-body">
+                    <form data-ng-submit="add()" name="projectAdd" class="form-horizontal" novalidate>
+                        <div class="form-group">
+                                <label for="title" class="col-md-2 col-sm-2 control-label">Title </label>
+                                <div class="col-md-10 col-sm-10">
+                                    <input type="text" class="form-control" data-ng-model="title" name="title" ng-maxlength="100" required/>
+                                </div><!-- Title -->
+                        </div> 
+                        <div class="form-group">
+                                <label for="category" class="col-md-2 col-sm-2 control-label">Category </label>
+                                <div class="col-md-10 col-sm-10">
+                                    <select class="form-control" data-ng-model="category">
+                                        <option selected value="aaa">aaa</option>
+                                        <option value="bbb">bbb</option>
+                                        <option value="ccc">ccc</option>
+                                    </select>
+                                </div><!-- Category -->
+                        </div>
+                        <div class="row">
+                            <label for="name" class="col-md-1 col-sm-2 control-label">Start Date </label>
+                            <div class="col-md-5 col-sm-4">
+                                <div class="input-group">
+                                    <input 
+                                    type="date" 
+                                    class="form-control" 
+                                    uib-datepicker-popup ng-model="start_date" 
+                                    is-open="status.opened" 
+                                    min-date="minDate" 
+                                    datepicker-options="dateOptions" 
+                                    date-disabled="disabled(date, mode)" 
+                                    close-text="Close" />
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                    </span>
+                                </div>
+                            </div>
+                            <label for="name" class="col-md-1 col-sm-2 control-label">End Date </label>
+                            <div class="col-md-4 col-sm-4">
+                                <p class="input-group">
+                                  <input 
+                                    type="date" 
+                                    class="form-control" 
+                                    uib-datepicker-popup ng-model="end_date" 
+                                    is-open="status.opened" 
+                                    min-date="minDate" 
+                                    datepicker-options="dateOptions" 
+                                    date-disabled="disabled(date, mode)" 
+                                    close-text="Close" />
+                                  <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                  </span>
+                                </p>
+                            </div><!-- Start Date/End Date -->
+                        </div><!-- row -->
+                        <div class="form-group"><!-- Contact -->
+                                <label for="name" class="col-md-2 col-sm-2 control-label">Contact Name </label>
+                                <div class="col-md-4 col-sm-4">
+                                    <input type="text" class="form-control" data-ng-model="contact_person" name="name" ng-maxlength="100" required/>
+                                </div>
+                                <label for="email" class="col-md-2 col-sm-2 control-label">Email </label>
+                                <div class="col-md-4 col-sm-4">
+                                    <input type="email" class="form-control" data-ng-model="contact_email" name="email" required/>
+                                </div>
+                                
+                        </div> 
+                        <div class="form-group row">
+                            <label for="HP" class="col-md-2 col-sm-2 control-label">HP </label>
+                                <div class="col-md-4 col-sm-4">
+                                    <input type="type" class="form-control" data-ng-model="contact_HP" name="hp"/>
+                                </div>
+                        </div>
+                        <div class="form-group"><!-- Description -->
+                                <label for="desc" class="col-md-2 col-sm-2 control-label">Description </label>
+                                <div class="col-md-10 col-sm-10">
+                                    <textarea class="form-control" data-ng-model="description" name="description" ng-maxlength="1500" rows="7" required/>
+                                    <span>{{1500-description.length}} characters left</span>
+                                </div>
+                        </div> 
+                        <div class="col-md-9 col-sm-7"></div>
+                        <div class="form-group"><!-- Button -->
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="submit" ng-disabled="project_Add.$invalid" class="btn btn-primary">Post</button>  
+                        </div>
+                        <div data-ng-show="error"><strong data-ng-bind="error"></strong></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Indicate Interest modal -->
+<div class="modal fade" id="interestModal" tabindex="-1" role="dialog" aria-labelledby="indicateInterestLabel" style="z-index: 2147483647;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+
+      
+        <div class="modal-body">
+          <!-- Indicate Interest form-->
+          <form  name="indicateInterestForm" novalidate>
+          
+          <div class="form-group col-md-12 col-sm-12">
+            <label class="col-md-6" for="courseId">Course ID</label>
+            <div class="col-md-6">
+            <select class="form-control" ng-model="project.courseId" name="courseId" id="courseId">
+
+              <optgroup ng-repeat="faculty in facultyCourse | filter : { name : 'Prof. John William'} ">
+                <option ng-repeat="course in faculty.courses" value="{{course}}">{{ course}}</option>
+              </optgroup>
+            </select>
+            </div>
+          </div>
+          <div class="form-group col-md-12 col-sm-12">
+            <label for="descIn">Project Request Message to Sponsor</label>
+            <textarea rows="3" ng-model="annoc.description" class="form-control" id="descIn" placeholder="Description" ng-maxlength="1000" required></textarea>
+          </div>
+          <div class="col-md-offset-9 col-sm-offset-6">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Send</button>
+            </div>
+          </form>
+        </div>
+    </div>
+  </div>
 </div>
+
+<!-- Send Message modal-->
+<div class="modal fade" id="sendMsg" tabindex="-1" role="dialog" aria-labelledby="sendMessageLabel" style="z-index: 2147483647;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+
+      
+        <div class="modal-body">
+          <!-- Indicate Interest form-->
+          <form  name="sendMsgForm" novalidate>
+          <div class="form-group col-md-12 col-sm-12">
+            <label for="descIn">Message to Sponsor</label>
+            <textarea rows="3" ng-model="annoc.description" class="form-control" id="descIn" placeholder="Description" ng-maxlength="1000" required></textarea>
+          </div>
+          <div class="col-md-offset-8 col-sm-offset-6">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Send</button>
+            </div>
+          </form>
+        </div>
+    </div>
+  </div>
+</div>
+
+<!-- Close Project Modal -->
+<div class="modal fade" id="closeProj" tabindex="-1" role="dialog" aria-labelledby="sendMessageLabel" style="z-index: 2147483647;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4></h4>
+      </div>
+
+      
+        <div class="modal-body">
+          <h4 class="text-danger"><strong>Warning!</strong> You are about to close the X-Project: {{project.title}}. </h4>
+          <h5>Are you sure you want to continue?</h5>
+          <div class="col-md-offset-8">
+          <button type="button" class="btn btn-danger" style="width:40%" data-dismiss="modal">No</button>
+          <button type="button" class="btn btn-success" style="width:40%" data-dismiss="modal" data-toggle="modal" data-target="#feedback">Yes</button>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+<!-- Feedback Modal-->
+<div class="modal fade" id="feedback" tabindex="-1" role="dialog" aria-labelledby="feedbackLabel" style="z-index: 2147483647;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Feedback</h4>
+      </div>
+
+      <div class="modal-body">
+          <!-- Indicate Interest form-->
+          <form  name="sendMsgForm" novalidate>
+          <div class="col-md-offset-4 col-md-8">
+            <ul class="inline text-center" style="list-style:none;">
+              <li class='col-md-offset-1 col-md-2'>Strongly Agree</li>
+              <li class='col-md-2'>Agree</li>
+              <li class='col-md-2'>Neutral</li>
+              <li class='col-md-2'>Disagree</li>
+              <li class='col-md-2'>Strongly Disagree</li>
+            </ul>
+          </div>
+          <div class="form-group col-md-12 col-sm-12" style="padding-right:0; padding-left:0;">
+            <label class="col-md-4" for="qn1">1. Does the project meet your expectation?</label>
+            <div class="col-md-8" style="text-align:center; display: inline-block;">
+                <div class="col-md-offset-1 col-md-2">
+                  <input type="radio" name="qn1" id="option1" autocomplete="off" value="5"> 
+                </div>
+                <div class="col-md-2">
+                  <input type="radio" name="qn1" id="option2" autocomplete="off" value="4">
+                </div>
+                <div class="col-md-2">
+                  <input type="radio" name="qn1" id="option3" autocomplete="off" value="3" checked>
+                </div>
+                <div class="col-md-2">
+                  <input type="radio" name="qn1" id="option1" autocomplete="off" value="2"> 
+                </div>
+                <div class="col-md-2">
+                  <input type="radio" name="qn1" id="option2" autocomplete="off" value="1">
+                </div>
+              </div>
+          </div>
+          <div class="form-group col-md-12 col-sm-12">
+            <label for="descIn">Any other constructive feedback:</label>
+            <textarea rows="3" ng-model="annoc.description" class="form-control" id="descIn" placeholder="Description" ng-maxlength="1000" required></textarea>
+          </div>
+          <div class="col-md-offset-7 col-sm-offset-6">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Close & Feedback</button>
+            </div>
+          </form>
+        </div>
+  
+    </div>
+  </div>
+</div>
+</div>
+
+
