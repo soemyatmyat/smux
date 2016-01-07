@@ -16,6 +16,7 @@ angular.module('projects').controller('ProjectsController', ['$scope', 'Authenti
     		});
     	};
 
+
     	$scope.openFeedback = function() {
     		var modalInstance = $uibModal.open ({
     			templateUrl: 'feedback.html',
@@ -27,6 +28,13 @@ angular.module('projects').controller('ProjectsController', ['$scope', 'Authenti
     			}
     		});
     	}
+
+    	$scope.toggleBtn = function(category,id){
+			$("." +category + id).text(function(i, text){
+	          return text === "View More" ? "View Less" : "View More";
+	      });
+		};
+
 
     	$scope.update = function() {
 			var yyyy = $scope.project.start_date.getFullYear().toString();

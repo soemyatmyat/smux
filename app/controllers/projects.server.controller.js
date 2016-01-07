@@ -22,7 +22,7 @@ exports.list = function(req, res, next) {
 	var role = req.user.role;
 	db.connect(function(err, results) {});
 	if (role == "Faculty" || role == "Admin") {
-		db.query("SELECT _id, title, category, description, posted_date, org_id FROM `projects` WHERE status = ? OR faculty_id = ?", ["open", req.user._id], function(err,rows){
+		db.query("SELECT _id, title, category, description, posted_date, org_id, status FROM `projects` WHERE status = ? OR faculty_id = ?", ["open", req.user._id], function(err,rows){
 			if (err) {
 				return res.status(400).send({
 					message: getErrorMessage(err)
@@ -36,7 +36,7 @@ exports.list = function(req, res, next) {
 		})
 	} else {
 		var org_id = req.user._id;
-		db.query("SELECT _id, title, category, description, posted_date, org_id FROM `projects` WHERE org_id = ?", [org_id], function(err,rows){
+		db.query("SELECT _id, title, category, description, posted_date, org_id, status FROM `projects` WHERE org_id = ?", [org_id], function(err,rows){
 			if (err) {
 				return res.status(400).send({
 					message: getErrorMessage(err)

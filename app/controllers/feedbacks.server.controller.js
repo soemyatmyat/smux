@@ -29,14 +29,12 @@ exports.add = function(req, res) {
 	db.connect(function(err, results) {});
 	db.query("INSERT INTO Feedbacks SET ? ", feedback, function(err, rows) {
 		if (err) {
-			console.log(err);
 			return res.status(400).send({
 				message: getErrorMessage(err)
 			});
 		} else {
 			db.query("UPDATE `Projects` SET `status` = ? WHERE `_id` = ?", ["Completed", feedback.project_id], function(err, rows) {
 				if (err) {
-					console.log(err);
 					return res.status(400).send({
 						message: getErrorMessage(err)
 					});
@@ -69,12 +67,10 @@ exports.read = function(req, res) {
 				message: getErrorMessage(err)
 			});
 		} else {
-			console.log(rows);
 			for (var i = 0; i < rows.length; i++) {
 				if (rows[i].user_id == req.user._id) {
 					if (req.user.role == "Faculty") {
 						feedback.faculty_feedback = rows[i].feedback_text;
-						console.log("here");
 					}
 					if (req.user.role == "Organization") {
 						feedback.org_feedback = rows[i].feedback_text;
