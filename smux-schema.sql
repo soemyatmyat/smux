@@ -14,6 +14,9 @@ CREATE TABLE Users
 )ENGINE = InnoDB;
 
 INSERT INTO Users(name, email_address, password, role) VALUES ("rubik", "rubik@gmail.com", "$2a$10$Z4jKT5Z7WvRA1AtOf01a1Ohk02RfjGM1lAx.K/AeNBtiguPVvxC0S", "Admin");
+INSERT INTO Users(name, email_address, password, role) VALUES ("admin", "admin@gmail.com", "$2a$10$Z4jKT5Z7WvRA1AtOf01a1Ohk02RfjGM1lAx.K/AeNBtiguPVvxC0S", "Admin");
+INSERT INTO Users(name, email_address, password, role) VALUES ("faculty", "faculty@gmail.com", "$2a$10$Z4jKT5Z7WvRA1AtOf01a1Ohk02RfjGM1lAx.K/AeNBtiguPVvxC0S", "Faculty");
+INSERT INTO Users(name, email_address, password, role) VALUES ("organization", "org@gmail.com", "$2a$10$Z4jKT5Z7WvRA1AtOf01a1Ohk02RfjGM1lAx.K/AeNBtiguPVvxC0S", "Organization");
 
 CREATE TABLE Courses 
 (
@@ -51,12 +54,11 @@ CREATE TABLE Projects
 	end_date date,
 	org_id int,
 	faculty_id int,
-	course_id int,
+	course_id VARCHAR(10),
 	status VARCHAR(100) not null,
 	term VARCHAR(10),
 	CONSTRAINT FOREIGN KEY (org_id) REFERENCES Users(_id) ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT FOREIGN KEY (faculty_id) REFERENCES Users(_id) ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT FOREIGN KEY (course_id) REFERENCES Courses(_id) ON DELETE CASCADE ON UPDATE CASCADE
+	CONSTRAINT FOREIGN KEY (faculty_id) REFERENCES Users(_id) ON DELETE CASCADE ON UPDATE CASCADE
 )ENGINE = InnoDB;
 
 
@@ -68,6 +70,7 @@ CREATE TABLE Requests
 	faculty_id int not null,
 	message VARCHAR(500),
 	requested_date date not null,
+	status VARCHAR(100),
 	CONSTRAINT FOREIGN KEY (project_id) REFERENCES Projects(_id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT FOREIGN KEY (faculty_id) REFERENCES Users(_id) ON DELETE CASCADE ON UPDATE CASCADE
 )ENGINE = InnoDB;
@@ -77,7 +80,7 @@ CREATE TABLE Feedbacks
 	_id int not null AUTO_INCREMENT PRIMARY KEY,
 	project_id int not null,
 	user_id int not null,
-	feedback_text VARCHAR(500) not null,
+	feedback_text VARCHAR(1000) not null,
 	CONSTRAINT FOREIGN KEY (user_id) REFERENCES Users(_id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT FOREIGN KEY (project_id) REFERENCES Projects(_id) ON DELETE CASCADE ON UPDATE CASCADE
 )ENGINE = InnoDB;

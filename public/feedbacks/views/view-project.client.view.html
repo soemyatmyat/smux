@@ -173,11 +173,10 @@
         </div>
 
         <div class="row" data-ng-if="authentication.user.role == 'Faculty'">
-            <div class="col-sm-offset-10">
+            <div class="col-sm-2 col-sm-offset-10">
             <button type="button" data-ng-show="project.status === 'open'" data-ng-click="openModal()" class="btn btn-primary">Indicate Interest</button>  
             <button type="button" data-ng-show="project.status === 'requested'" data-ng-click="openModal()" class="btn btn-primary">View Request Message</button>  
             <button type="button" data-ng-show="project.status === 'On-Going'" data-ng-click="openFeedback()" class="btn btn-primary">Close & Feedback</button>  
-            <button type="button" data-ng-show="project.status === 'Completed'" data-ng-click="openFeedback()" class="btn btn-primary">View Feedback</button> 
         </div>
     </section>
 
@@ -220,28 +219,18 @@
     </script>
 
     <script type="text/ng-template" id="feedback.html">
-        <div data-ng-controller="FeedbacksController">
+        <div data-ng-controller="RequestsController">
             <div class="modal-header"><b> Feedback Form</b></div>
-            <div class="modal-body" >
-                <form name="feedbackAdd" data-ng-if="project.status === 'On-Going'" data-ng-submit="add()" novalidate>
+            <div class="modal-body">
+                <form name="sendMsgForm" data-ng-submit="add()" novalidate>
                     <div class="form-group col-md-12 col-sm-12">
                         <label for="descIn">Please provide constructive feedback:</label>
-                        <textarea rows="3" ng-model="feedback_text" class="form-control" id="descIn" placeholder="feedback..." ng-maxlength="1000" required></textarea>
+                        <textarea rows="3" ng-model="annoc.description" class="form-control" id="descIn" placeholder="feedback..." ng-maxlength="1000" required></textarea>
                     </div>
                     <input type="hidden" ng-value=project._id/>
                     <div class="col-md-offset-7 col-sm-offset-6">
                         <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
                         <button type="submit" class="btn btn-primary" ng-click="cancel()">Close & Feedback</button>
-                    </div>
-                </form>
-
-                <form name="feedbackView" data-ng-if="project.status === 'Completed'" data-ng-init="read()"> 
-                    <div class="form-group col-md-12 col-sm-12">
-                        <h5>Faculty Feedback</h5><div class="well" data-ng-bind="feedback.faculty_feedback"></div>
-                        <h5>Organization Feedback</h5><p data-ng-bind="feedback.org_feedback"></p>
-                    </div>
-                    <div class="col-md-offset-10 col-sm-offset-10">
-                        <button class="btn btn-warning" type="button" ng-click="cancel()">Ok</button>
                     </div>
                 </form>
             </div>

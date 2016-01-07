@@ -19,19 +19,36 @@ var getErrorMessage = function(err) {
 // list projects ///
 ///////////////////
 exports.list = function(req, res, next) {
+	var role = req.user.role;
 	db.connect(function(err, results) {});
-	db.query("SELECT _id, title, category, description, posted_date, org_id FROM `projects`", function(err,rows){
-		if (err) {
-			return res.status(400).send({
-				message: getErrorMessage(err)
-			});
-		} else {
-			for (var i =0; i <rows.length; i++) {
-				rows[i].posted_date = getDateFormat(rows[i].posted_date);
+	if (role == "Faculty" || role == "Admin") {
+		db.query("SELECT _id, title, category, description, posted_date, org_id FROM `projects` WHERE status = ? OR faculty_id = ?", ["open", req.user._id], function(err,rows){
+			if (err) {
+				return res.status(400).send({
+					message: getErrorMessage(err)
+				});
+			} else {
+				for (var i =0; i <rows.length; i++) {
+					rows[i].posted_date = getDateFormat(rows[i].posted_date);
+				}
+				res.json(rows);
 			}
-			res.json(rows);
-		}
-	})
+		})
+	} else {
+		var org_id = req.user._id;
+		db.query("SELECT _id, title, category, description, posted_date, org_id FROM `projects` WHERE org_id = ?", [org_id], function(err,rows){
+			if (err) {
+				return res.status(400).send({
+					message: getErrorMessage(err)
+				});
+			} else {
+				for (var i =0; i <rows.length; i++) {
+					rows[i].posted_date = getDateFormat(rows[i].posted_date);
+				}
+				res.json(rows);
+			}
+		})
+	}
 };
 
 
@@ -48,7 +65,7 @@ exports.read = function(req, res) {
 				message: getErrorMessage(err)
 			});
 		} else {
-			db.query("SELECT * from `requests` WHERE `project_id` =? and `faculty_id`", [rows[0]._id, req.user._id], function(err, results) {
+			db.query("SELECT * from `requests` WHERE `project_id` =? and `faculty_id` = ?", [rows[0]._id, req.user._id], function(err, results) {
 				if (err) {
 					return res.status(400).send({
 						message: getErrorMessage(err)
@@ -58,6 +75,9 @@ exports.read = function(req, res) {
 						rows[0].status = "requested";
 					} 
 				}
+				rows[0].start_date = new Date(rows[0].start_date);
+				rows[0].end_date = new Date(rows[0].end_date);
+				rows[0].posted_date = new Date(rows[0].posted_date);
 				rows[0].start_date = getDateFormat(rows[0].start_date);
 				rows[0].end_date = getDateFormat(rows[0].end_date);
 				rows[0].posted_date = getDateFormat(rows[0].posted_date);

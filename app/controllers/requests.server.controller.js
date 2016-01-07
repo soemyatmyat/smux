@@ -19,18 +19,78 @@ var getErrorMessage = function(err) {
 // list requests ///
 ///////////////////
 exports.list = function(req, res, next) {
-	
+	var org_id = req.user._id;
 	db.connect(function(err, results) {});
-	db.query("SELECT * FROM `requests`", function(err,rows){
+	db.query("SELECT _id FROM `Projects` WHERE `org_id` = ?", [org_id], function(err,projects){
 		if (err) {
 			return res.status(400).send({
 				message: getErrorMessage(err)
 			});
 		} else {
-			for (var i =0; i <rows.length; i++) {
-				rows[i].requested_date = getDateFormat(rows[i].requested_date);
+			var querytxt = "SELECT * from `Requests` WHERE `project_id` in ("
+			for (var i =0; i <projects.length; i++) {
+				if (i == projects.length-1) {
+					querytxt += projects[i]._id;
+				} else {
+					querytxt += projects[i]._id + ", ";
+				}
 			}
-			res.json(rows);
+			querytxt += ")";
+			db.query(querytxt, function(err, requests) {
+				if (err) {
+					return res.status(400).send({
+						message: getErrorMessage(err)
+					});
+				} else {
+					var projectQuery = "SELECT title, _id from `Projects` WHERE `_id` in (";
+					var facultyQuery = "SELECT _id, name, email_address from `Users` WHERE `_id` in ("
+					for (var i = 0; i < requests.length; i++) {
+						if (i == requests.length-1) {
+							projectQuery += requests[i].project_id;
+							facultyQuery += requests[i].faculty_id;
+						} else {
+							projectQuery += requests[i].project_id + ", ";
+							facultyQuery += requests[i].faculty_id + ",";
+						}
+					}
+					projectQuery += ")";
+					facultyQuery += ")";
+					db.query(projectQuery, function(err, results) {
+						if (err) {
+							return res.status(400).send({
+								message: getErrorMessage(err)
+							});
+						} else {
+							for (var i = 0; i < requests.length; i++) {
+								for (var j = 0; j < results.length; j++) {
+									if (requests[i].project_id == results[j]._id) {
+										requests[i].project_name = results[j].title;
+									}
+								}
+							}
+							db.query(facultyQuery, function(err, rows) {
+								if (err) {
+									return res.status(400).send({
+										message: getErrorMessage(err)
+									});
+								} else {
+									for (var i = 0; i < requests.length; i++) {
+										for (var j = 0; j < rows.length; j++) {
+											if (requests[i].faculty_id == rows[j]._id) {
+												requests[i].faculty_name = rows[j].name;
+												requests[i].faculty_email = rows[j].email_address;
+											}
+										}
+										requests[i].requested_date = getDateFormat(requests[i].requested_date);
+									}
+									console.log(requests);
+									res.json(requests);
+								}
+							})
+						}
+					})
+				}
+			})
 		}
 	})
 };
@@ -60,8 +120,6 @@ exports.read = function(req, res) {
 };
 
 
-
-
 ///////////////////
 // new request ///
 /////////////////
@@ -72,7 +130,8 @@ exports.add = function(req, res) {
 		project_id: req.body.project_id,
 		faculty_id: req.user._id,
 		message: req.body.message,
-		requested_date: getDateFormat(today)
+		requested_date: getDateFormat(today),
+		status: 'submitted'
 	}
 	
 	db.connect(function(err,results) {});
@@ -98,11 +157,38 @@ exports.add = function(req, res) {
 };
 
 
-
 /////////////////////
 // delete request //
 ///////////////////
-exports.delete = function(req, res) {
+exports.update = function(req, res) {
+	var project_id = req.body.project_id;
+	var faculty_id = req.body.faculty_id;
+	var course_id = req.body.course_code;
+
+	var	project = {
+		_id: req.body.project_id
+	}
+
+	db.connect(function(err, results) {});
+	db.query("UPDATE `Projects` SET `status` = ?, `faculty_id` = ?, `course_id` = ? WHERE `_id` = ?", ["On-Going", faculty_id, course_id, project_id], function(err, rows) {
+		if (err) {
+			console.log(err);
+			return res.status(400).send({
+				message: getErrorMessage(err)
+			});
+		} else {
+			db.query("DELETE FROM `Requests` WHERE `project_id` = ?", [project_id], function(err, rows) {
+				if (err) {
+					console.log(err);
+					return res.status(400).send({
+						message: getErrorMessage(err)
+					});
+				} else {
+					res.json(project);
+				}
+			})
+		}
+	})
 	/*
 	var project_id = req.params.project_id;
 	var faculty_id = req.params.faculty_id;

@@ -53,7 +53,8 @@ module.exports = function() {
   require('../app/routes/projects.server.routes.js')(app);
   // load the request by passing the app
   require('../app/routes/requests.server.routes.js')(app);
-
+  // load the feedback by passing the app
+  require('../app/routes/feedbacks.server.routes.js')(app);
 
   return app;
 }

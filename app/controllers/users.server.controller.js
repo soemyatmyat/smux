@@ -4,6 +4,8 @@ var mysql = require('../../config/mysql'),
 	SALT_WORK_FACTOR = 10,
 	db = mysql();
 
+
+var userModel = require('../../app/models/user.server.model');
 ////////////////////
 // Error Message //
 //////////////////
@@ -156,8 +158,9 @@ exports.add = function(req, res) {
 /////////////////
 exports.delete = function(req, res) {
 	var id = req.params.userId;
+	
 	db.connect(function(err, results) {});	
-	test = db.query("DELETE FROM `users` WHERE `_id` = '" + [id] + "';" , function(err,rows){
+	db.query("DELETE FROM `users` WHERE `_id` = '" + [id] + "';" , function(err,rows){
 		if (err) {
 			return res.status(400).send({
 				message: getErrorMessage(err)
@@ -165,7 +168,17 @@ exports.delete = function(req, res) {
 		} else {
 			res.json(req.params.userId);
 		}	
-	});
+	})
+	/*
+	userModel.delete(id, function(err, userId) {
+		if (err) {
+			return res.status(400).send({
+				message: getErrorMessage(err)
+			});
+		} else {
+			res.json(userId);
+		}
+	})*/
 };
 
 

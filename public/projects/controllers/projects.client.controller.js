@@ -16,6 +16,18 @@ angular.module('projects').controller('ProjectsController', ['$scope', 'Authenti
     		});
     	};
 
+    	$scope.openFeedback = function() {
+    		var modalInstance = $uibModal.open ({
+    			templateUrl: 'feedback.html',
+    			controller: 'ModalInstanceCtrl',
+    			resolve: {
+    				project: function() {
+    					return $scope.project;
+    				}
+    			}
+    		});
+    	}
+
     	$scope.update = function() {
 			var yyyy = $scope.project.start_date.getFullYear().toString();
 			var mm = ($scope.project.start_date.getMonth()+1).toString(); // getMonth() is zero-based
@@ -71,8 +83,6 @@ angular.module('projects').controller('ProjectsController', ['$scope', 'Authenti
             $scope.project = Projects.get({
                 projectId: $routeParams.projectId
             });
-            $scope.project.start_date = new Date($scope.project.start_date);
-            $scope.project.end_date = new Date($scope.project.end_date);
         };
 
 		$scope.add = function() {
@@ -99,10 +109,12 @@ angular.module('projects').controller('ProjectsController', ['$scope', 'Authenti
 			});
 		}
 
+
+		/*
+		$scope.$watch('project.end_date', function (newValue) {
+		    $scope.project.end_date = new Date($scope.project.end_date);
+		});*/
 		
-		$scope.clear = function () {
-			$scope.dt = null;
-		};
 
 		// Disable weekend selection
 		$scope.disabled = function(date, mode) {
@@ -112,6 +124,7 @@ angular.module('projects').controller('ProjectsController', ['$scope', 'Authenti
 		$scope.toggleMin = function() {
 			$scope.minDate = $scope.minDate ? null : new Date();
 		};
+
 		$scope.toggleMin();
 
 		$scope.open = function($event) {
@@ -149,6 +162,7 @@ angular.module('projects').controller('ProjectsController', ['$scope', 'Authenti
 
 			return '';
 		};
+
     }
 ]);
 
