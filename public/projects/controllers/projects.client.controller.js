@@ -35,6 +35,8 @@ angular.module('projects').controller('ProjectsController', ['$scope', 'Authenti
 	      });
 		};
 
+		/*Filter*/
+		
 
     	$scope.update = function() {
 			var yyyy = $scope.project.start_date.getFullYear().toString();
@@ -50,7 +52,7 @@ angular.module('projects').controller('ProjectsController', ['$scope', 'Authenti
                 $window.alert('Updated Successfully!');
                 //$location.path('projects/' + $scope.project._id);
 		    	//$location.path('projects/' + response._id);
-		    	//$location.path('projects/');
+		    	$location.path('projects/');
             }, function(errorResponse) {
                 $scope.error = errorResponse.data.message;
             });
@@ -111,7 +113,7 @@ angular.module('projects').controller('ProjectsController', ['$scope', 'Authenti
 			newProject.description = this.description;
 			//if (nweProject.hp === undefined) {newProject.hp = null}
 			newProject.$save(function(response) {
-		    	$location.path('projects/' + response._id);
+		    	$location.path('projects/');
 			}, function(errorResponse) {
 			    $scope.error = errorResponse.data.message;
 			});
