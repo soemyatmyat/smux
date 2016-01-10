@@ -14,7 +14,7 @@ var app = express(),
 	
 
 // listen on port specified in configuration file
-app.listen(config.port);
+app.listen(process.env.PORT || config.port);
 // exports object is contained in each module and allow exposing pieces of 
 // code when the module is loaded
 // module object was orginally used to provide metadata information about 
