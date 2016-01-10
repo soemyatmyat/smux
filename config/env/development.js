@@ -1,4 +1,4 @@
-var port = 8000;
+var port = process.env.PORT;
 
 module.exports = {
    port: port,
