@@ -62,12 +62,21 @@
     </div>
 
     <!-- Begin Page Content -->
-    <section data-ng-init="read()">
-        <ol class="breadcrumb"><li><a href="#!/projects">Projects</a></li><li class="active" data-ng-bind="project.title"></li></ol>
-        <p data-ng-show="{{project === undefined}}">Show this if $scope.project ==== undefined</p>
-        <form data-ng-if="(authentication.user.role == 'Admin' || authentication.user.role == 'Organization') && project.status == 'open'" data-ng-submit="update()" name="projectEdit" class="form-horizontal" novalidate>
+    <section data-ng-init="read()" class="main-content-body col-md-12"><br/>
+        <ol class="breadcrumb"><li><a href="#!/projects">Projects</a></li><li class="active" data-ng-bind="(project.title)" ></li></ol>
+        
+        <form data-ng-if="(authentication.user.role == 'Admin' || authentication.user.role == 'Organization') && project.status == 'open'" data-ng-submit="update()" name="projectEdit" class="form-horizontal display" novalidate>
+
+            <!-- Error Message -->
+            <div class="col-md-offset-1">
+                <p ng-show="!projectEdit.title.$pristine && projectEdit.title.$invalid && projectEdit.title.$touched" class="help-block">Title cannot be empty.</p><p ng-show="projectEdit.title.$error.maxlength && projectEdit.title.$touched && !projectEdit.title.$pristine" class="help-block">Title cannot be longer than 100 characters.</p>
+                <p ng-show="!projectEdit.name.$pristine && projectEdit.name.$invalid && projectEdit.name.$touched" class="help-block">Contact Name cannot be empty.</p><p ng-show="projectEdit.name.$error.maxlength && projectEdit.name.$touched && !projectEdit.name.$pristine" class="help-block">Name cannot be longer than 50 characters.</p>
+                <p ng-show="!projectEdit.email.$pristine && projectEdit.email.$invalid && projectEdit.email.$touched" class="help-block">Email cannot be empty.</p><p ng-show="projectEdit.email.$error.maxlength && projectEdit.email.$touched && !projectEdit.email.$pristine" class="help-block">Email cannot be longer than 50 characters.</p>
+                <p ng-show="!projectEdit.description.$pristine && projectEdit.description.$invalid && projectEdit.description.$touched" class="help-block">Description cannot be empty.</p>
+                <p ng-show="projectEdit.description.$error.maxlength && projectEdit.description.$touched && !projectEdit.description.$pristine" class="help-block">Description cannot be longer than 1500 characters.</p>
+            </div>
             <div data-ng-show="error"><strong data-ng-bind="error"></strong></div>
-            <div class="form-group"><!-- Title -->
+            <div class="form-group" data-ng-class="{'has-error' : projectEdit.title.$invalid && !projectEdit.title.$pristine}"><!-- Title -->
                 <label for="title" class="col-sm-1 control-label">Title </label>
                 <div class="col-sm-9">
                     <input type="text" class="form-control" data-ng-model="project.title" name="title" ng-maxlength="100" required autofocus/>
@@ -77,9 +86,11 @@
                 <label for="category" class="col-sm-1 control-label">Category </label>
                 <div class="col-sm-9">
                     <select class="form-control" data-ng-model="project.category">
-                        <option selected value="aaa">aaa</option>
-                        <option value="bbb">bbb</option>
-                        <option value="ccc">ccc</option>
+                        <option selected value="Accounting">Accounting</option>
+                        <option value="Arts">Arts</option>
+                        <option value="Capstone">Capstone</option>
+                        <option value="IT">IT</option>
+                        <option value="Social Psychoogy">Social Psychoogy</option>
                     </select>
                 </div>
             </div>
@@ -121,11 +132,11 @@
             </div>
             <div class="form-group"><!-- Contact -->
                 <label for="name" class="col-sm-1 control-label">Contact Name </label>
-                <div class="col-sm-2">
+                <div class="col-sm-2" data-ng-class="{'has-error' : projectEdit.name.$invalid && !projectEdit.name.$pristine}">
                     <input type="text" class="form-control" data-ng-model="project.contact_person" name="name" ng-maxlength="100" required/>
                 </div>
                 <label for="email" class="col-sm-1 control-label">Email </label>
-                <div class="col-sm-3">
+                <div class="col-sm-3" data-ng-class="{'has-error' : projectEdit.email.$invalid && !projectEdit.email.$pristine}">
                     <input type="email" class="form-control" data-ng-model="project.contact_email" name="email" required/>
                 </div>
                 <label for="HP" class="col-sm-1 control-label">HP </label>
@@ -133,69 +144,78 @@
                     <input type="text" class="form-control" data-ng-model="project.contact_HP" name="hp"/>
                 </div>
             </div> 
-            <div class="form-group"><!-- Description -->
+            <div class="form-group" data-ng-class="{'has-error' : projectEdit.description.$invalid && !projectEdit.description.$pristine}"><!-- Description -->
                 <label for="desc" class="col-sm-1 control-label">Description </label>
                 <div class="col-sm-9">
-                    <textarea class="form-control" data-ng-model="project.description" name="desc" ng-maxlength="500" rows="7" required/>
-                    <span>{{500-project.description.length}} characters left</span>
+                    <textarea class="form-control" data-ng-model="project.description" name="description" ng-maxlength="1500" rows="7" required/>
+                    <span>{{1500-project.description.length}} characters left</span>
                 </div>
             </div> 
             <div class="form-group">
                 <div class="col-sm-3 col-sm-offset-8"><!-- Button -->
                     <button type="button" data-ng-click="delete(project, $event)" class="btn btn-danger">Withdraw</button>  
-                    <button type="submit" class="btn btn-primary">Update</button>  
+                    <button type="submit" ng-disabled="projectEdit.$invalid" class="btn btn-primary">Update</button>  
                 </div>
             </div>
         </form>
 
-        <div class="well" data-ng-if="authentication.user.role == 'Faculty' || project.status!='open'">
+        <div class="display" data-ng-if="authentication.user.role == 'Faculty' || project.status!='open'">
+            <div class="row"><div class="col-md-offset-10">Posted On: {{project.posted_date}}</div></div>
             <div class="row"><!-- Title -->
-                <label for="title" class="col-sm-2 control-label">Title </label>
-                <div class="col-sm-9">
-                    <span data-ng-bind="project.title"></span>
+                <div class="col-sm-12">
+                    <h4 data-ng-bind="project.title"></h4>
+                    <em>({{project.status}})</em>
                 </div>
             </div> 
             <div class="row"><!-- Organization -->
                 <label for="title" class="col-sm-2 control-label">Organization </label>
                 <div class="col-sm-9">
-                    <span data-ng-bind="project.title"></span>
+                    : <span data-ng-bind="project.org_name"></span>
                 </div>
             </div> 
             <div class="row"><!-- Category -->
                     <label for="category" class="col-sm-2 control-label">Category </label>
                     <div class="col-sm-9">
-                        <span data-ng-bind="project.category"></span>
+                        : <span data-ng-bind="project.category"></span>
                     </div><!-- Category -->
             </div>
             <div class="row">
                 <label for="startdate" class="col-sm-2 control-label">Expected Start Date </label>
-                <div class="col-sm-9">
-                    <span data-ng-bind="project.start_date"></span>
+                <div class="col-sm-4">
+                    : <span data-ng-bind="project.start_date"></span>
                 </div><!-- Expected Start Date -->
-            </div>
-            <div class="row">
                 <label for="enddate" class="col-sm-2 control-label">Expected End Date </label>
-                <div class="col-sm-9">
-                    <span data-ng-bind="project.end_date"></span>
+                <div class="col-sm-4">
+                    : <span data-ng-bind="project.end_date"></span>
                 </div><!-- Expected End Date -->
             </div>
             <div class="row">
-                <label for="name" class="col-sm-2 control-label">Contact Name </label>
+                <label for="name" class="col-sm-2 control-label">Primary Contact Name </label>
                 <div class="col-sm-9">
-                    <span data-ng-bind="project.contact_person"></span>
+                    : <span data-ng-bind="project.contact_person"></span>
                 </div><!-- Contact Name -->
             </div>
             <div class="row">
-                <label for="email" class="col-sm-2 control-label">Email </label>
-                <div class="col-sm-9">
-                    <span data-ng-bind="project.contact_email"></span>
+                <label for="email" class="col-sm-2 control-label">Primary Contact Email </label>
+                <div class="col-sm-4">
+                    : <span data-ng-bind="project.contact_email"></span>
                 </div><!-- Email -->
-            </div>
-            <div class="row">
-                <label for="HP" class="col-sm-2 control-label">HP </label>
-                <div class="col-sm-9">
-                    <span data-ng-bind="project.contact_HP"></span>
+                <label for="HP" class="col-sm-2 control-label">Primary Contact HP </label>
+                <div class="col-sm-4">
+                    : <span data-ng-bind="project.contact_HP"></span>
                 </div><!-- HP -->
+            </div>           
+            <div class="row" data-ng-if="project.status!='open'">
+                <label for="Faculty Name" class="col-sm-2 control-label">Faculty Name </label>
+                <div class="col-sm-4">: <span data-ng-bind="project.faculty_name"></div>
+                <label for="Faculty Name" class="col-sm-2 control-label">Academic Term </label>
+                <div class="col-sm-4">: <span data-ng-bind="project.faculty_name"></div>
+            </div>
+            <div class="row" data-ng-if="project.status!='open'">
+                <label for="Course Code" class="col-sm-2 control-label">Course Course </label>
+                <div class="col-sm-4">: <span data-ng-bind="project.faculty_name"></div>
+                <label for="Course Code" class="col-sm-2 control-label">Course Title </label>
+                <div class="col-sm-4">: <span data-ng-bind="project.faculty_name"></div>
             </div>
             <div class="row">
                 <label for="desc" class="col-sm-2 control-label">Description </label>
@@ -204,10 +224,6 @@
                 <div class="col-sm-12">
                     <span data-ng-bind="project.description"></span>
                 </div><!-- Description -->
-            </div>
-            <div class="row" data-ng-if="project.status!='open'">
-                <label for="Faculty Name" class="col-sm-2 control-label">Faculty Name </label>
-                <div class="col-sm-9"><span data-ng-bind="project.faculty_id"></div>
             </div>
         </div>
 
@@ -233,15 +249,17 @@
                             <option value="ghi">ghi</option>
                         </select>
                     </div>
-                    <div class="form-group col-md-12 col-sm-12">
+                    <div class="form-group col-md-12 col-sm-12" data-ng-class="{'has-error' : requestAdd.message.$invalid && !requestAdd.message.$pristine}">
                         <label form="message">Message</label>
-                        <textarea class="form-control" data-ng-model="message" name="" ng-maxlength="500" rows="4" required/>
+                        <textarea class="form-control" data-ng-model="message" name="message" ng-maxlength="500" rows="4" required/>
                         <span>{{500-message.length}} characters left</span>
+                        <span data-ng-show="!requestAdd.message.$pristine && requestAdd.message.$invalid && requestAdd.message.$touched" class="help-block">Message cannot be empty.</span>
+                        <span data-ng-show="requestAdd.message.$error.maxlength && requestAdd.message.$touched && !requestAdd.message.$pristine" class="help-block">Message cannot be longer than 500 characters.</span>
                     </div>
                     <input type="hidden" ng-value=project._id/>
                     <div class="col-md-offset-9 col-sm-offset-10">
-                        <button type="submit" class="btn btn-primary" ng-click="cancel()">Send</button> 
                         <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+                        <button type="submit" class="btn btn-primary" data-ng-disabled="requestAdd.$invalid" ng-click="cancel()">Send</button> 
                     </div>
                 </form>
 
@@ -263,14 +281,17 @@
             <div class="modal-header"><b> Feedback Form</b></div>
             <div class="modal-body" >
                 <form name="feedbackAdd" data-ng-if="project.status === 'On-Going'" data-ng-submit="add()" novalidate>
-                    <div class="form-group col-md-12 col-sm-12">
-                        <label for="descIn">Please provide constructive feedback:</label>
-                        <textarea rows="3" ng-model="feedback_text" class="form-control" id="descIn" placeholder="feedback..." ng-maxlength="1000" required></textarea>
+                    <div class="form-group col-md-12 col-sm-12" data-ng-class="{'has-error' : feedbackAdd.feedback_text.$invalid && !feedbackAdd.feedback_text.$pristine}">
+                        <label for="feedback_text">Please provide constructive feedback:</label>
+                        <textarea rows="3" ng-model="feedback_text" class="form-control" name="feedback_text" placeholder="feedback..." ng-maxlength="1000" required autofocus></textarea>
+                        <span>{{1000-feedback_text.length}} characters left</span>
+                        <span data-ng-show="!feedbackAdd.feedback_text.$pristine && feedbackAdd.feedback_text.$invalid && feedbackAdd.feedback_text.$touched" class="help-block">Feedback cannot be empty.</span>
+                        <span data-ng-show="feedbackAdd.feedback_text.$error.maxlength && feedbackAdd.feedback_text.$touched && !feedbackAdd.feedback_text.$pristine" class="help-block">Feedback cannot be longer than 1000 characters.</span>
                     </div>
                     <input type="hidden" ng-value=project._id/>
                     <div class="col-md-offset-7 col-sm-offset-6">
                         <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
-                        <button type="submit" class="btn btn-primary" ng-click="cancel()">Close & Feedback</button>
+                        <button type="submit" class="btn btn-primary" data-ng-disabled="feedbackAdd.$invalid" ng-click="cancel()">Close & Feedback</button>
                     </div>
                 </form>
 

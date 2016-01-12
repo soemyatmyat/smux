@@ -51,8 +51,7 @@ angular.module('projects').controller('ProjectsController', ['$scope', 'Authenti
             $scope.project.$update(function(response) {
                 $window.alert('Updated Successfully!');
                 //$location.path('projects/' + $scope.project._id);
-		    	//$location.path('projects/' + response._id);
-		    	$location.path('projects/');
+		    	$location.path('projects/' + response._id);
             }, function(errorResponse) {
                 $scope.error = errorResponse.data.message;
             });

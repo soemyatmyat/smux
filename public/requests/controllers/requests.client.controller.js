@@ -24,7 +24,7 @@ angular.module('requests').controller('RequestsController', ['$scope', 'Authenti
             newRequest.project_id = this.project._id;
             newRequest.message = this.message;
             newRequest.$save(function(response) {
-                $location.path('projects/');
+                $location.path('projects/' + response.project_id);
             }, function(errorResponse) {
                 $scope.error = errorResponse.data.message;
             });

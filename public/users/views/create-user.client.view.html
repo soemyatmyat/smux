@@ -62,64 +62,66 @@
 
     <!-- Begin Page Content -->
 
-    <ol class="breadcrumb"><li><a href="/#!/users">Users</a></li><li class="active">New User</li></ol>
+    <section class="main-content-body col-md-12"><br/>
+        <ol class="breadcrumb"><li><a href="/#!/users">Users</a></li><li class="active">New User</li></ol>
 
-    <!-- FORM -->
-    <form data-ng-submit="add()" name="userAdd" class="form-horizontal" novalidate>
-        <!-- NAME -->
-        <div class="form-group" ng-class="{'has-error': userAdd.name.$invalid && !userAdd.name.$pristine}">
-            <label for="name" class="col-sm-2 control-label">Name </label>
-            <div class="col-sm-5">
-                <input type="text" class="form-control" data-ng-model="user" name="name" ng-maxlength="100" required autofocus/>
+        <!-- FORM -->
+        <form data-ng-submit="add()" name="userAdd" class="form-horizontal" novalidate>
+            <!-- NAME -->
+            <div class="form-group" ng-class="{'has-error': userAdd.name.$invalid && !userAdd.name.$pristine}">
+                <label for="name" class="col-sm-2 control-label">Name </label>
+                <div class="col-sm-5">
+                    <input type="text" class="form-control" data-ng-model="user" name="name" ng-maxlength="100" required autofocus/>
+                </div>
+                <div class="col-sm-5"><span ng-show="!userAdd.name.$pristine && userAdd.name.$invalid && userAdd.name.$touched" class="help-block">Name cannot be empty.</span><span ng-show="userAdd.name.$error.maxlength && userAdd.name.$touched && !userAddname.$pristine" class="help-block">Name cannot be longer than 100 characters.</span></div>
+            </div> 
+
+            <!-- EMAIL -->
+            <div class="form-group" ng-class="{'has-error' : userAdd.email_address.$invalid && !userAdd.email_address.$pristine}">
+                <label for="email" class="col-sm-2 control-label">Email </label>
+                <div class="col-sm-5">
+                    <input type="email" class="form-control" data-ng-model="email_address" name="email_address" required/>
+                </div>
+                <div class="col-sm-5"><span ng-show="userAdd.email_address.$invalid && !userAdd.email_address.$pristine && userAdd.email_address.$touched" class="help-block">Enter a valid email.</span></div>
             </div>
-            <div class="col-sm-5"><span ng-show="!userAdd.name.$pristine && userAdd.name.$invalid && userAdd.name.$touched" class="help-block">Name cannot be empty.</span><span ng-show="userAdd.name.$error.maxlength && userAdd.name.$touched && !userAddname.$pristine" class="help-block">Name cannot be longer than 100 characters.</span></div>
-        </div> 
 
-        <!-- EMAIL -->
-        <div class="form-group" ng-class="{'has-error' : userAdd.email_address.$invalid && !userAdd.email_address.$pristine}">
-            <label for="email" class="col-sm-2 control-label">Email </label>
-            <div class="col-sm-5">
-                <input type="email" class="form-control" data-ng-model="email_address" name="email_address" required/>
+            <!-- PASSWORD -->
+            <div class="form-group" ng-class="{'has-error' : userAdd.password.$invalid && !userAdd.password.$pristine}">
+                <label for="password" class="col-sm-2 control-label">Password </label>
+                <div class="col-sm-5">
+                    <input type="password" class="form-control" data-ng-model="password" id="password" ng-minlength="8" ng-maxlength="8" required/>
+                </div>
+                <div class="col-sm-5"><span ng-show="userAdd.password.$invalid && !userAdd.name.$pristine" class="help-block">Password must be exactly 8 characters.</span></div>
             </div>
-            <div class="col-sm-5"><span ng-show="userAdd.email_address.$invalid && !userAdd.email_address.$pristine && userAdd.email_address.$touched" class="help-block">Enter a valid email.</span></div>
-        </div>
 
-        <!-- PASSWORD -->
-        <div class="form-group" ng-class="{'has-error' : userAdd.password.$invalid && !userAdd.password.$pristine}">
-            <label for="password" class="col-sm-2 control-label">Password </label>
-            <div class="col-sm-5">
-                <input type="password" class="form-control" data-ng-model="password" id="password" ng-minlength="8" ng-maxlength="8" required/>
+            <!-- CONFIRM PASSWORD -->
+            <div class="form-group" ng-class="{'has-error' : userAdd.cfmpassword.$invalid && !userAdd.cfmpassword.$pristine}">
+                <label for="email" class="col-sm-2 control-label">Confirmed Password </label>
+                <div class="col-sm-5">
+                    <input type="password" class="form-control" data-ng-model="confirm_password" name="cfmpassword" ng-minlength="8" gn-maxlength="8" pw-check="password" required/>
+                </div>
+                <div class="col-sm-5"><span ng-show="userAdd.password.$invalid && !userAdd.name.$pristine" class="help-block">Password must be exactly 8 characters.</span></div>
             </div>
-            <div class="col-sm-5"><span ng-show="userAdd.password.$invalid && !userAdd.name.$pristine" class="help-block">Password must be exactly 8 characters.</span></div>
-        </div>
 
-        <!-- CONFIRM PASSWORD -->
-        <div class="form-group" ng-class="{'has-error' : userAdd.cfmpassword.$invalid && !userAdd.cfmpassword.$pristine}">
-            <label for="email" class="col-sm-2 control-label">Confirmed Password </label>
-            <div class="col-sm-5">
-                <input type="password" class="form-control" data-ng-model="confirm_password" name="cfmpassword" ng-minlength="8" gn-maxlength="8" pw-check="password" required/>
+            <!-- ROLE -->
+            <div class="form-group">
+                <label for="role" class="col-sm-2 control-label">Role </label>
+                <div class="col-sm-5">
+                    <select class="form-control" data-ng-model="role" data-ng-init="Admin" id="role">
+                        <option selected value="Admin">Admin</option>
+                        <option value="Faculty">Faculty</option>
+                        <option value="Organization">Organization</option>
+                    </select>
+                </div>
             </div>
-            <div class="col-sm-5"><span ng-show="userAdd.password.$invalid && !userAdd.name.$pristine" class="help-block">Password must be exactly 8 characters.</span></div>
-        </div>
 
-        <!-- ROLE -->
-        <div class="form-group">
-            <label for="role" class="col-sm-2 control-label">Role </label>
-            <div class="col-sm-5">
-                <select class="form-control" data-ng-model="role" data-ng-init="Admin" id="role">
-                    <option selected value="Admin">Admin</option>
-                    <option value="Faculty">Faculty</option>
-                    <option value="Organization">Organization</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- SUBMIT BUTTON -->
-        <div class="col-sm-6 pull-right">
-            <button type="submit" ng-disabled="userAdd.$invalid" class="btn btn-primary">Add</button>  
-        </div>  
-        <div data-ng-show="error"><strong data-ng-bind="error"></strong></div>
-    </form>
+            <!-- SUBMIT BUTTON -->
+            <div class="col-sm-6 pull-right">
+                <button type="submit" ng-disabled="userAdd.$invalid" class="btn btn-primary">Add</button>  
+            </div>  
+            <div data-ng-show="error"><strong data-ng-bind="error"></strong></div>
+        </form>
+    </section>
 
 
 </div>

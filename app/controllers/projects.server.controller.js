@@ -59,10 +59,15 @@ exports.read = function(req, res) {
 	var id = req.params.projectId;
 
 	db.connect(function(err, results) {});
-	db.query("SELECT * FROM `projects` WHERE `_id` = ?", [id], function(err,rows){
+
+	db.query("SELECT temp._id, title, category, contact_person, contact_email, contact_HP, description, posted_date, start_date, end_date, " + 
+		"org_id, faculty_id, course_id, status, term, faculty_name, users.name as org_name from " + 
+		"(SELECT projects._id, title, category, contact_person, contact_email, contact_HP, description, posted_date, start_date, " + 
+		"end_date, org_id, faculty_id, course_id, status, term, users.name as faculty_name from `projects` left outer join `users` " + 
+		"on projects.faculty_id = users._id where projects._id = ?) as temp left outer join users on temp.org_id = users._id;", [id], function(err,rows){		
 		if (err) {
 			return res.status(400).send({
-				message: getErrorMessage(err)
+					message: getErrorMessage(err)
 			});
 		} else {
 			db.query("SELECT * from `requests` WHERE `project_id` =? and `faculty_id` = ?", [rows[0]._id, req.user._id], function(err, results) {
@@ -101,7 +106,8 @@ exports.update = function(req, res) {
 		contact_person: req.body.contact_person,
 		contact_email: req.body.contact_email,
 		contact_HP: req.body.contact_HP,
-		description: req.body.description
+		description: req.body.description,
+		status: "open"
 	}
 	db.connect(function(err,results) {});
 	db.query("UPDATE `projects` SET ? WHERE `_id` = ?", [project, id], function(err,rows){
@@ -119,7 +125,8 @@ exports.update = function(req, res) {
 				contact_person: req.body.contact_person,
 				contact_email: req.body.contact_email,
 				contact_HP: req.body.contact_HP,
-				description: req.body.description
+				description: req.body.description,
+				status: "open"
 			}
 			res.json(project);
 		}

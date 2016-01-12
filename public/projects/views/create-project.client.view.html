@@ -61,86 +61,97 @@
     </div>
 
     <!-- Begin Page Content -->
-    <ol class="breadcrumb"><li><a href="/#!/projects">Projects</a></li><li class="active">New Project</li></ol>
-    <form data-ng-submit="add()" name="projectAdd" class="form-horizontal" novalidate>
-        <div class="form-group">
+    <section class="main-content-body col-md-12"><br/>
+        <ol class="breadcrumb"><li><a href="/#!/projects">Projects</a></li><li class="active">New Project</li></ol>
+        <form data-ng-submit="add()" name="projectAdd" class="form-horizontal display" novalidate>
+            <!-- Error Message -->
+            <div class="col-md-offset-1">
+                <p ng-show="!projectAdd.title.$pristine && projectAdd.title.$invalid && projectAdd.title.$touched" class="help-block">Title cannot be empty.</p><p ng-show="projectAdd.title.$error.maxlength && projectAdd.title.$touched && !projectAdd.title.$pristine" class="help-block">Title cannot be longer than 100 characters.</p>
+                <p ng-show="!projectAdd.name.$pristine && projectAdd.name.$invalid && projectAdd.name.$touched" class="help-block">Contact Name cannot be empty.</p><p ng-show="projectAdd.name.$error.maxlength && projectAdd.name.$touched && !projectAdd.name.$pristine" class="help-block">Name cannot be longer than 50 characters.</p>
+                <p ng-show="!projectAdd.email.$pristine && projectAdd.email.$invalid && projectAdd.email.$touched" class="help-block">Email cannot be empty.</p><p ng-show="projectAdd.email.$error.maxlength && projectAdd.email.$touched && !projectAdd.email.$pristine" class="help-block">Email cannot be longer than 50 characters.</p>
+                <p ng-show="!projectAdd.description.$pristine && projectAdd.description.$invalid && projectAdd.description.$touched" class="help-block">Description cannot be empty.</p>
+                <p ng-show="projectAdd.description.$error.maxlength && projectAdd.description.$touched && !projectAdd.description.$pristine" class="help-block">Description cannot be longer than 1500 characters.</p>
+            </div>
+            <div data-ng-show="error"><strong data-ng-bind="error"></strong></div>
+            <div class="form-group" data-ng-class="{'has-error' : projectAdd.title.$invalid && !projectAdd.title.$pristine}">
                 <label for="title" class="col-sm-1 control-label">Title </label>
                 <div class="col-sm-9">
-                    <input type="text" class="form-control" data-ng-model="title" name="title" ng-maxlength="100" required/>
+                    <input type="text" class="form-control" data-ng-model="title" name="title" ng-maxlength="100" required autofocus/>
                 </div><!-- Title -->
-        </div> 
-        <div class="form-group">
-                <label for="category" class="col-sm-1 control-label">Category </label>
-                <div class="col-sm-9">
-                    <select class="form-control" data-ng-model="category">
-                        <option selected value="aaa">aaa</option>
-                        <option value="bbb">bbb</option>
-                        <option value="ccc">ccc</option>
-                    </select>
-                </div><!-- Category -->
-        </div>
-        <div class="row">
-            <label for="name" class="col-sm-1 control-label">Start Date </label>
-            <div class="col-md-4">
-                <p class="input-group">
-                  <input 
-                    type="date" 
-                    class="form-control" 
-                    uib-datepicker-popup ng-model="start_date" 
-                    is-open="status.opened" 
-                    min-date="minDate" 
-                    datepicker-options="dateOptions" 
-                    date-disabled="disabled(date, mode)" 
-                    close-text="Close" />
-                  <span class="input-group-btn">
-                    <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-                  </span>
-                </p>
+            </div> 
+            <div class="form-group">
+                    <label for="category" class="col-sm-1 control-label">Category </label>
+                    <div class="col-sm-9">
+                        <select class="form-control" data-ng-model="category" data-ng-value="Accounting">
+                            <option selected value="Accounting">Accounting</option>
+                            <option value="Arts">Arts</option>
+                            <option value="Capstone">Capstone</option>
+                            <option value="IT">IT</option>
+                            <option value="Social Psychoogy">Social Psychoogy</option>
+                        </select>
+                    </div><!-- Category -->
             </div>
-            <label for="name" class="col-sm-1 control-label">End Date </label>
-            <div class="col-md-4">
-                <p class="input-group">
-                  <input 
-                    type="date" 
-                    class="form-control" 
-                    uib-datepicker-popup ng-model="end_date" 
-                    is-open="status.opened" 
-                    min-date="minDate" 
-                    datepicker-options="dateOptions" 
-                    date-disabled="disabled(date, mode)" 
-                    close-text="Close" />
-                  <span class="input-group-btn">
-                    <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-                  </span>
-                </p>
-            </div><!-- Start Date/End Date -->
-        </div><!-- row -->
-        <div class="form-group"><!-- Contact -->
+            <div class="row">
+                <label for="name" class="col-sm-1 control-label">Start Date </label>
+                <div class="col-md-4">
+                    <p class="input-group">
+                      <input 
+                        type="date" 
+                        class="form-control" 
+                        uib-datepicker-popup ng-model="start_date" 
+                        is-open="status.opened" 
+                        min-date="minDate" 
+                        datepicker-options="dateOptions" 
+                        date-disabled="disabled(date, mode)" 
+                        close-text="Close" />
+                      <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                      </span>
+                    </p>
+                </div>
+                <label for="name" class="col-sm-1 control-label">End Date </label>
+                <div class="col-md-4">
+                    <p class="input-group">
+                      <input 
+                        type="date" 
+                        class="form-control" 
+                        uib-datepicker-popup ng-model="end_date" 
+                        is-open="status.opened" 
+                        min-date="minDate" 
+                        datepicker-options="dateOptions" 
+                        date-disabled="disabled(date, mode)" 
+                        close-text="Close" />
+                      <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                      </span>
+                    </p>
+                </div><!-- Start Date/End Date -->
+            </div><!-- row -->
+            <div class="form-group"><!-- Contact -->
                 <label for="name" class="col-sm-1 control-label">Contact Name </label>
-                <div class="col-sm-2">
+                <div class="col-sm-2" data-ng-class="{'has-error' : projectAdd.name.$invalid && !projectAdd.name.$pristine}">
                     <input type="text" class="form-control" data-ng-model="contact_person" name="name" ng-maxlength="100" required/>
                 </div>
                 <label for="email" class="col-sm-1 control-label">Email </label>
-                <div class="col-sm-3">
+                <div class="col-sm-3" data-ng-class="{'has-error' : projectAdd.email.$invalid && !projectAdd.email.$pristine}">
                     <input type="email" class="form-control" data-ng-model="contact_email" name="email" required/>
                 </div>
                 <label for="HP" class="col-sm-1 control-label">HP </label>
                 <div class="col-sm-2">
                     <input type="type" class="form-control" data-ng-model="contact_HP" name="hp"/>
                 </div>
-        </div> 
-        <div class="form-group"><!-- Description -->
+            </div> 
+            <div class="form-group" data-ng-class="{'has-error' : projectAdd.description.$invalid && !projectAdd.description.$pristine}"><!-- Description -->
                 <label for="desc" class="col-sm-1 control-label">Description </label>
                 <div class="col-sm-9">
                     <textarea class="form-control" data-ng-model="description" name="description" ng-maxlength="1500" rows="7" required/>
                     <span>{{1500-description.length}} characters left</span>
                 </div>
-        </div> 
-        <div class="col-sm-3 pull-right"><!-- Button -->
-            <button type="submit" ng-disabled="project_Add.$invalid" class="btn btn-primary">Post</button>  
-        </div>
-        <div data-ng-show="error"><strong data-ng-bind="error"></strong></div>
-    </div>
-    </form>
+            </div> 
+            <div class="col-sm-3 pull-right"><!-- Button -->
+                <button type="submit" ng-disabled="projectAdd.$invalid" class="btn btn-primary">Post</button>  
+            </div>
+        </form>
+    </section>
     
 </div>

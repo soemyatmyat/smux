@@ -20,81 +20,24 @@ var getErrorMessage = function(err) {
 ///////////////////
 exports.list = function(req, res, next) {
 	var org_id = req.user._id;
-	db.connect(function(err, results) {});
-	db.query("SELECT _id FROM `Projects` WHERE `org_id` = ?", [org_id], function(err,projects){
+	db.connect(function(err, results) {});	
+	db.query("SELECT temp._id, temp.course_code, temp.project_id, temp.faculty_id, temp.message, temp.requested_date, temp.status, " + 
+		"projects.title as project_name, users.name as faculty_name, users.email_address as faculty_email FROM projects, users, " + 
+		"(SELECT * from `requests` where project_id in (SELECT _id as project_id FROM `projects` WHERE `org_id` = ?)) as temp " + 
+		"WHERE projects._id = temp.project_id and users._id = temp.faculty_id;", [org_id], function(err, rows) {
 		if (err) {
 			return res.status(400).send({
 				message: getErrorMessage(err)
 			});
 		} else {
-			var querytxt = "SELECT * from `Requests` WHERE `project_id` in ("
-			for (var i =0; i <projects.length; i++) {
-				if (i == projects.length-1) {
-					querytxt += projects[i]._id;
-				} else {
-					querytxt += projects[i]._id + ", ";
-				}
+			for (var i = 0; i < rows.length; i++) {
+				rows[i].requested_date = getDateFormat(rows[i].requested_date);
 			}
-			querytxt += ")";
-			db.query(querytxt, function(err, requests) {
-				if (err) {
-					return res.status(400).send({
-						message: getErrorMessage(err)
-					});
-				} else {
-					var projectQuery = "SELECT title, _id from `Projects` WHERE `_id` in (";
-					var facultyQuery = "SELECT _id, name, email_address from `Users` WHERE `_id` in ("
-					for (var i = 0; i < requests.length; i++) {
-						if (i == requests.length-1) {
-							projectQuery += requests[i].project_id;
-							facultyQuery += requests[i].faculty_id;
-						} else {
-							projectQuery += requests[i].project_id + ", ";
-							facultyQuery += requests[i].faculty_id + ",";
-						}
-					}
-					projectQuery += ")";
-					facultyQuery += ")";
-					db.query(projectQuery, function(err, results) {
-						if (err) {
-							return res.status(400).send({
-								message: getErrorMessage(err)
-							});
-						} else {
-							for (var i = 0; i < requests.length; i++) {
-								for (var j = 0; j < results.length; j++) {
-									if (requests[i].project_id == results[j]._id) {
-										requests[i].project_name = results[j].title;
-									}
-								}
-							}
-							db.query(facultyQuery, function(err, rows) {
-								if (err) {
-									return res.status(400).send({
-										message: getErrorMessage(err)
-									});
-								} else {
-									for (var i = 0; i < requests.length; i++) {
-										for (var j = 0; j < rows.length; j++) {
-											if (requests[i].faculty_id == rows[j]._id) {
-												requests[i].faculty_name = rows[j].name;
-												requests[i].faculty_email = rows[j].email_address;
-											}
-										}
-										requests[i].requested_date = getDateFormat(requests[i].requested_date);
-									}
-									console.log(requests);
-									res.json(requests);
-								}
-							})
-						}
-					})
-				}
-			})
+			res.json(rows);
 		}
 	})
-};
 
+};
 
 ////////////////////
 // read a request //
@@ -203,6 +146,7 @@ exports.update = function(req, res) {
 		}	
 	});*/
 };
+
 
 var getDateFormat = function(date) {
 	var yyyy = date.getFullYear().toString();
