@@ -1,31 +1,4 @@
 <style>
-.menu1{
-  color:white;
-  width:190px;
-}
-.listdiv{
-  padding: 2%;
-}
-.expandItem{
-  margin: 1% 0;
-  padding: 1% 0;
-  background-color: #C8D7EC;
-  border-radius: 10px;
-}
-.well{
-  margin:7% 0 2% 0;
-  width:100%;
-}
-.item{
-  padding: 0% 2%;
-}
-.datepick{
-  width: 47%;
-  float: left;
-}
-.projects{
-  list-style: none;
-}
 </style>
 <div class="main" data-ng-controller="ProjectsController">
 
@@ -54,33 +27,10 @@
                             <!--show only if the user is admin-->
                             <li data-ng-if="authentication.user.role == 'Admin'"><a href="/#!/users">User Management</a></li>
                             <!---->
-                            <li class="active"><a href="/#!/projects">Projects <span class="sr-only">(current)</span></a></li>
+                            <li class="active non-click"><a href="/#!/projects">Projects <span class="sr-only">(current)</span></a></li>
                             <li data-ng-if="authentication.user.role == 'Organization'"><a href="/#!/requests">Request Inbox</a></li>
-                            <li><a href="/">Faculty Announcements</a></li>
-                          <!--
-                          <li class="dropdown">
-                            <a href="#" class="menu1 dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Projects <span class="caret"></span></a>
-                              <ul class="dropdown-menu">
-                                <li><a href="project.html?select=availableprojects">Available Projects</a></li>
-                                <li role="separator" class="divider"></li>
-                                <li><a href="project.html?select=ongoingprojects">Ongoing Projects</a></li>
-                                <li role="separator" class="divider"></li>
-                                <li><a href="project.html?select=projectrequests">Project Requests</a></li>
-                                <li role="separator" class="divider"></li>
-                                <li><a href="project.html?select=completedprojects">Completed Projects</a></li>
-                              </ul>
-                          </li>-->
-                          <!--
-                          <li class="dropdown">
-                            <a href="#"  class="menu1 dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Faculty Announcement <span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                              <li><a href="#" data-toggle="modal" data-target="#newAnnouc">New Announcement</a></li>
-                              <li role="separator" class="divider"></li>
-                              <li><a href="announcement.html?select=myannouncements">My Announcements</a></li>
-                              <li role="separator" class="divider"></li>
-                              <li><a href="announcement.html?select=announcementrequests">Requests</a></li>
-                            </ul>
-                          </li>-->
+                            <li><a href="/#!/announcements">Faculty Announcements</a></li>
+                          
                             <li><a class="menu1"  href="faq.html">FAQ</a></li>
                         </ul>
                     </div><!-- /.navbar-collapse -->
@@ -97,8 +47,7 @@
             <button type="button" ng-class="{ active:tab === 'ongoing'}"  class="btn btn-default btn-sm" ng-click="tab = 'ongoing'">My Ongoing Projects</button>
             <button type="button" ng-class="{ active:tab === 'completed'}" class="btn btn-default btn-sm" ng-click="tab = 'completed'">My Completed Projects</button> 
             <button type="button" ng-class="{ active:tab === 'requests'}" class="btn btn-default btn-sm" ng-click="tab = 'requests'">My Project Requests</button>
-            <!--<button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#createProject" href="/#!/projects/create">Add A New Project</button>-->
-            <a data-ng-if="authentication.user.role == 'Organization' || authentication.user.role =='Admin'" class="btn btn-primary pull-right" href="/#!/projects/create">Add A New Project</a>
+            <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#createProject" href="/#!/projects/create" data-ng-if="authentication.user.role == 'Organization' || authentication.user.role =='Admin'">Add A New Project</button>
         </p>
 
         <!--tabs-->
@@ -128,7 +77,7 @@
             <br/>
             <br/>
             <!--List of projects-->
-            <ul class="projects">
+            <ul class="lists">
                 <!--To add status filter-->
                 <!--<li class="listItem col-md-12 col-sm-12 col-xs-12" data-ng-repeat="project in projects |filter:{status: 'open'} |orderBy : '-posted_date' | filter:query"> comment out to test other functions -->
                 <li class="listItem col-md-12 col-sm-12 col-xs-12" data-ng-repeat="project in projects">
@@ -217,7 +166,7 @@
             <br/>
             <br/>
             <!--List of projects-->
-            <ul class="projects">
+            <ul class="lists">
                 <!--To add status filter-->
                 <li class="listItem col-md-12 col-sm-12 col-xs-12" data-ng-repeat="project in projects |filter:{status: 'close'} |orderBy : '-posted_date' | filter:query">
                     <div>
@@ -297,7 +246,7 @@
             <br/>
             <br/>
             <!--List of projects-->
-            <ul class="projects">
+            <ul class="lists">
                 <!--To add status filter-->
                 <li class="listItem col-md-12 col-sm-12 col-xs-12" data-ng-repeat="project in projects |filter:{status: 'ongoing'} |orderBy : '-posted_date' | filter:query">
                     <div>

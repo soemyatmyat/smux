@@ -1,5 +1,5 @@
 
-<div data-ng-controller="ProjectsController">
+<div data-ng-controller="AnnouncementController">
 
     <div class="header col-md-12 col-sm-12 col-xs-12">
         <div class="header_resize col-md-12 col-sm-12 col-xs-12">
@@ -28,31 +28,8 @@
                             <!---->
                             <li class="active"><a href="/#!/projects">Projects <span class="sr-only">(current)</span></a></li>
                             <li data-ng-if="authentication.user.role == 'Organization'"><a href="/#!/requests">Request Inbox</a></li>
-                            <li><a href="/">Faculty Announcements</a></li>
-                          <!--
-                          <li class="dropdown">
-                            <a href="#" class="menu1 dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Projects <span class="caret"></span></a>
-                              <ul class="dropdown-menu">
-                                <li><a href="project.html?select=availableprojects">Available Projects</a></li>
-                                <li role="separator" class="divider"></li>
-                                <li><a href="project.html?select=ongoingprojects">Ongoing Projects</a></li>
-                                <li role="separator" class="divider"></li>
-                                <li><a href="project.html?select=projectrequests">Project Requests</a></li>
-                                <li role="separator" class="divider"></li>
-                                <li><a href="project.html?select=completedprojects">Completed Projects</a></li>
-                              </ul>
-                          </li>-->
-                          <!--
-                          <li class="dropdown">
-                            <a href="#"  class="menu1 dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Faculty Announcement <span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                              <li><a href="#" data-toggle="modal" data-target="#newAnnouc">New Announcement</a></li>
-                              <li role="separator" class="divider"></li>
-                              <li><a href="announcement.html?select=myannouncements">My Announcements</a></li>
-                              <li role="separator" class="divider"></li>
-                              <li><a href="announcement.html?select=announcementrequests">Requests</a></li>
-                            </ul>
-                          </li>-->
+                            <li class="active non-click"><a href="">Faculty Announcements</a></li>
+                          
                             <li><a class="menu1"  href="faq.html">FAQ</a></li>
                         </ul>
                     </div><!-- /.navbar-collapse -->
@@ -63,20 +40,20 @@
 
     <!-- Begin Page Content -->
     <section data-ng-init="read()">
-        <ol class="breadcrumb"><li><a href="#!/projects">Projects</a></li><li class="active" data-ng-bind="project.title"></li></ol>
-        <p data-ng-show="{{project === undefined}}">Show this if $scope.project ==== undefined</p>
-        <form data-ng-if="(authentication.user.role == 'Admin' || authentication.user.role == 'Organization') && project.status == 'open'" data-ng-submit="update()" name="projectEdit" class="form-horizontal" novalidate>
+        <ol class="breadcrumb"><li><a href="#!/announcements">Announcements</a></li><li class="active" data-ng-bind="announcement.title"></li></ol>
+        <p data-ng-show="{{announcement === undefined}}">Show this if $scope.project ==== undefined</p>
+        <form data-ng-if="(authentication.user.role == 'Admin' || authentication.user.role == 'Faculty') && announcement.status == 'open'" data-ng-submit="update()" name="announcementEdit" class="form-horizontal" novalidate>
             <div data-ng-show="error"><strong data-ng-bind="error"></strong></div>
             <div class="form-group"><!-- Title -->
                 <label for="title" class="col-sm-1 control-label">Title </label>
                 <div class="col-sm-9">
-                    <input type="text" class="form-control" data-ng-model="project.title" name="title" ng-maxlength="100" required autofocus/>
+                    <input type="text" class="form-control" data-ng-model="announcement.title" name="title" ng-maxlength="100" required autofocus/>
                 </div>
             </div> 
             <div class="form-group"><!-- Category -->
                 <label for="category" class="col-sm-1 control-label">Category </label>
                 <div class="col-sm-9">
-                    <select class="form-control" data-ng-model="project.category">
+                    <select class="form-control" data-ng-model="announcement.category">
                         <option selected value="aaa">aaa</option>
                         <option value="bbb">bbb</option>
                         <option value="ccc">ccc</option>
@@ -90,7 +67,7 @@
                       <input 
                         type="date" 
                         class="form-control" 
-                        uib-datepicker-popup ng-model="project.start_date" 
+                        uib-datepicker-popup ng-model="announcement.start_date" 
                         is-open="status.opened" 
                         min-date="minDate" 
                         datepicker-options="dateOptions" 
@@ -107,7 +84,7 @@
                       <input 
                         type="date" 
                         class="form-control" 
-                        uib-datepicker-popup ng-model="project.end_date" 
+                        uib-datepicker-popup ng-model="announcement.end_date" 
                         is-open="status.opened" 
                         min-date="minDate" 
                         datepicker-options="dateOptions" 
@@ -119,95 +96,63 @@
                     </p>
                 </div><!--  Start Date/End Date -->
             </div>
-            <div class="form-group"><!-- Contact -->
-                <label for="name" class="col-sm-1 control-label">Contact Name </label>
-                <div class="col-sm-2">
-                    <input type="text" class="form-control" data-ng-model="project.contact_person" name="name" ng-maxlength="100" required/>
-                </div>
-                <label for="email" class="col-sm-1 control-label">Email </label>
-                <div class="col-sm-3">
-                    <input type="email" class="form-control" data-ng-model="project.contact_email" name="email" required/>
-                </div>
-                <label for="HP" class="col-sm-1 control-label">HP </label>
-                <div class="col-sm-2">
-                    <input type="text" class="form-control" data-ng-model="project.contact_HP" name="hp"/>
-                </div>
-            </div> 
             <div class="form-group"><!-- Description -->
                 <label for="desc" class="col-sm-1 control-label">Description </label>
                 <div class="col-sm-9">
-                    <textarea class="form-control" data-ng-model="project.description" name="desc" ng-maxlength="500" rows="7" required/>
-                    <span>{{500-project.description.length}} characters left</span>
+                    <textarea class="form-control" data-ng-model="announcement.description" name="desc" ng-maxlength="1500" rows="7" required/>
+                    <span>{{500-announcement.description.length}} characters left</span>
                 </div>
             </div> 
             <div class="form-group">
                 <div class="col-sm-3 col-sm-offset-8"><!-- Button -->
-                    <button type="button" data-ng-click="delete(project, $event)" class="btn btn-danger">Withdraw</button>  
+                    <button type="button" data-ng-click="delete(announcement, $event)" class="btn btn-danger">Withdraw</button>  
                     <button type="submit" class="btn btn-primary">Update</button>  
                 </div>
             </div>
         </form>
 
-        <div class="well" data-ng-if="authentication.user.role == 'Faculty' || project.status!='open'">
+        <div class="well" data-ng-if="authentication.user.role == 'Organization' || announcement.status!='open'">
             <div class="row"><!-- Title -->
                 <label for="title" class="col-sm-2 control-label">Title </label>
                 <div class="col-sm-9">
-                    <span data-ng-bind="project.title"></span>
+                    <span data-ng-bind="announcement.title"></span>
                 </div>
             </div> 
             <div class="row"><!-- Organization -->
                 <label for="title" class="col-sm-2 control-label">Organization </label>
                 <div class="col-sm-9">
-                    <span data-ng-bind="project.title"></span>
+                    <span data-ng-bind="announcement.title"></span>
                 </div>
             </div> 
             <div class="row"><!-- Category -->
                     <label for="category" class="col-sm-2 control-label">Category </label>
                     <div class="col-sm-9">
-                        <span data-ng-bind="project.category"></span>
+                        <span data-ng-bind="announcement.category"></span>
                     </div><!-- Category -->
             </div>
             <div class="row">
                 <label for="startdate" class="col-sm-2 control-label">Expected Start Date </label>
                 <div class="col-sm-9">
-                    <span data-ng-bind="project.start_date"></span>
+                    <span data-ng-bind="announcement.start_date"></span>
                 </div><!-- Expected Start Date -->
             </div>
             <div class="row">
                 <label for="enddate" class="col-sm-2 control-label">Expected End Date </label>
                 <div class="col-sm-9">
-                    <span data-ng-bind="project.end_date"></span>
+                    <span data-ng-bind="announcement.end_date"></span>
                 </div><!-- Expected End Date -->
-            </div>
-            <div class="row">
-                <label for="name" class="col-sm-2 control-label">Contact Name </label>
-                <div class="col-sm-9">
-                    <span data-ng-bind="project.contact_person"></span>
-                </div><!-- Contact Name -->
-            </div>
-            <div class="row">
-                <label for="email" class="col-sm-2 control-label">Email </label>
-                <div class="col-sm-9">
-                    <span data-ng-bind="project.contact_email"></span>
-                </div><!-- Email -->
-            </div>
-            <div class="row">
-                <label for="HP" class="col-sm-2 control-label">HP </label>
-                <div class="col-sm-9">
-                    <span data-ng-bind="project.contact_HP"></span>
-                </div><!-- HP -->
             </div>
             <div class="row">
                 <label for="desc" class="col-sm-2 control-label">Description </label>
             </div>
             <div class="row">
                 <div class="col-sm-12">
-                    <span data-ng-bind="project.description"></span>
+                    <span data-ng-bind="announcement.description"></span>
                 </div><!-- Description -->
             </div>
             <div class="row" data-ng-if="project.status!='open'">
                 <label for="Faculty Name" class="col-sm-2 control-label">Faculty Name </label>
-                <div class="col-sm-9"><span data-ng-bind="project.faculty_id"></div>
+                <div class="col-sm-9"><span data-ng-bind="announcement.faculty_id"></div>
             </div>
         </div>
 
@@ -245,7 +190,7 @@
                     </div>
                 </form>
 
-                <form data-ng-if="project.status === 'requested'" data-ng-init="read()" name="requestView" >
+                <form data-ng-if="announcement.status === 'requested'" data-ng-init="read()" name="requestView" >
                     <div class="row">
                         <label for="courseid">Course Code: </label><span data-ng-bind="request.course_code"></span>
                     </div>

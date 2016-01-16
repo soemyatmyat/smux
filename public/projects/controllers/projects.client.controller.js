@@ -97,14 +97,21 @@ angular.module('projects').controller('ProjectsController', ['$scope', 'Authenti
 			var newProject = new Projects();
 			newProject.title = this.title;
 			newProject.category = this.category;
-			var yyyy = this.start_date.getFullYear().toString();
-			var mm = (this.start_date.getMonth()+1).toString(); // getMonth() is zero-based
-			var dd  = this.start_date.getDate().toString();
-			newProject.start_date = yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
+			if(typeof this.start_date !== 'undefined'){
+				var yyyy = this.start_date.getFullYear().toString();
+				var mm = (this.start_date.getMonth()+1).toString(); // getMonth() is zero-based
+				var dd  = this.start_date.getDate().toString();
+				newProject.start_date = yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
+				
+			}
+
+			if(typeof this.end_date !== 'undefined'){
 				yyyy = this.end_date.getFullYear().toString();
 				mm = (this.end_date.getMonth()+1).toString(); // getMonth() is zero-based
 				dd  = this.end_date.getDate().toString();
-			newProject.end_date = yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
+				newProject.end_date = yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
+					
+			}
 			newProject.contact_person = this.contact_person;
 			newProject.contact_email = this.contact_email;
 			newProject.contact_HP = this.contact_HP;

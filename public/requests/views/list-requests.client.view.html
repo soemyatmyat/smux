@@ -27,31 +27,7 @@
                             <!---->
                             <li><a href="/#!/projects">Projects <span class="sr-only">(current)</span></a></li>
                             <li class="active" data-ng-if="authentication.user.role == 'Organization'"><a href="/#!/requests">Request Inbox</a></li>
-                            <li><a href="/">Faculty Announcements</a></li>
-                          <!--
-                          <li class="dropdown">
-                            <a href="#" class="menu1 dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Projects <span class="caret"></span></a>
-                              <ul class="dropdown-menu">
-                                <li><a href="project.html?select=availableprojects">Available Projects</a></li>
-                                <li role="separator" class="divider"></li>
-                                <li><a href="project.html?select=ongoingprojects">Ongoing Projects</a></li>
-                                <li role="separator" class="divider"></li>
-                                <li><a href="project.html?select=projectrequests">Project Requests</a></li>
-                                <li role="separator" class="divider"></li>
-                                <li><a href="project.html?select=completedprojects">Completed Projects</a></li>
-                              </ul>
-                          </li>-->
-                          <!--
-                          <li class="dropdown">
-                            <a href="#"  class="menu1 dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Faculty Announcement <span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                              <li><a href="#" data-toggle="modal" data-target="#newAnnouc">New Announcement</a></li>
-                              <li role="separator" class="divider"></li>
-                              <li><a href="announcement.html?select=myannouncements">My Announcements</a></li>
-                              <li role="separator" class="divider"></li>
-                              <li><a href="announcement.html?select=announcementrequests">Requests</a></li>
-                            </ul>
-                          </li>-->
+                            <li><a href="/#!/announcements">Faculty Announcements</a></li>
                             <li><a class="menu1"  href="faq.html">FAQ</a></li>
                         </ul>
                     </div><!-- /.navbar-collapse -->
@@ -87,5 +63,12 @@
         </div>
         <pagination ng-model="currentPage" total-items="todos.length" max-size="maxSize"  boundary-links="true"></pagination>
     </section>
+
+    <div class="footer">
+        <div class="footer_resize center" style="align:centre">
+            <p class="lf" >&copy; Copyright 2015 Singapore Management University. All Rights Reserved</p>
+      
+        </div>
+    </div>
 
 </div>

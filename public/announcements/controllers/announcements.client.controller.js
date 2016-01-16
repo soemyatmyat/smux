@@ -1,5 +1,5 @@
 //alert("client-controller");
-angular.module('announcements').controller('AnnouncementController', ['$scope', 'Authentication', '$window', '$uibModal', '$routeParams', '$location', 'Projects',
+angular.module('announcements').controller('AnnouncementController', ['$scope', 'Authentication', '$window', '$uibModal', '$routeParams', '$location', 'Announcements',
     function($scope, Authentication, $window, $uibModal, $routeParams, $location, Announcements) {
     	
     	$scope.authentication = Authentication;
@@ -9,28 +9,36 @@ angular.module('announcements').controller('AnnouncementController', ['$scope', 
     			templateUrl: 'request.html',
     			controller: 'ModalInstanceCtrl',
     			resolve: {
-    				project: function() {
-    					return $scope.project;
+    				announcement: function() {
+    					return $scope.announcement;
     				}
     			}
     		});
     	};
-        //alert("client-controller2");
+        //alert($scope.authentication.user.name);
         $scope.add = function() {
-            var newAnnouncement = new Announcement();
+            var newAnnouncement = new Announcements();
             newAnnouncement.title = this.title;
+            //console.log(this.title);
             newAnnouncement.category = this.category;
-            var yyyy = this.start_date.getFullYear().toString();
-            var mm = (this.start_date.getMonth()+1).toString(); // getMonth() is zero-based
-            var dd  = this.start_date.getDate().toString();
-            newAnnouncement.start_date = yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
+            if(typeof this.start_date !== 'undefined'){
+                var yyyy = this.start_date.getFullYear().toString();
+                var mm = (this.start_date.getMonth()+1).toString(); // getMonth() is zero-based
+                var dd  = this.start_date.getDate().toString();
+                newAnnouncement.start_date = yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
+
+            }
+            if(typeof this.end_date !== 'undefined'){
                 yyyy = this.end_date.getFullYear().toString();
                 mm = (this.end_date.getMonth()+1).toString(); // getMonth() is zero-based
                 dd  = this.end_date.getDate().toString();
-            newAnnouncement.end_date = yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
+                newAnnouncement.end_date = yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
+            
+            }
             newAnnouncement.faculty_id = this.faculty_id;
-            newAnnouncement.description = this.description;
+            newAnnouncement.description = $scope.authentication.user.name;
             newAnnouncement.term = this.term;
+            //console.log(this.term);
             newAnnouncement.course_id = this.course_id;
 
             //if (nweProject.hp === undefined) {newProject.hp = null}
@@ -55,6 +63,7 @@ angular.module('announcements').controller('AnnouncementController', ['$scope', 
 
 
         $scope.update = function() {
+            alert($scope.announcement.start_date);
             var yyyy = $scope.announcement.start_date.getFullYear().toString();
             var mm = ($scope.announcement.start_date.getMonth()+1).toString(); // getMonth() is zero-based
             var dd  = $scope.announcement.start_date.getDate().toString();
@@ -73,7 +82,7 @@ angular.module('announcements').controller('AnnouncementController', ['$scope', 
             });
         };
 
-        $scope.delete = function(project) {
+        $scope.delete = function(announcement) {
             var deleteAnnouncement = $window.confirm('Are you sure you want to withdrawal the Announcement?');
             
             if (deleteAnnouncement) {

@@ -15,3 +15,36 @@
 	padding-left: 19px;
 	padding-right: 19px;
 }
+
+.menu1{
+  color:white;
+  width:190px;
+}
+.listdiv{
+  padding: 2%;
+}
+.expandItem{
+  margin: 1% 0;
+  padding: 1% 0;
+  background-color: #C8D7EC;
+  border-radius: 10px;
+}
+.well{
+  margin:7% 0 2% 0;
+  width:100%;
+}
+.item{
+  padding: 0% 2%;
+}
+.datepick{
+  width: 47%;
+  float: left;
+}
+.lists{
+  list-style: none;
+}
+
+.non-click {
+   pointer-events: none;
+   cursor: default;
+}
