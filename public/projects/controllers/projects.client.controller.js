@@ -34,8 +34,6 @@ angular.module('projects').controller('ProjectsController', ['$scope', 'Authenti
 	          return text === "View More" ? "View Less" : "View More";
 	      });
 		};
-
-		/*Filter*/
 		
 
     	$scope.update = function() {
@@ -76,6 +74,7 @@ angular.module('projects').controller('ProjectsController', ['$scope', 'Authenti
 
         $scope.list = function() {
             $scope.projects = Projects.query();
+
         };
 
         /*
