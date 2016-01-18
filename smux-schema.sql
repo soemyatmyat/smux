@@ -87,3 +87,20 @@ CREATE TABLE Feedbacks
 	CONSTRAINT FOREIGN KEY (project_id) REFERENCES Projects(_id) ON DELETE CASCADE ON UPDATE CASCADE
 )ENGINE = InnoDB;
 
+CREATE TABLE Announcements
+(
+ _id int not null AUTO_INCREMENT PRIMARY KEY,
+ faculty_id int not null,
+ title VARCHAR(100) NOT NULL,
+ category VARCHAR(50) NOT NULL,
+ posted_date DATE NOT NULL,
+ description VARCHAR(1500) NOT NULL,
+ term VARCHAR(10),
+ course_id int,
+ start_date date,
+ end_date date,
+ status VARCHAR(100) NOT NULL,
+ CONSTRAINT FOREIGN KEY (faculty_id) REFERENCES Users(_id) ON DELETE CASCADE ON UPDATE CASCADE,
+ CONSTRAINT FOREIGN KEY (course_id) REFERENCES Users(_id) ON DELETE CASCADE ON UPDATE CASCADE
+	
+)ENGINE = InnoDB;
