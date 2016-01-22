@@ -12,8 +12,8 @@
 }
 
 .display {
-	padding-left: 19px;
-	padding-right: 19px;
+	padding-left: 2%;
+	padding-right: 2%;
 }
 
 .menu1{
@@ -47,4 +47,8 @@
 .non-click {
    pointer-events: none;
    cursor: default;
+}
+
+.company-image {
+  width: 80%;
 }

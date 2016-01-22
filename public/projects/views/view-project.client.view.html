@@ -203,15 +203,20 @@
             </div>
         </div>
 
+        <!-- only Faculty can indicate interest -->
         <div class="row" data-ng-if="authentication.user.role == 'Faculty'">
             <div class="col-sm-offset-10">
             <button type="button" data-ng-show="project.status === 'open'" data-ng-click="openModal()" class="btn btn-primary">Indicate Interest</button>  
+            <!-- if project is requested, can view the request message -->
             <button type="button" data-ng-show="project.status === 'requested'" data-ng-click="openModal()" class="btn btn-primary">View Request Message</button>  
-            <button type="button" data-ng-show="project.status === 'On-Going'" data-ng-click="openFeedback()" class="btn btn-primary">Close & Feedback</button>  
+            <!-- if project is on-going, can close & feedback -->
+            <button type="button" data-ng-show="project.status === 'On-Going'" data-ng-click="openFeedback()" class="btn btn-primary">Close & Feedback</button> 
+            <!-- if project is completed, can view feedback --> 
             <button type="button" data-ng-show="project.status === 'Completed'" data-ng-click="openFeedback()" class="btn btn-primary">View Feedback</button> 
         </div>
     </section>
 
+    <!-- Project Request Modal -->
     <script type="text/ng-template" id="request.html">
         <div data-ng-controller="RequestsController">
             <div class="modal-header"><b> Indicate Interest to Sponsor</b></div>
@@ -240,10 +245,10 @@
                 </form>
 
                 <form data-ng-if="project.status === 'requested'" data-ng-init="read()" name="requestView" >
-                    <div class="row">
+                    <div class="row display">
                         <label for="courseid">Course Code: </label><span data-ng-bind="request.course_code"></span>
                     </div>
-                    <div class="row">
+                    <div class="row display">
                         <label for="message">Message: </label><br/><p data-ng-bind="request.message"></p>
                     </div>
                     <button class="btn btn-warning" type="button" ng-click="cancel()">Ok</button>
@@ -252,6 +257,7 @@
         </div>
     </script>
 
+    <!-- Feedback Modal -->
     <script type="text/ng-template" id="feedback.html">
         <div data-ng-controller="FeedbacksController">
             <div class="modal-header"><b> Feedback Form</b></div>

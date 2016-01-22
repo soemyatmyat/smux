@@ -3,6 +3,60 @@ angular.module('projects').controller('ProjectsController', ['$scope', 'Authenti
     function($scope, Authentication, $window, $uibModal, $routeParams, $location, Projects) {
     	
     	$scope.authentication = Authentication;
+    	$scope.statusIncludes = ['open'];
+    	$scope.categoryIncludes = ['Accounting', 'Arts', 'Capstone', 'IT', 'Social Psychology'];
+
+    	$scope.includeStatus = function(status) {
+    		//alert("filterText");
+    		if (status == 'On-Going') $scope.ongoing = !$scope.ongoing;
+    		if (status == 'open') $scope.open = !$scope.open;
+    		if (status == 'Completed') $scope.completed = !$scope.completed;
+    		if (status == 'requested') $scope.requested = !$scope.requested;
+    		var i = $.inArray(status, $scope.statusIncludes);
+    		if (i > -1) {
+    			$scope.statusIncludes.splice(i, 1);
+    		} else {
+    			$scope.statusIncludes.push(status);
+    		}
+    	}
+
+        $scope.statusFilter = function(project) {  
+        	if ($scope.statusIncludes.length > 0) {
+        		if ($.inArray(project.status, $scope.statusIncludes) < 0) {
+        			return;
+        		} else {
+        			return project;
+        		}
+        	} else {
+        		return;
+        	}
+        }
+
+        $scope.includeCategory = function(category) {
+    		if (category == 'Accounting') $scope.accounting = !$scope.accounting;
+    		if (category == 'Arts') $scope.arts = !$scope.arts;
+    		if (category == 'Capstone') $scope.capstone = !$scope.capstone;
+    		if (category == 'IT') $scope.it = !$scope.it;
+    		if (category == 'Social Psychology') $scope.social = !$scope.social;
+    		var i = $.inArray(category, $scope.categoryIncludes);
+    		if (i > -1) {
+    			$scope.categoryIncludes.splice(i, 1);
+    		} else {
+    			$scope.categoryIncludes.push(category);
+    		}
+        }
+
+        $scope.categoryFilter = function(project) {  
+        	if ($scope.categoryIncludes.length > 0) {
+        		if ($.inArray(project.category, $scope.categoryIncludes) < 0) {
+        			return;
+        		} else {
+        			return project;
+        		}
+        	} else {
+        		return;
+        	}
+        }
 
     	$scope.openModal = function() {
     		var modalInstance = $uibModal.open ({
@@ -15,7 +69,6 @@ angular.module('projects').controller('ProjectsController', ['$scope', 'Authenti
     			}
     		});
     	};
-
 
     	$scope.openFeedback = function() {
     		var modalInstance = $uibModal.open ({
@@ -73,8 +126,16 @@ angular.module('projects').controller('ProjectsController', ['$scope', 'Authenti
       	//$scope.maxSize = 5;
 
         $scope.list = function() {
+        	$scope.open= true;
+        	$scope.ongoing = false;
+        	$scope.completed = false;
+        	$scope.requested = false;
+        	$scope.accounting = true;
+        	$scope.arts = true;
+        	$scope.capstone = true;
+        	$scope.it = true;
+        	$scope.social = true;
             $scope.projects = Projects.query();
-
         };
 
         /*
