@@ -55,6 +55,7 @@ module.exports = function() {
   require('../app/routes/requests.server.routes.js')(app);
   // load the feedback by passing the app
   require('../app/routes/feedbacks.server.routes.js')(app);
-
+  // load the announcement by passing the app
+  require('../app/routes/announcements.server.routes.js')(app);
   return app;
 }

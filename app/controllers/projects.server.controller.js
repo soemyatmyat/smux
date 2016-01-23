@@ -84,11 +84,11 @@ exports.read = function(req, res) {
 						rows[0].status = "requested";
 					} 
 				}
-				rows[0].start_date = new Date(rows[0].start_date);
-				rows[0].end_date = new Date(rows[0].end_date);
+				//rows[0].start_date = new Date(rows[0].start_date);
+				//rows[0].end_date = new Date(rows[0].end_date);
 				rows[0].posted_date = new Date(rows[0].posted_date);
-				rows[0].start_date = getDateFormat(rows[0].start_date);
-				rows[0].end_date = getDateFormat(rows[0].end_date);
+				//rows[0].start_date = getDateFormat(rows[0].start_date);
+				//rows[0].end_date = getDateFormat(rows[0].end_date);
 				rows[0].posted_date = getDateFormat(rows[0].posted_date);
 				res.json(rows[0]);
 			})

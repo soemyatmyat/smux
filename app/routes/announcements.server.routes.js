@@ -9,7 +9,6 @@ module.exports = function(app) {
 	app.route('/api/announcements')
 		.get(users.requiresLogin, announcements.list)
 		.post(users.requiresLogin, announcements.add);
-		alert('hello');
 	// R,U,D
 	app.route('/api/announcements/:annocId')
 		.get(users.requiresLogin, announcements.read)

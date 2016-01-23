@@ -49,6 +49,8 @@
                 <p ng-show="projectAdd.description.$error.maxlength && projectAdd.description.$touched && !projectAdd.description.$pristine" class="help-block">Description cannot be longer than 1500 characters.</p>
             </div>
             <div data-ng-show="error"><strong data-ng-bind="error"></strong></div>
+
+            <!-- Form -->
             <div class="form-group" data-ng-class="{'has-error' : projectAdd.title.$invalid && !projectAdd.title.$pristine}">
                 <label for="title" class="col-sm-1 control-label">Title </label>
                 <div class="col-sm-9">
@@ -67,7 +69,7 @@
                         </select>
                     </div><!-- Category -->
             </div>
-            <div class="row">
+            <div class="form-group">
                 <label for="name" class="col-sm-1 control-label">Start Date </label>
                 <div class="col-md-4">
                     <p class="input-group">

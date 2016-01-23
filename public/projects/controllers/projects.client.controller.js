@@ -90,14 +90,22 @@ angular.module('projects').controller('ProjectsController', ['$scope', 'Authenti
 		
 
     	$scope.update = function() {
-			var yyyy = $scope.project.start_date.getFullYear().toString();
-			var mm = ($scope.project.start_date.getMonth()+1).toString(); // getMonth() is zero-based
-			var dd  = $scope.project.start_date.getDate().toString();
-			$scope.project.start_date = yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
-			yyyy = $scope.project.end_date.getFullYear().toString();
-			mm = ($scope.project.end_date.getMonth()+1).toString(); // getMonth() is zero-based
-			dd  = $scope.project.end_date.getDate().toString();
-			$scope.project.end_date = yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
+            var yyyy;
+            var mm;
+            var dd;
+            if($scope.start_date != null){
+                yyyy = $scope.project.start_date.getFullYear().toString();
+                mm = ($scope.project.start_date.getMonth()+1).toString(); // getMonth() is zero-based
+                dd  = $scope.project.start_date.getDate().toString();
+                $scope.project.start_date = yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
+            }
+
+            if ($scope.end_date != null) {
+                yyyy = $scope.project.end_date.getFullYear().toString();
+                mm = ($scope.project.end_date.getMonth()+1).toString(); // getMonth() is zero-based
+                dd  = $scope.project.end_date.getDate().toString();
+                $scope.project.end_date = yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
+            }
 
             $scope.project.$update(function(response) {
                 $window.alert('Updated Successfully!');
@@ -152,13 +160,14 @@ angular.module('projects').controller('ProjectsController', ['$scope', 'Authenti
             $scope.project = Projects.get({
                 projectId: $routeParams.projectId
             });
+            $scope.project.start_date = new Date($scope.project.start_date);
         };
 
 		$scope.add = function() {
 			var newProject = new Projects();
 			newProject.title = this.title;
 			newProject.category = this.category;
-			if(typeof this.start_date !== 'undefined'){
+			if(this.start_date != null){
 				var yyyy = this.start_date.getFullYear().toString();
 				var mm = (this.start_date.getMonth()+1).toString(); // getMonth() is zero-based
 				var dd  = this.start_date.getDate().toString();
@@ -166,7 +175,7 @@ angular.module('projects').controller('ProjectsController', ['$scope', 'Authenti
 				
 			}
 
-			if(typeof this.end_date !== 'undefined'){
+			if(this.end_date != null){
 				yyyy = this.end_date.getFullYear().toString();
 				mm = (this.end_date.getMonth()+1).toString(); // getMonth() is zero-based
 				dd  = this.end_date.getDate().toString();
@@ -215,9 +224,6 @@ angular.module('projects').controller('ProjectsController', ['$scope', 'Authenti
 			formatYear: 'yy',
 			startingDay: 1
 		};
-
-  		$scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
-  		$scope.format = $scope.formats[0];
 
 		$scope.status = {
 			opened: false
