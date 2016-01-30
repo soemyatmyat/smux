@@ -9,7 +9,7 @@ angular.module('projects').config(['$routeProvider',
 		when('/projects/create', {
 			templateUrl: 'projects/views/create-project.client.view.html'
 		}).
-		when('/projects/:projectId', {
+		when('/projects/:projectId/', {
 			templateUrl: 'projects/views/view-project.client.view.html'
 		});
 	}

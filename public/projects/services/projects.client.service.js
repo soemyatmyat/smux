@@ -6,7 +6,8 @@ angular.module('projects').factory('Projects', ['$resource',
 			projectId: '@_id'
 		}, {
 			update: {
-				method: 'PUT'
+				method: 'PUT',
+				transformResponse: transformResponse
 			},
 			get: {
 				transformResponse: transformResponse

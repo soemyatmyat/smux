@@ -41,7 +41,8 @@
     </div>
     
 
-    <section data-ng-init="list(); tab = 'available';category=['Accounting', 'Arts', 'Capstone', 'IT', 'Social Psychology']" class="main-content-body col-md-12" >
+    <!-- <section data-ng-init="list(); tab = 'available';category=['Accounting', 'Arts', 'Capstone', 'IT', 'Social Psychology']" class="main-content-body col-md-12" > -->
+    <section data-ng-init="list()" class="main-content-body col-md-12" >
         <br/>
 
         <!-- filter buttons -->
@@ -65,16 +66,33 @@
             </div>
         </div>
 
-        <!--search-->
+        <!-- search box -->
         <div class="row display">
             <label class="col-md-1 control-label" for="searchText">Search:</label> 
             <div class=" col-md-11">
                 <input class="form-control" name="searchText" id="searchText" type="text" ng-model="query.$">
             </div>
         </div><br/>
+
+
+        <!-- Notification goes here! notify organization about project closure and ask for feedback -->
+        
+
+            <div class="display" data-ng-repeat="project in projects |filter:{status: 'Completed', feedback_id: null}">
+                <div class="flash alert alert-danger">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    <span> Project <a href="#!/projects/{{project._id}}">{{project.title}}</a> has been closed! Please give feedback to the project.</span>
+                </div>
+            </div>
+
+        
+
+
+        <!-- Add a new project -->
          <div class="row col-md-12">
-            <a data-ng-if="authentication.user.role == 'Organization' || authentication.user.role =='Admin'" class="btn btn-primary pull-right" href="/#!/projects/create">Add A New Project</a>
-        </div>
+            <a data-ng-if="authentication.user.role == 'Organization' || authentication.user.role =='Admin'" class="btn btn-primary pull-right" href="/#!/projects/create">Add A New Project</a></div>
+
+        <!-- -->
 
         <!--- Projects -->  
         <div class="listdiv">

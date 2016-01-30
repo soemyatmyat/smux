@@ -52,7 +52,6 @@ exports.add = function(req, res) {
 // read feedback ///
 ///////////////////
 exports.read = function(req, res) {
-	//console.log(req);
 	var logged_in_user = req.user_id;
 	var project_id = req.params.project_id;
 	var feedback = {
@@ -74,6 +73,13 @@ exports.read = function(req, res) {
 					}
 					if (req.user.role == "Organization") {
 						feedback.org_feedback = rows[i].feedback_text;
+					}
+				} else {
+					if (req.user.role == "Faculty") {
+						feedback.org_feedback = rows[i].feedback_text;
+					}
+					if (req.user.role == "Organization") {
+						feedback.faculty_feedback = rows[i].feedback_text;
 					}
 				}
 			}

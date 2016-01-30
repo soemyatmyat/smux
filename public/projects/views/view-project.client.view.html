@@ -41,7 +41,8 @@
     <section data-ng-init="read()" class="main-content-body col-md-12"><br/>
         <ol class="breadcrumb"><li><a href="#!/projects">Projects</a></li><li class="active" data-ng-bind="(project.title)" ></li></ol>
         
-        <form data-ng-if="(authentication.user.role == 'Admin' || authentication.user.role == 'Organization') && project.status == 'open'" data-ng-submit="update()" name="projectEdit" class="form-horizontal display" novalidate>
+        <!--<form data-ng-if="(authentication.user.role == 'Admin' || authentication.user.role == 'Organization') && project.status == 'open'"-->
+        <form data-ng-if="edit" data-ng-submit="update()" name="projectEdit" class="form-horizontal display" novalidate>
 
             <!-- Error Message -->
             <div class="col-md-offset-1">
@@ -137,7 +138,7 @@
             </div>
         </form>
 
-        <div class="display" data-ng-if="authentication.user.role == 'Faculty' || project.status!='open'">
+        <div class="display" data-ng-if="!edit"> <!--data-ng-if="authentication.user.role == 'Faculty' || project.status!='open'">-->
             <div class="row"><div class="col-md-offset-10">Posted On: {{project.posted_date}}</div></div>
             <div class="row"><!-- Title -->
                 <div class="col-sm-12">
@@ -146,8 +147,8 @@
                 </div>
             </div> 
             <div class="row"><!-- Organization -->
-                <label for="title" class="col-sm-2 control-label">Organization </label>
-                <div class="col-sm-9">
+                <label for="title" data-ng-if="authentication.user.role == 'Faculty'" class="col-sm-2 control-label">Organization </label>
+                <div class="col-sm-9" data-ng-if="authentication.user.role == 'Faculty'">
                     : <span data-ng-bind="project.org_name"></span>
                 </div>
             </div> 
@@ -206,19 +207,23 @@
         </div>
 
         <!-- only Faculty can indicate interest -->
-        <div class="row" data-ng-if="authentication.user.role == 'Faculty'">
+        <div class="row">
             <div class="col-sm-offset-10">
-            <button type="button" data-ng-show="project.status === 'open'" data-ng-click="openModal()" class="btn btn-primary">Indicate Interest</button>  
+            <button type="button" data-ng-if="authentication.user.role == 'Faculty'" data-ng-show="project.status === 'open'" data-ng-click="openModal()" class="btn btn-primary">Indicate Interest</button>  
             <!-- if project is requested, can view the request message -->
-            <button type="button" data-ng-show="project.status === 'requested'" data-ng-click="openModal()" class="btn btn-primary">View Request Message</button>  
+            <button type="button" data-ng-if="authentication.user.role == 'Faculty'" data-ng-show="project.status === 'requested'" data-ng-click="openModal()" class="btn btn-primary">View Request Message</button>  
             <!-- if project is on-going, can close & feedback -->
-            <button type="button" data-ng-show="project.status === 'On-Going'" data-ng-click="openFeedback()" class="btn btn-primary">Close & Feedback</button> 
+            <button type="button" data-ng-if="authentication.user.role == 'Faculty'" data-ng-show="project.status === 'On-Going'" data-ng-click="openFeedback()" class="btn btn-primary">Close & Feedback</button> 
             <!-- if project is completed, can view feedback --> 
-            <button type="button" data-ng-show="project.status === 'Completed'" data-ng-click="openFeedback()" class="btn btn-primary">View Feedback</button> 
+            <button type="button" data-ng-if="(authentication.user.role == 'Faculty' && project.status === 'Completed') || project.feedback_id != null" data-ng-click="openFeedback()" class="btn btn-primary">View Feedback</button> 
+            <button type="button" data-ng-if="authentication.user.role == 'Organization' && project.feedback_id == null && project.status === 'Completed'" data-ng-click="openFeedback()" class="btn btn-primary">Give Feedback</button> 
+            <!-- edit toggle --> 
+            <button type="button" data-ng-show="!edit && project.status === 'open' && authentication.user.role != 'Faculty'" class="btn btn-primary" data-ng-click="edit=!edit">Edit</button>
         </div>
+
     </section>
 
-    <!-- Project Request Modal -->
+    <!-- Project Request Modal for Faculty Only-->
     <script type="text/ng-template" id="request.html">
         <div data-ng-controller="RequestsController">
             <div class="modal-header"><b> Indicate Interest to Sponsor</b></div>
@@ -227,9 +232,9 @@
                     <div class="form-group col-md-12 col-sm-12">
                         <label for="courseid">Course Code</label>
                         <select class="form-control" data-ng-model="course_code" data-ng-init="course_code" id="course_code">
-                            <option selected value="abc">abc</option>
-                            <option value="def">def</option>
-                            <option value="ghi">ghi</option>
+                            <option selected value="ACCT101">ACCT101</option>
+                            <option value="ECON101">ECON101</option>
+                            <option value="IS101">IS101</option>
                         </select>
                     </div>
                     <div class="form-group col-md-12 col-sm-12" data-ng-class="{'has-error' : requestAdd.message.$invalid && !requestAdd.message.$pristine}">
@@ -264,7 +269,9 @@
         <div data-ng-controller="FeedbacksController">
             <div class="modal-header"><b> Feedback Form</b></div>
             <div class="modal-body" >
-                <form name="feedbackAdd" data-ng-if="project.status === 'On-Going'" data-ng-submit="add()" novalidate>
+
+                <!-- Add -->
+                <form name="feedbackAdd" data-ng-if="project.status === 'On-Going' || (authentication.user.role == 'Organization' && project.feedback_id == null)" data-ng-submit="add()" novalidate>
                     <div class="form-group col-md-12 col-sm-12" data-ng-class="{'has-error' : feedbackAdd.feedback_text.$invalid && !feedbackAdd.feedback_text.$pristine}">
                         <label for="feedback_text">Please provide constructive feedback:</label>
                         <textarea rows="3" ng-model="feedback_text" class="form-control" name="feedback_text" placeholder="feedback..." ng-maxlength="1000" required autofocus></textarea>
@@ -279,10 +286,11 @@
                     </div>
                 </form>
 
-                <form name="feedbackView" data-ng-if="project.status === 'Completed'" data-ng-init="read()"> 
+                <!-- View -->
+                <form name="feedbackView" data-ng-if="(authentication.user.role == 'Organization' && project.feedback_id != null) || (authentication.user.role != 'Organization' && project.status === 'Completed')" data-ng-init="read()"> 
                     <div class="form-group col-md-12 col-sm-12">
-                        <h5>Faculty Feedback</h5><div class="well" data-ng-bind="feedback.faculty_feedback"></div>
-                        <h5>Organization Feedback</h5><p data-ng-bind="feedback.org_feedback"></p>
+                        <h5>Faculty Feedback</h5><span>{{feedback.faculty_feedback}}</span>
+                        <h5>Organization Feedback</h5><span>{{feedback.org_feedback}}</span>
                     </div>
                     <div class="col-md-offset-10 col-sm-offset-10">
                         <button class="btn btn-warning" type="button" ng-click="cancel()">Ok</button>

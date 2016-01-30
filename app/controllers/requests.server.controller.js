@@ -115,14 +115,12 @@ exports.update = function(req, res) {
 	db.connect(function(err, results) {});
 	db.query("UPDATE `Projects` SET `status` = ?, `faculty_id` = ?, `course_id` = ? WHERE `_id` = ?", ["On-Going", faculty_id, course_id, project_id], function(err, rows) {
 		if (err) {
-			console.log(err);
 			return res.status(400).send({
 				message: getErrorMessage(err)
 			});
 		} else {
 			db.query("DELETE FROM `Requests` WHERE `project_id` = ?", [project_id], function(err, rows) {
 				if (err) {
-					console.log(err);
 					return res.status(400).send({
 						message: getErrorMessage(err)
 					});

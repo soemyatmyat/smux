@@ -6,6 +6,11 @@ angular.module('projects').controller('ProjectsController', ['$scope', 'Authenti
     	$scope.statusIncludes = ['open'];
     	$scope.categoryIncludes = ['Accounting', 'Arts', 'Capstone', 'IT', 'Social Psychology'];
 
+        $scope.listNotification = function() {
+            
+        }
+
+
     	$scope.includeStatus = function(status) {
     		//alert("filterText");
     		if (status == 'On-Going') $scope.ongoing = !$scope.ongoing;
@@ -90,6 +95,7 @@ angular.module('projects').controller('ProjectsController', ['$scope', 'Authenti
 		
 
     	$scope.update = function() {
+            $scope.edit = !$scope.edit;
             var yyyy;
             var mm;
             var dd;

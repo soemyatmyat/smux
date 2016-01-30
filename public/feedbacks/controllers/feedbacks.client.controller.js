@@ -9,7 +9,7 @@ angular.module('feedbacks').controller('FeedbacksController', ['$scope', 'Authen
     		newFeedback.project_id = this.project._id;
     		newFeedback.feedback_text = this.feedback_text;
     		newFeedback.$save(function(response) {
-    			$location.path('projects/' + response.project_id);
+    	       $location.path('projects/' + response.project_id);
     		}, function(errorResponse) {
     			$scope.error = errorResponse.data.message;
     		});

@@ -14,8 +14,8 @@ done<br/>
 10. linking announcement <br/>
 11. project start date, end date issue<br/>
 12. organization registration <br/>
+13. notify organization about project closure and ask for feedback<br/>
 <br/>
 <br/>
 to do<br/>
-1. notify organization about project closure and ask for feedback<br/>
-2. pagination of project listing <br/>
+1. pagination of project listing <br/>
