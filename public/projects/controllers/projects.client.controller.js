@@ -160,7 +160,6 @@ angular.module('projects').controller('ProjectsController', ['$scope', 'Authenti
             $scope.project = Projects.get({
                 projectId: $routeParams.projectId
             });
-            $scope.project.start_date = new Date($scope.project.start_date);
         };
 
 		$scope.add = function() {

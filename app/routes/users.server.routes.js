@@ -8,11 +8,10 @@ module.exports = function(app) {
 	app.route('/login')
         .get(users.renderLogin)
         .post(passport.authenticate('local', {
-        	successRedirect: '/',
+        	successRedirect: '/#!/projects',
         	failureRedirect: '/login',
         	failureFlash: true
         }));
-        /*.post(passport.authenticate('local'), function(req,res) { console.log("here2")});*/
 	
 	// logout
 	app.get('/logout', users.logout);
@@ -27,5 +26,10 @@ module.exports = function(app) {
 		.get(users.requiresLogin, users.read)
 		.put(users.requiresLogin, users.update)
 		.delete(users.requiresLogin, users.delete);
+
+	// Register
+	app.route('/register')
+		.get(users.renderRegister)
+		.post(users.register);
 
 };

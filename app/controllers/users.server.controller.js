@@ -6,6 +6,7 @@ var mysql = require('../../config/mysql'),
 
 
 var userModel = require('../../app/models/user.server.model');
+
 ////////////////////
 // Error Message //
 //////////////////
@@ -15,9 +16,27 @@ var getErrorMessage = function(err) {
             if (err.errors[errName].message) return err.errors[errName].message;
         }
     } else {
+    	if (err.errno = 1062) return 'Email Address already exists in the system.';
+
         return 'Unknown server error';
     }
 };	
+
+
+////////////////////
+// Register form //
+//////////////////
+exports.renderRegister = function(req, res, next) {
+	if (!req.user) {
+		res.render('register', {
+			title: 'Register Form',
+			messages: req.flash('error')
+		});
+	} else {
+		return res.redirect('/');
+	}
+};
+
 
 /////////////////
 // login form //
@@ -111,10 +130,26 @@ exports.update = function(req, res) {
 // regiser a user /
 //////////////////
 exports.register = function(req, res) {
-	if (req.user) {
-		res.render('users_add')
+	if (!req.user) {
+		var pwd = req.body.password;
+		pwd = bcrypt.hashSync(pwd, SALT_WORK_FACTOR);
+		var data = {
+			name:req.body.name,
+			email_address: req.body.email_address,
+			password: pwd,
+			role: "Organization"
+		}
+		db.connect(function(err,results) {});
+		db.query("INSERT INTO `users` SET ? ", data, function(err,rows){
+			if (err) {
+				var message = getErrorMessage(err);
+				req.flash('error', message);
+				return res.redirect('/register');
+			}
+			return res.redirect('/');
+		})
 	} else {
-		return res.redirect("/");
+		return res.redirect('/');
 	}
 };
 

@@ -13,9 +13,9 @@ done<br/>
 9. filtering of projects by open, on-going, completed done - 22nd jan]<br/>
 10. linking announcement <br/>
 11. project start date, end date issue<br/>
+12. organization registration <br/>
 <br/>
 <br/>
 to do<br/>
-1. organization registration <br/>
-2. notify organization about project closure and ask for feedback<br/>
-3. pagination of project listing <br/>
+1. notify organization about project closure and ask for feedback<br/>
+2. pagination of project listing <br/>

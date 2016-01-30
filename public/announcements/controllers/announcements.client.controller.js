@@ -42,6 +42,7 @@ angular.module('announcements').controller('AnnouncementController', ['$scope', 
             newAnnouncement.course_id = this.course_id;
 
             //if (nweProject.hp === undefined) {newProject.hp = null}
+            alert("hii");
             newAnnouncement.$save(function(response) {
                 $location.path('announcements/');
             }, function(errorResponse) {

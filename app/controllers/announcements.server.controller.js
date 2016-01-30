@@ -132,8 +132,6 @@ exports.update = function(req, res) {
 // new announcement ///
 //////////////////////
 exports.add = function(req, res) {
-	console.log('Hello');
-	console.log(req);
 	var today = new Date();
 	var announcement = {
 		title:req.body.title,
@@ -146,10 +144,11 @@ exports.add = function(req, res) {
 		course_id: null,
 		status: "open"
 	}
-	alert(announcement);
+	//alert(announcement);
 	db.connect(function(err,results) {});
 	db.query("INSERT INTO `Announcements` SET ? ", announcement, function(err,rows){
 		if (err) {
+			console.log(err);
 			return res.status(400).send({
 				message: getErrorMessage(err)
 			});

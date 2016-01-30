@@ -2,12 +2,6 @@
 angular.module('users').controller('UsersController', ['$scope', 'Authentication', '$window', '$routeParams', '$location', 'Users',
     function($scope, Authentication, $window, $routeParams, $location, Users) {
         //alert("client-controller2");
-        
-        /*
-        $scope.role = function() {
-            $scope.user.role = "Admin";
-        };
-        $scope.role();*/
 
         $scope.authentication = Authentication;
 
