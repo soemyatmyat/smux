@@ -95,7 +95,6 @@ CREATE TABLE Announcements
  category VARCHAR(50) NOT NULL,
  posted_date DATE NOT NULL DEFAULT CURRENT_TIMESTAMP,
  description VARCHAR(1500) NOT NULL,
- term VARCHAR(10),
  course_id varchar(10),
  start_date date,
  end_date date,

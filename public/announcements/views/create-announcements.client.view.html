@@ -1,0 +1,124 @@
+<div data-ng-controller="AnnouncementController">
+
+    <div class="header col-md-12 col-sm-12 col-xs-12">
+        <div class="header_resize col-md-12 col-sm-12 col-xs-12">
+            <div class="logo col-md-6 col-sm-6 col-xs-12" >
+                <a href="#"><img class="img-responsive" src="images/smu_logo.png" style="max-width : 40%; padding:4% 6%"/></a> 
+            </div>
+            <div class="profile-bar col-md-offset-2 col-md-4 col-sm-6 col-xs-12 pull-right" >
+                <span>
+                <h5>
+                  <a href="#"><img src="images/userpic.gif"/></a>
+                    Welcome, <span data-ng-bind="authentication.user.name"></span>
+                    <a href ="/logout">Log Out</a>
+                </h5>
+                </span>
+            </div>
+            <div class="clr"></div>
+
+            <nav class="navbar">
+                <div class="container-fluid">
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav">
+                            <li><a href="/">Home </a></li>
+                            <!--show only if the user is admin-->
+                            <li data-ng-if="authentication.user.role == 'Admin'"><a href="/#!/users">User Management</a></li>
+                            <!---->
+                            <li class="active"><a href="/#!/projects">Projects <span class="sr-only">(current)</span></a></li>
+                            <li data-ng-if="authentication.user.role == 'Organization'"><a href="/#!/requests">Request Inbox</a></li>
+                            <li><a href="/#!/announcements">Faculty Announcements</a></li>
+                            <li><a class="menu1"  href="faq.html">FAQ</a></li>
+                        </ul>
+                    </div><!-- /.navbar-collapse -->
+                </div><!-- /.container-fluid -->
+            </nav>
+        </div>
+    </div>
+
+    <!-- Begin Page Content -->
+    <section class="main-content-body col-md-12"><br/>
+        <ol class="breadcrumb"><li><a href="/#!/announcements">Announcements</a></li><li class="active">New Announcement</li></ol>
+        <form data-ng-submit="add()" name="announcementAdd" class="form-horizontal display" novalidate>
+            <!-- Error Message -->
+            <div class="col-md-offset-1">
+                <p ng-show="!announcementAdd.title.$pristine && announcementAdd.title.$invalid && announcementAdd.title.$touched" class="help-block">Title cannot be empty.</p><p ng-show="announcementAdd.title.$error.maxlength && announcementAdd.title.$touched && !announcementAdd.title.$pristine" class="help-block">Title cannot be longer than 100 characters.</p>
+                <p ng-show="!announcementAdd.description.$pristine && announcementAdd.description.$invalid && announcementAdd.description.$touched" class="help-block">Description cannot be empty.</p>
+                <p ng-show="announcementAdd.description.$error.maxlength && announcementAdd.description.$touched && !announcementAdd.description.$pristine" class="help-block">Description cannot be longer than 1500 characters.</p>
+            </div>
+            <div data-ng-show="error"><strong data-ng-bind="error"></strong></div>
+
+            <!-- Form -->
+            <div class="form-group" data-ng-class="{'has-error' : announcementAdd.title.$invalid && !announcementAdd.title.$pristine}">
+                <label for="title" class="col-sm-1 control-label">Title </label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" data-ng-model="title" name="title" ng-maxlength="100" required autofocus/>
+                </div><!-- Title -->
+            </div> 
+            <div class="form-group">
+                    <label for="category" class="col-sm-1 control-label">Category </label>
+                    <div class="col-sm-9">
+                        <select class="form-control" data-ng-model="category" data-ng-value="Accounting">
+                            <option ng-repeat="cat in categoryIncludes" value="{{cat}}">{{cat}}</option>
+                        </select>
+                    </div><!-- Category -->
+            </div>
+            <!--Change later-->
+            <div class="form-group">
+                    <label for="category" class="col-sm-1 control-label">Course ID </label>
+                    <div class="col-sm-9">
+                        <select class="form-control" data-ng-model="category" data-ng-value="Accounting">
+                            <option ng-repeat="cat in categoryIncludes" value="{{cat}}">{{cat}}</option>
+                        </select>
+                    </div><!-- Category -->
+            </div>
+            <div class="form-group">
+                <label for="name" class="col-sm-1 control-label">Start Date </label>
+                <div class="col-md-4">
+                    <p class="input-group">
+                      <input 
+                        type="date" 
+                        class="form-control" 
+                        uib-datepicker-popup ng-model="start_date" 
+                        is-open="status.opened" 
+                        min-date="minDate" 
+                        datepicker-options="dateOptions" 
+                        date-disabled="disabled(date, mode)" 
+                        close-text="Close" />
+                      <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                      </span>
+                    </p>
+                </div>
+                <label for="name" class="col-sm-1 control-label">End Date </label>
+                <div class="col-md-4">
+                    <p class="input-group">
+                      <input 
+                        type="date" 
+                        class="form-control" 
+                        uib-datepicker-popup ng-model="end_date" 
+                        is-open="status.opened" 
+                        min-date="minDate" 
+                        datepicker-options="dateOptions" 
+                        date-disabled="disabled(date, mode)" 
+                        close-text="Close" />
+                      <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                      </span>
+                    </p>
+                </div><!-- Start Date/End Date -->
+            </div><!-- row -->
+            <div class="form-group" data-ng-class="{'has-error' : announcementAdd.description.$invalid && !announcementAdd.description.$pristine}"><!-- Description -->
+                <label for="desc" class="col-sm-1 control-label">Description </label>
+                <div class="col-sm-9">
+                    <textarea class="form-control" data-ng-model="description" name="description" ng-maxlength="1500" rows="7" required/>
+                    <span>{{1500-description.length}} characters left</span>
+                </div>
+            </div> 
+            <div class="col-sm-3 pull-right"><!-- Button -->
+                <button type="submit" ng-disabled="announcementAdd.$invalid" class="btn btn-primary">Post</button>  
+            </div>
+        </form>
+    </section>
+    
+</div>
