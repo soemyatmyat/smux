@@ -1,6 +1,5 @@
 var	mysql = require('../../config/mysql'),
 	db = mysql();
-//alert("hello");
 ////////////////////
 // Error Message //
 //////////////////
@@ -21,8 +20,8 @@ var getErrorMessage = function(err) {
 exports.list = function(req, res, next) {
 	var role = req.user.role;
 	db.connect(function(err, results) {});
-	if (role == "Faculty" || role == "Admin") {
-		db.query("SELECT _id, title, category, description, posted_date, org_id, status FROM `Announcements` WHERE status = ? OR faculty_id = ?", ["open", req.user._id], function(err,rows){
+	if (role == "Faculty") {
+		db.query("SELECT _id, title, category, description, posted_date, status FROM `Announcements` WHERE  faculty_id = ?", [req.user._id], function(err,rows){
 			if (err) {
 				return res.status(400).send({
 					message: getErrorMessage(err)
@@ -34,9 +33,22 @@ exports.list = function(req, res, next) {
 				res.json(rows);
 			}
 		})
-	} else {
+	} else if(rolw == "Admin"){
+		db.query("SELECT _id, title, category, description, posted_date, status FROM `Announcements`", function(err,rows){
+			if (err) {
+				return res.status(400).send({
+					message: getErrorMessage(err)
+				});
+			} else {
+				for (var i =0; i <rows.length; i++) {
+					rows[i].posted_date = getDateFormat(rows[i].posted_date);
+				}
+				res.json(rows);
+			}
+		})
+	}else {
 		var org_id = req.user._id;
-		db.query("SELECT _id, title, category, description, posted_date, org_id, status FROM `Announcements` WHERE org_id = ?", [org_id], function(err,rows){
+		db.query("SELECT _id, title, category, description, posted_date, status FROM `Announcements` WHERE status = ?", ["open"], function(err,rows){
 			if (err) {
 				return res.status(400).send({
 					message: getErrorMessage(err)
@@ -56,7 +68,7 @@ exports.list = function(req, res, next) {
 // read an announcement //
 ///////////////////
 exports.read = function(req, res) {
-	var id = req.params.annocId;
+	var id = req.params.announcId;
 
 	db.connect(function(err, results) {});
 
@@ -70,7 +82,7 @@ exports.read = function(req, res) {
 					message: getErrorMessage(err)
 			});
 		} else {
-			db.query("SELECT * from `requests` WHERE `project_id` =? and `faculty_id` = ?", [rows[0]._id, req.user._id], function(err, results) {
+			db.query("SELECT * from `requests` WHERE `announcement_id` =? and `organization_id` = ?", [rows[0]._id, req.user._id], function(err, results) {
 				if (err) {
 					return res.status(400).send({
 						message: getErrorMessage(err)
@@ -94,7 +106,7 @@ exports.read = function(req, res) {
 };
 
 ////////////////////////
-// update a project ///
+// update an announcement ///
 //////////////////////
 exports.update = function(req, res) {
 	var id = req.body._id;
@@ -104,6 +116,8 @@ exports.update = function(req, res) {
 		start_date: req.body.start_date,
 		end_date: req.body.end_date,
 		description: req.body.description,
+		term: req.body.term.
+		course_id: req.body.course_id,
 		status: "open"
 	}
 	db.connect(function(err,results) {});
@@ -120,6 +134,8 @@ exports.update = function(req, res) {
 				start_date: req.body.start_date,
 				end_date: req.body.end_date,
 				description: req.body.description,
+				term: req.body.term.
+				course_id: req.body.course_id,
 				status: "open"
 			}
 			res.json(project);
@@ -140,8 +156,9 @@ exports.add = function(req, res) {
 		end_date: req.body.end_date,
 		description: req.body.description,
 		posted_date: getDateFormat(today),
-		faculty_id: null,
-		course_id: null,
+		faculty_id: req.body.faculty_id,
+		course_id: req.body.course_id,
+		term: req.body.term,
 		status: "open"
 	}
 	//alert(announcement);
@@ -170,7 +187,7 @@ exports.add = function(req, res) {
 
 
 /////////////////////
-// delete project //
+// delete announcement //
 ///////////////////
 exports.delete = function(req, res) {
 	var id = req.params.annocId;
