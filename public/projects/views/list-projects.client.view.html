@@ -77,22 +77,16 @@
 
         <!-- Notification goes here! notify organization about project closure and ask for feedback -->
         
-
-            <div class="display" data-ng-repeat="project in projects |filter:{status: 'Completed', feedback_id: null}">
-                <div class="flash alert alert-danger">
-                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                    <span> Project <a href="#!/projects/{{project._id}}">{{project.title}}</a> has been closed! Please give feedback to the project.</span>
-                </div>
+        <div class="display" data-ng-repeat="project in projects |filter:{status: 'Completed', feedback_id: null}">
+            <div class="flash alert alert-danger">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span> Project <a href="#!/projects/{{project._id}}">{{project.title}}</a> has been closed! Please give feedback to the project.</span>
             </div>
-
-        
-
+        </div>
 
         <!-- Add a new project -->
          <div class="row col-md-12">
             <a data-ng-if="authentication.user.role == 'Organization' || authentication.user.role =='Admin'" class="btn btn-primary pull-right" href="/#!/projects/create">Add A New Project</a></div>
-
-        <!-- -->
 
         <!--- Projects -->  
         <div class="listdiv">
@@ -167,7 +161,9 @@
                     <hr/>
                 </li>
             </ul>
-            <uib-pagination ng-model="currentPage" total-items="projects.length" max-size="maxSize"  boundary-links="true"></uib-pagination>
+            <span>{{currentPage}}</span>
+            <uib-pagination ng-model="currentPage" total-items="projects.length" max-size="maxSize" class="pagination-sm" rotate="false" 
+            num-pages="numPages" items-per-page="itemsPerPage" boundary-links="true"></uib-pagination>
         </div>
 
         

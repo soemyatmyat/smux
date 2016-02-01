@@ -6,11 +6,6 @@ angular.module('projects').controller('ProjectsController', ['$scope', 'Authenti
     	$scope.statusIncludes = ['open'];
     	$scope.categoryIncludes = ['Accounting', 'Arts', 'Capstone', 'IT', 'Social Psychology'];
 
-        $scope.listNotification = function() {
-            
-        }
-
-
     	$scope.includeStatus = function(status) {
     		//alert("filterText");
     		if (status == 'On-Going') $scope.ongoing = !$scope.ongoing;
@@ -93,7 +88,6 @@ angular.module('projects').controller('ProjectsController', ['$scope', 'Authenti
 	      });
 		};
 		
-
     	$scope.update = function() {
             $scope.edit = !$scope.edit;
             var yyyy;
@@ -135,9 +129,9 @@ angular.module('projects').controller('ProjectsController', ['$scope', 'Authenti
     	}
         //alert("client-controller2");
         //$scope.filteredProjects = [],
-        //$scope.currentPage = 1,
-        //$scope.numPerPage = 5,
-      	//$scope.maxSize = 5;
+        $scope.currentPage = 1,
+        $scope.itemsPerPage = 5,
+      	$scope.maxSize = 5;
 
         $scope.list = function() {
         	$scope.open= true;
@@ -197,14 +191,7 @@ angular.module('projects').controller('ProjectsController', ['$scope', 'Authenti
 			}, function(errorResponse) {
 			    $scope.error = errorResponse.data.message;
 			});
-		}
-
-
-		/*
-		$scope.$watch('project.end_date', function (newValue) {
-		    $scope.project.end_date = new Date($scope.project.end_date);
-		});*/
-		
+		}		
 
 		// Disable weekend selection
 		$scope.disabled = function(date, mode) {

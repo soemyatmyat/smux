@@ -128,7 +128,7 @@ angular.module('announcements').controller('AnnouncementController', ['$scope', 
             $scope.capstone = true;
             $scope.it = true;
             $scope.social = true;
-            alert(Announcements.query());
+            //alert(Announcements.query());
             $scope.announcements = Announcements.query();
             alert($scope.announcements);
         };

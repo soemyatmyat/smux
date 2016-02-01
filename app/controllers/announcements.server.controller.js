@@ -33,7 +33,7 @@ exports.list = function(req, res, next) {
 				res.json(rows);
 			}
 		})
-	} else if(rolw == "Admin"){
+	} else if(role == "Admin"){
 		db.query("SELECT _id, title, category, description, posted_date, status FROM `Announcements`", function(err,rows){
 			if (err) {
 				return res.status(400).send({
@@ -116,7 +116,7 @@ exports.update = function(req, res) {
 		start_date: req.body.start_date,
 		end_date: req.body.end_date,
 		description: req.body.description,
-		term: req.body.term.
+		term: req.body.term,
 		course_id: req.body.course_id,
 		status: "open"
 	}
@@ -134,7 +134,7 @@ exports.update = function(req, res) {
 				start_date: req.body.start_date,
 				end_date: req.body.end_date,
 				description: req.body.description,
-				term: req.body.term.
+				term: req.body.term,
 				course_id: req.body.course_id,
 				status: "open"
 			}
