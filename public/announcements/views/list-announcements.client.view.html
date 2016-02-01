@@ -1,7 +1,6 @@
-<style>
-
-</style>
 <div class="main" data-ng-controller="AnnouncementController">
+
+    <!-- Navigaton -->
     <div class="header col-md-12 col-sm-12 col-xs-12">
         <div class="header_resize col-md-12 col-sm-12 col-xs-12">
             <div class="logo col-md-6 col-sm-6 col-xs-12" >
@@ -38,18 +37,24 @@
         </div>
     </div>
     
-    <section data-ng-init="list(); tab = 'open';category=['aaa', 'bbb', 'ccc']" class="main-content-body col-md-12" >
+    <section data-ng-init="list(); tab = 'open';" class="main-content-body col-md-12" >
         <br/>
 
         <p >
-            <button type="button" ng-class="{ active:tab === 'open'}" class="btn btn-default btn-sm" ng-click="tab = 'open'">My Open Announcements</button>
-            <button type="button" ng-class="{ active:tab === 'closed'}"  class="btn btn-default btn-sm" ng-click="tab = 'closed'">My Closed Announcements</button>
-            <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#createAnnoc" href="/#!/announcement/create" data-ng-if="authentication.user.role == 'Faculty' || authentication.user.role =='Admin'">Add A New Announcement</button>
+            <button type="button" ng-class="{active:tab === 'open'}" class="btn btn-default btn-sm" ng-click="tab = 'open'">My Open Announcements</button>
+            <button type="button" ng-class="{active:tab === 'closed'}"  class="btn btn-default btn-sm" ng-click="tab = 'closed'">My Closed Announcements</button>
+            <button data-ng-if="authentication.user.role == 'Faculty' || authentication.user.role =='Admin'" class="btn btn-primary pull-right" href="/#!/announcements/create">Add A New Announcement</button>
+            <br/><br/>
+            <button type="button" data-ng-class="{'btn-primary':accounting,'btn-default':!accounting}" class="btn btn-sm" data-ng-click="includeCategory('Accounting')">Accounting</button>
+            <button type="button" data-ng-class="{'btn-primary':arts,'btn-default':!arts}" class="btn btn-sm" data-ng-click="includeCategory('Arts')">Arts</button>
+            <button type="button" data-ng-class="{'btn-primary':capstone,'btn-default':!capstone}" class="btn btn-sm" data-ng-click="includeCategory('Capstone')">Capstone</button>
+            <button type="button" data-ng-class="{'btn-primary':it,'btn-default':!it}" class="btn btn-sm" data-ng-click="includeCategory('IT')">IT</button>
+            <button type="button" data-ng-class="{'btn-primary':social,'btn-default':!social}" class="btn btn-sm" data-ng-click="includeCategory('Social Psychology')">Social Psychology</button> 
         </p>
 
         <!--tabs-->
 
-        <!--- Available projects -->  
+        <!--- Open Announcements -->  
         <div class="listdiv" ng-show="tab === 'open'">
             
             <!--Header-->
@@ -63,7 +68,7 @@
                 <div class=" col-md-4">
                     <select class="form-control">
                         <option value="">Category</option>
-                        <option ng-model="query.category" ng-repeat="cat in category" value={{cat}}>{{cat}}</option>
+                        <option ng-model="query.category" ng-repeat="cat in categoryIncludes" value={{cat}}>{{cat}}</option>
                     </select>
                 </div>
                 <div class=" col-md-4">
@@ -127,13 +132,11 @@
                     <hr/>
                 </li>
             </ul>
-            <uib-pagination ng-model="currentPage"
-  total-items="announcement.length"
-  max-size="maxSize"  
-  boundary-links="true"></uib-pagination>
+            <uib-pagination total-items="totalItems" ng-model="currentPage" ng-change="pageChanged()"></uib-pagination>
+            
         </div>
 
-        <!--- Completed projects -->  
+        <!--- Completed announcements -->  
         <div class="listdiv" ng-show="tab === 'closed'">
             
             <!--Header-->
@@ -147,11 +150,11 @@
                 <div class=" col-md-4">
                     <select class="form-control">
                         <option value="">Category</option>
-                        <option ng-repeat="cat in category"  value={{cat}}>{{cat}}</option>
+                        <option ng-repeat="cat in categoryIncludes"  value={{cat}}>{{cat}}</option>
                     </select>
                 </div>
                 <div class=" col-md-4">
-                  <input class="form-control" name="searchText" id="searchText" type="text" ng-model="query">
+                  <input class="form-control" name="searchText" id="searchText" type="text" ng-model="query.$">
                 </div>
             </div>
 
@@ -241,9 +244,8 @@
                                 <label for="category" class="col-md-2 col-sm-2 control-label">Category </label>
                                 <div class="col-md-10 col-sm-10">
                                     <select class="form-control" data-ng-model="category">
-                                        <option selected value="aaa">aaa</option>
-                                        <option value="bbb">bbb</option>
-                                        <option value="ccc">ccc</option>
+                                        <option selected></option>
+                                        <option ng-repeat="cat in categoryIncludes">{{cat}}</option>
                                     </select>
                                 </div><!-- Category -->
                         </div>
@@ -285,18 +287,6 @@
                                 </p>
                             </div><!-- Start Date/End Date -->
                         </div><!-- row -->
-                        <div class="form-group"><!-- Contact -->
-                                <label for="name" class="col-md-2 col-sm-2 control-label">Term </label>
-                                <div class="col-md-4 col-sm-4">
-                                    <input type="text" class="form-control" data-ng-model="term" name="term" ng-maxlength="100" />
-                                </div>
-                                <label for="email" class="col-md-1 col-sm-2 control-label">Course </label>
-                                <!--change to dropdown-->
-                                <div class="col-md-5 col-sm-4">
-                                    <input type="text" class="form-control" data-ng-model="course_id" name="course_id" />
-                                </div>
-                                
-                        </div> 
                         <div class="form-group"><!-- Description -->
                                 <label for="desc" class="col-md-2 col-sm-2 control-label">Description </label>
                                 <div class="col-md-10 col-sm-10">
@@ -338,19 +328,19 @@ $('.modal-backdrop').remove();
             <form  name="indicateInterestForm" novalidate>
             
             <div class="form-group col-md-12 col-sm-12">
-              <label class="col-md-6" for="courseId">Course ID</label>
+              <label class="col-md-6" for="projectId">Project ID</label>
               <div class="col-md-6">
-              <select class="form-control" ng-model="project.courseId" name="courseId" id="courseId">
+              <select class="form-control" ng-model="project.courseId" name="projectId" id="projectId">
 
-                <optgroup ng-repeat="faculty in facultyCourse | filter : { name : 'Prof. John William'} ">
-                  <option ng-repeat="course in faculty.courses" value="{{course}}">{{ course}}</option>
+                <optgroup ng-repeat=" ">
+                  <option ng-repeat="" value=""></option>
                 </optgroup>
               </select>
               </div>
             </div>
             <div class="form-group col-md-12 col-sm-12">
-              <label for="descIn">Project Request Message to Sponsor</label>
-              <textarea rows="3" ng-model="annoc.description" class="form-control" id="descIn" placeholder="Description" ng-maxlength="1000" required></textarea>
+              <label for="descIn">Project Request Message to Faculty</label>
+              <textarea rows="3" ng-model="description" class="form-control" id="descIn" placeholder="Description" ng-maxlength="1000" required></textarea>
             </div>
             <div class="col-md-offset-9 col-sm-offset-6">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
