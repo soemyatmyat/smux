@@ -93,32 +93,15 @@ CREATE TABLE Announcements
  faculty_id int not null,
  title VARCHAR(100) NOT NULL,
  category VARCHAR(50) NOT NULL,
- posted_date DATE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ posted_date DATE NOT NULL,
  description VARCHAR(1500) NOT NULL,
- course_id varchar(10),
+ course_id VARCHAR(10),
  start_date date,
  end_date date,
  status VARCHAR(100) NOT NULL,
- CONSTRAINT FOREIGN KEY (faculty_id) REFERENCES Users(_id) ON DELETE CASCADE ON UPDATE CASCADE,
- CONSTRAINT FOREIGN KEY (course_id) REFERENCES Users(_id) ON DELETE CASCADE ON UPDATE CASCADE
+ CONSTRAINT FOREIGN KEY (faculty_id) REFERENCES Users(_id) ON DELETE CASCADE ON UPDATE CASCADE
 	
 )ENGINE = InnoDB;
-
-CREATE TABLE AnnouncementRequests 
-(
-	_id int not null AUTO_INCREMENT PRIMARY KEY,
-	announcement_id	int not null,
-	organization_id int not null,
-	project_id int not null,
-	course_code VARCHAR(10),
-	message VARCHAR(500),
-	requested_date date not null,
-	status VARCHAR(100),
-	CONSTRAINT FOREIGN KEY (announcement_id) REFERENCES Announcements(_id) ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT FOREIGN KEY (project_id) REFERENCES Projects(_id) ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT FOREIGN KEY (organization_id) REFERENCES Organization(_id) ON DELETE CASCADE ON UPDATE CASCADE
-)ENGINE = InnoDB;
-
 
 
 
