@@ -71,8 +71,6 @@ angular.module('announcements').controller('AnnouncementController', ['$scope', 
     	};
 
 
-
-        //alert($scope.authentication.user.name);
         $scope.add = function() {
             
             var newAnnouncement = new Announcements();
@@ -94,21 +92,20 @@ angular.module('announcements').controller('AnnouncementController', ['$scope', 
             
             }
             newAnnouncement.faculty_id = $scope.authentication.user._id;
-            alert(newAnnouncement.faculty_id);
+            
             newAnnouncement.description = this.description;
-            newAnnouncement.term = this.term;
             //console.log(this.term);
             newAnnouncement.course_id = this.course_id;
 
 
             //if (nweProject.hp === undefined) {newProject.hp = null}
-
+            
             newAnnouncement.$save(function(response) {
-                alert("hello this is before error");
+                
                 $location.path('announcements/');
             }, function(errorResponse) {
                 $scope.error = errorResponse.data.message;
-                alert("hello");
+                
             });
         };
 
@@ -128,9 +125,8 @@ angular.module('announcements').controller('AnnouncementController', ['$scope', 
             $scope.capstone = true;
             $scope.it = true;
             $scope.social = true;
-            //alert(Announcements.query());
+
             $scope.announcements = Announcements.query();
-            alert($scope.announcements);
         };
 
 
