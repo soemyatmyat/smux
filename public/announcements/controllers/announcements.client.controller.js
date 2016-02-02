@@ -116,17 +116,9 @@ angular.module('announcements').controller('AnnouncementController', ['$scope', 
         };
 
         $scope.list = function() {
-            $scope.open= true;
-            $scope.ongoing = false;
-            $scope.completed = false;
-            $scope.requested = false;
-            $scope.accounting = true;
-            $scope.arts = true;
-            $scope.capstone = true;
-            $scope.it = true;
-            $scope.social = true;
-
+        	//alert("hello");
             $scope.announcements = Announcements.query();
+            //alert($scope.announcements);
         };
 
 

@@ -21,7 +21,7 @@ exports.list = function(req, res, next) {
 	var role = req.user.role;
 	db.connect(function(err, results) {});
 	if (role == "Faculty") {
-		db.query("SELECT _id, title, category, description, posted_date, status FROM `Announcements` WHERE  faculty_id = ?", [req.user._id], function(err,rows){
+		db.query("SELECT _id, title, category, description, posted_date, faculty_id, start_date, end_date, status FROM `Announcements` WHERE  faculty_id = ?", [req.user._id], function(err,rows){
 			if (err) {
 				return res.status(400).send({
 					message: getErrorMessage(err)
@@ -34,21 +34,24 @@ exports.list = function(req, res, next) {
 			}
 		})
 	} else if(role == "Admin"){
-		db.query("SELECT _id, title, category, description, posted_date, status FROM `Announcements`", function(err,rows){
+		
+		db.query("SELECT _id, title, category, description, posted_date, faculty_id, start_date, end_date, status FROM `Announcements`", function(err,rows){
 			if (err) {
 				return res.status(400).send({
 					message: getErrorMessage(err)
 				});
 			} else {
+
 				for (var i =0; i <rows.length; i++) {
 					rows[i].posted_date = getDateFormat(rows[i].posted_date);
 				}
 				res.json(rows);
+				
 			}
 		})
 	}else {
 		var org_id = req.user._id;
-		db.query("SELECT _id, title, category, description, posted_date, status FROM `Announcements` WHERE status = ?", ["open"], function(err,rows){
+		db.query("SELECT _id, title, category, description, posted_date, faculty_id, start_date, end_date, status FROM `Announcements` WHERE status = ?", ["open"], function(err,rows){
 			if (err) {
 				return res.status(400).send({
 					message: getErrorMessage(err)
@@ -190,7 +193,7 @@ exports.add = function(req, res) {
 // delete announcement //
 ///////////////////
 exports.delete = function(req, res) {
-	var id = req.params.annocId;
+	var id = req.params.announcId;
 	db.connect(function(err, results) {});	
 	test = db.query("DELETE FROM `Announcements` WHERE `_id` = '" + [id] + "';" , function(err,rows){
 		if (err) {
@@ -198,7 +201,7 @@ exports.delete = function(req, res) {
 				message: getErrorMessage(err)
 			});
 		} else {
-			res.json(req.params.annocId);
+			res.json(req.params.announcId);
 		}	
 	});
 };

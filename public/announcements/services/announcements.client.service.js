@@ -1,12 +1,14 @@
-//alert("service1");
+
 
 angular.module('announcements').factory('Announcements', ['$resource',
 	function($resource) {
+
 		return $resource('api/announcements/:announcId', {
 			announcId: '@_id'
 		}, {
 			update: {
-				method: 'PUT'
+				method: 'PUT',
+				transformResponse: transformResponse
 			},
 			get: {
 				transformResponse: transformResponse
