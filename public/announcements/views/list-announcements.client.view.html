@@ -43,6 +43,7 @@
         <p >
             <button type="button" ng-class="{active:tab === 'open'}" class="btn btn-default btn-sm" ng-click="tab = 'open'">My Open Announcements</button>
             <button type="button" ng-class="{active:tab === 'closed'}"  class="btn btn-default btn-sm" ng-click="tab = 'closed'">My Closed Announcements</button>
+            <button type="button" ng-class="{active:tab === 'requested'}"  class="btn btn-default btn-sm" ng-click="tab = 'requested'">My Requested Announcements</button>
             
             <a data-ng-if="authentication.user.role == 'Faculty' || authentication.user.role =='Admin'" class="btn btn-primary pull-right" href="/#!/announcements/create">Add A New Announcement</a>
             <br/><br/>
@@ -66,13 +67,7 @@
             <!--Search-->
             <div class="row">
                 <label class="col-md-offset-1 col-md-1 control-label" for="searchText">Search:</label> 
-                <div class=" col-md-4">
-                    <select class="form-control">
-                        <option value="">Category</option>
-                        <option ng-model="query.category" ng-repeat="cat in categoryIncludes" value={{cat}}>{{cat}}</option>
-                    </select>
-                </div>
-                <div class=" col-md-4">
+                <div class=" col-md-8">
                   <input class="form-control" name="searchText" id="searchText" type="text" ng-model="query.$">
                 </div>
             </div>
@@ -82,13 +77,13 @@
             <!--List of announcement-->
             <ul class="lists">
                 <!--To add status filter-->
-                <li class="listItem col-md-12 col-sm-12 col-xs-12" data-ng-repeat="announcement in announcements |filter:{status: 'open'} |orderBy : '-posted_date' | filter:query">
+                <li class="listItem col-md-12 col-sm-12 col-xs-12" data-ng-repeat="announcement in announcements |filter:{status: '!close'} |orderBy : '-posted_date' | filter:query">
 
                     <div>
 
-                        <p><h4><a href="#!/projects/{{project._id}}"><strong>{{annoc.title}}</strong></a></h4></p>
-                        <h6><strong>Description </strong><p class="pull-right">Posted On: {{annoc.posted_date}}</p></h6>
-                        <p>{{annoc.description | limitTo : 150}}</p>
+                        <p><h4><a href="#!/announcement/{{announcement._id}}"><strong>{{announcement.title}}</strong></a></h4></p>
+                        <h6><strong>Description </strong><p class="pull-right">Posted On: {{announcement.posted_date}}</p></h6>
+                        <p>{{announcement.description | limitTo : 150}}</p>
                         <button class="btn btn-primary togglebtn detailsbtn avail{{announcement._id}} pull-right" type="button" ng-click="toggleBtn('avail', announcement._id)" data-toggle="collapse" href="#{{announcement._id}}" aria-expanded="false" aria-controls="announcement">View More</button>
                     </div>
 
@@ -101,21 +96,85 @@
                         </div>
                         <div class="row item">
                             <p class="col-md-3 col-sm-4"><strong>Category:</strong></p><p class="col-md-3 col-sm-8">{{announcement.category}}</p>
+                            <p class="col-md-3 col-sm-4"><strong>Course Name:</strong></p><p class="col-md-3 col-sm-8">{{announcement.course_id}}</p>
                         </div>
                         <div class="row item">
-                            <p class="col-md-3 col-sm-4"><strong>Expected Start Date:</strong></p><p class="col-md-3 col-sm-8">{{announcement.start_date}}</p>
-                            <p class="col-md-3 col-sm-4"><strong>Expected End Date:</strong></p><p class="col-md-3 col-sm-8">{{announcement.end_date}}</p>
-                        </div>
-                        <div class="row item" >
-                            <p class="col-md-3 col-sm-4"><strong>Course ID:</strong></p><p class="col-md-3 col-sm-8">{{announcement.course_id}}</p>
-                            <p class="col-md-3 col-sm-4"><strong>Course Name:</strong></p><p class="col-md-3 col-sm-8">Analytical Skills</p><!--Show only if the project is taken-->
-                        </div>
-                        <div class="row item">
-                            <p class="col-md-3 col-sm-4"><strong>Primary Contact Name:</strong></p><p class="col-md-9 col-sm-8">{{announcement.faculty_id}}</p>
+                            <p class="col-md-3 col-sm-4"><strong>Faculty Name:</strong></p><p class="col-md-9 col-sm-8">{{announcement.faculty_id}}</p>
                         </div>
                       
                       <p class="item"><strong>Description</strong></p>
                       <p class="item">{{announcement.description}}</p>
+                      <div class="item btn-toolbar col-md-offset-6 pull-right" style="padding-bottom: 3%;">
+                          <button type="button" class="btn btn-primary warningBtn " data-ng-if="authentication.user.role == 'Faculty' || authentication.user.role == 'Admin'" data-toggle="modal" data-warningtext="Are you sure you want to withdraw this announcement?" data-target="#warning" data-action="deleteRequest({{announcement.id}})">Withdraw Announcement</button><!-- Perform delete-->
+                        
+                          <button type="button" data-ng-if="authentication.user.role == 'Organization' || authentication.user.role == 'Admin'" class="btn btn-primary" data-toggle="modal" data-target="#interestModal">Propose Project</button><!-- call a modal-->
+                        
+                          <button type="button" 
+                          class="btn btn-default togglebtn " 
+                          ng-click="toggleBtn('avail', announcement._id)" 
+                          data-toggle="collapse" 
+                          href="#{{announcement._id}}">Close</button>
+         
+                      </div>
+                      <br/><br/>
+                    </div>
+                    <br/>
+                    <hr/>
+                </li>
+            </ul>
+            <uib-pagination total-items="totalItems" ng-model="currentPage" ng-change="pageChanged()"></uib-pagination>
+            
+        </div>
+
+        <!--- close Announcements -->  
+        <div class="listdiv" ng-show="tab === 'closed'">
+            
+            <!--Header-->
+            <h3 class="mainTitle"><strong>Closed Announcements</strong></h3>
+
+            <hr/>
+
+            <!--Search-->
+            <div class="row">
+                <label class="col-md-offset-1 col-md-1 control-label" for="searchText">Search:</label> 
+                <div class=" col-md-8">
+                  <input class="form-control" name="searchText" id="searchText" type="text" ng-model="query.$">
+                </div>
+            </div>
+
+            <br/>
+            <br/>
+            <!--List of announcement-->
+            <ul class="lists">
+                <!--To add status filter-->
+                <li class="listItem col-md-12 col-sm-12 col-xs-12" data-ng-repeat="announcement in announcements |filter:{status: 'close'} |orderBy : '-posted_date' | filter:query">
+
+                    <div>
+
+                        <p><h4><a href="#!/announcement/{{announcement._id}}"><strong>{{announcement.title}}</strong></a></h4></p>
+                        <h6><strong>Description </strong><p class="pull-right">Posted On: {{announcement.posted_date}}</p></h6>
+                        <p>{{announcement.description | limitTo : 150}}</p>
+                        <button class="btn btn-primary togglebtn detailsbtn avail{{announcement._id}} pull-right" type="button" ng-click="toggleBtn('avail', announcement._id)" data-toggle="collapse" href="#{{announcement._id}}" aria-expanded="false" aria-controls="announcement">View More</button>
+                    </div>
+
+                    <!-- view details -->
+                    <div class="well collapse" id="{{announcement._id}}">
+                        
+                        <div class="row item">
+                            <h3 class="col-md-8 col-sm-12 col-xs-12"><strong>{{announcement.title}}</strong></h3>
+                            <p class="col-md-4 col-sm-12 col-xs-12 text-right"><strong>Posted on:</strong>{{announcement.posted_date}}</p>
+                        </div>
+                        <div class="row item">
+                            <p class="col-md-3 col-sm-4"><strong>Category:</strong></p><p class="col-md-3 col-sm-8">{{announcement.category}}</p>
+                            <p class="col-md-3 col-sm-4"><strong>Course Name:</strong></p><p class="col-md-3 col-sm-8">{{announcement.course_id}}</p>
+                        </div>
+                        <div class="row item">
+                            <p class="col-md-3 col-sm-4"><strong>Faculty Name:</strong></p><p class="col-md-9 col-sm-8">{{announcement.faculty_id}}</p>
+                        </div>
+                      
+                      <p class="item"><strong>Description</strong></p>
+                      <p class="item">{{announcement.description}}</p>
+
                       <div class="item col-md-offset-9" style="padding-bottom: 3%">
                         <div class="col-md-4 ">
                           <button type="button" 
@@ -125,7 +184,7 @@
                           href="#{{announcement._id}}">Close</button>
                         </div>
                         <div class=" col-md-4">
-                          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#interestModal">Indicate Interest</button><!-- Call modal box and send message to organization-->
+                          <a type="button" class="btn btn-primary" data-toggle="modal" href="/#!/projects/{{announcement.project_id}}"  data-target="#interestModal">View Project</a><!-- Call modal box and send message to organization-->
                         </div>
                       </div>
                     </div>
@@ -137,43 +196,39 @@
             
         </div>
 
-        <!--- Completed announcements -->  
-        <div class="listdiv" ng-show="tab === 'closed'">
+        <!--- requested Announcements -->  
+        <div class="listdiv" ng-show="tab === 'requested'">
             
             <!--Header-->
-            <h3 class="mainTitle"><strong>My Closed Announcements</strong></h3>
+            <h3 class="mainTitle"><strong>Requested Announcements</strong></h3>
 
             <hr/>
 
             <!--Search-->
             <div class="row">
                 <label class="col-md-offset-1 col-md-1 control-label" for="searchText">Search:</label> 
-                <div class=" col-md-4">
-                    <select class="form-control">
-                        <option value="">Category</option>
-                        <option ng-repeat="cat in categoryIncludes"  value={{cat}}>{{cat}}</option>
-                    </select>
-                </div>
-                <div class=" col-md-4">
+                <div class=" col-md-8">
                   <input class="form-control" name="searchText" id="searchText" type="text" ng-model="query.$">
                 </div>
             </div>
 
             <br/>
             <br/>
-            <!--List of projects-->
+            <!--List of announcement-->
             <ul class="lists">
                 <!--To add status filter-->
-                <li class="listItem col-md-12 col-sm-12 col-xs-12" data-ng-repeat="announcement in announcements |filter:{status: 'close'} |orderBy : '-posted_date' | filter:query">
+                <li class="listItem col-md-12 col-sm-12 col-xs-12" data-ng-repeat="announcement in announcements |filter:{status: 'requested'} |orderBy : '-posted_date' | filter:query">
+
                     <div>
-                        <p><h4><strong>{{announcement.title}} hello</strong></h4></p>
-                        <h6><strong>Description</strong><p class="pull-right">Posted On: {{announcement.posted_date}}</p></h6>
+
+                        <p><h4><a href="#!/announcement/{{announcement._id}}"><strong>{{announcement.title}}</strong></a></h4></p>
+                        <h6><strong>Description </strong><p class="pull-right">Posted On: {{announcement.posted_date}}</p></h6>
                         <p>{{announcement.description | limitTo : 150}}</p>
-                        <button class="btn btn-primary togglebtn detailsbtn cpl{{announcement._id}} pull-right" type="button" ng-click="toggleBtn('cpl',announcement._id)" data-toggle="collapse" href="#cpl{{announcement._id}}" aria-expanded="false" aria-controls="announcement">View More</button>
+                        <button class="btn btn-primary togglebtn detailsbtn avail{{announcement._id}} pull-right" type="button" ng-click="toggleBtn('avail', announcement._id)" data-toggle="collapse" href="#{{announcement._id}}" aria-expanded="false" aria-controls="announcement">View More</button>
                     </div>
 
                     <!-- view details -->
-                    <div class="well collapse" id="cpl{{announcement._id}}">
+                    <div class="well collapse" id="{{announcement._id}}">
                         
                         <div class="row item">
                             <h3 class="col-md-8 col-sm-12 col-xs-12"><strong>{{announcement.title}}</strong></h3>
@@ -181,27 +236,24 @@
                         </div>
                         <div class="row item">
                             <p class="col-md-3 col-sm-4"><strong>Category:</strong></p><p class="col-md-3 col-sm-8">{{announcement.category}}</p>
+                            <p class="col-md-3 col-sm-4"><strong>Course Name:</strong></p><p class="col-md-3 col-sm-8">{{announcement.course_id}}</p>
                         </div>
                         <div class="row item">
-                            <p class="col-md-3 col-sm-4"><strong>Expected Start Date:</strong></p><p class="col-md-3 col-sm-8">{{announcement.start_date}}</p>
-                            <p class="col-md-3 col-sm-4"><strong>Expected End Date:</strong></p><p class="col-md-3 col-sm-8">{{announcement.end_date}}</p>
-                        </div>
-                        <div class="row item" >
-                            <p class="col-md-3 col-sm-4"><strong>Course ID:</strong></p><p class="col-md-3 col-sm-8">{{announcement.course_id}}</p>
-                            <p class="col-md-3 col-sm-4"><strong>Course Name:</strong></p><p class="col-md-3 col-sm-8">Analytical Skills</p><!--Show only if the project is taken-->
-                        </div>
-                        <div class="row item">
-                            <p class="col-md-3 col-sm-4"><strong>Primary Contact Name:</strong></p><p class="col-md-9 col-sm-8">{{announcement.faculty_id}}</p>
+                            <p class="col-md-3 col-sm-4"><strong>Faculty Name:</strong></p><p class="col-md-9 col-sm-8">{{announcement.faculty_id}}</p>
                         </div>
                       
                       <p class="item"><strong>Description</strong></p>
                       <p class="item">{{announcement.description}}</p>
                       <div class="item col-md-offset-9" style="padding-bottom: 3%">
-                        <div class="col-md-4 ">
-                            <button type="button" class="btn btn-default togglebtn" data-toggle="collapse" href="#cpl{{announcement._id}}" ng-click="toggleBtn('cpl',announcement._id)" >Close</button>
+                        <div class="col-md-4">
+                          <button type="button" 
+                          class="btn btn-default togglebtn" 
+                          ng-click="toggleBtn('avail', announcement._id)" 
+                          data-toggle="collapse" 
+                          href="#{{announcement._id}}">Close</button>
                         </div>
                         <div class=" col-md-4">
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#feedbacks">View Feedbacks</button>
+                          <button type="button" class="btn btn-primary warningBtn" data-toggle="modal" data-warningtext="Are you sure you want to cancel this request?" data-target="#warning" data-action="delete({{announcement.id}})">Cancel Request</button><!-- Call modal box and send message to organization-->
                         </div>
                       </div>
                     </div>
@@ -209,7 +261,8 @@
                     <hr/>
                 </li>
             </ul>
-            <uib-pagination ng-model="currentPage" total-items="todos.length" max-size="maxsize"  boundary-links="true"></uib-pagination>
+            <uib-pagination total-items="totalItems" ng-model="currentPage" ng-change="pageChanged()"></uib-pagination>
+            
         </div>
 
         
@@ -221,8 +274,47 @@
       
         </div>
     </div>
+<script>
+    $(document).on('click','.warningBtn', function(){
+
+        var text = $(this).data('warningtext');
+        var action = $(this).data('action');
+        $(".modal-body #warningTextarea").empty();
+        $(".modal-body #warningTextarea").append(text);
+        $(".modal-body #okBtn").attr('data-ng-submit',action);
+    })
+
+   
+    $(document).on('click', '.proceedBtn', function(){
+        var id = $(this).attr('id');
+        $('#warning').modal('hide');
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').remove();
+    })
+
+</script>
+
 
     <!--Modals-->
+    <div class="modal fade" id="warning" tabindex="-1" role="dialog" aria-labelledby="warningLabel" style="z-index:2147483647;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="newAnnocLabel">You are about to withdraw..</h4>
+                </div>
+
+                <div class="modal-body">
+                <strong><p class="text-danger" id="warningTextarea"></p></strong>
+
+                <button style="margin-left:3%;" type="button" class="btn btn-danger pull-right" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-primary pull-right proceedBtn">Yes</button>
+                <br/>
+                <br/>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!--Create Announcement Modal-->
     <div class="modal fade modal-lg" id="createAnnoc" tabindex="-1" role="dialog" aria-labelledby="newAnnocLabel" style="z-index: 2147483647;">

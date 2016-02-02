@@ -22,7 +22,7 @@ exports.list = function(req, res, next) {
 	db.connect(function(err, results) {});
 
 	if (role == "Faculty") {
-		db.query("SELECT _id, title, category, description, posted_date, faculty_id, start_date, end_date, status FROM `Announcements` WHERE  faculty_id = ?", [req.user._id], function(err,rows){
+		db.query("SELECT _id, title, category, description, posted_date, faculty_id, start_date, end_date, project_id, course_id, status FROM `Announcements` WHERE  faculty_id = ?", [req.user._id], function(err,rows){
 			if (err) {
 				return res.status(400).send({
 					message: getErrorMessage(err)
@@ -36,7 +36,7 @@ exports.list = function(req, res, next) {
 		})
 	} else if(role == "Admin"){
 		
-		db.query("SELECT _id, title, category, description, posted_date, faculty_id, start_date, end_date, status FROM `Announcements`", function(err,rows){
+		db.query("SELECT _id, title, category, description, posted_date, start_date, end_date faculty_id, project_id, course_id, status FROM `Announcements`", function(err,rows){
 			if (err) {
 				return res.status(400).send({
 					message: getErrorMessage(err)
@@ -52,7 +52,7 @@ exports.list = function(req, res, next) {
 		})
 	}else {
 		var org_id = req.user._id;
-		db.query("SELECT _id, title, category, description, posted_date, faculty_id, start_date, end_date, status FROM `Announcements` WHERE status = ?", ["open"], function(err,rows){
+		db.query("SELECT _id, title, category, description, posted_date, start_date, end_date faculty_id, project_id, course_id, status FROM `Announcements` WHERE status = ?", ["open"], function(err,rows){
 			if (err) {
 				return res.status(400).send({
 					message: getErrorMessage(err)
@@ -76,17 +76,17 @@ exports.read = function(req, res) {
 
 	db.connect(function(err, results) {});
 
-	db.query("SELECT temp._id, title, category, faculty_id, description, posted_date, start_date, end_date, " + 
+	db.query("SELECT temp._id, title, category, faculty_id, description, posted_date, project_id, start_date, end_date" + 
 		"course_id, status, term, faculty_name from " + 
-		"(SELECT announcements._id, title, category, faculty_id, description, posted_date, start_date, " + 
-		"end_date, course_id, status, term, users.name as faculty_name from `Announcements` left outer join `users` " + 
+		"(SELECT announcements._id, title, category, faculty_id, description, posted_date, start_date, end_date, project_id, course_id,  " + 
+		"course_id, status, term, users.name as faculty_name from `Announcements` left outer join `users` " + 
 		"on announcements.faculty_id = users._id where announcements._id = ?) as temp left outer join users on temp.faculty_id = users._id;", [id], function(err,rows){		
 		if (err) {
 			return res.status(400).send({
 					message: getErrorMessage(err)
 			});
 		} else {
-			db.query("SELECT * from `requests` WHERE `announcement_id` =? and `organization_id` = ?", [rows[0]._id, req.user._id], function(err, results) {
+			db.query("SELECT * from `AnnouncementRequests` WHERE `announcement_id` =? and `org_id` = ?", [rows[0]._id, req.user._id], function(err, results) {
 				if (err) {
 					return res.status(400).send({
 						message: getErrorMessage(err)
@@ -96,11 +96,7 @@ exports.read = function(req, res) {
 						rows[0].status = "requested";
 					} 
 				}
-				rows[0].start_date = new Date(rows[0].start_date);
-				rows[0].end_date = new Date(rows[0].end_date);
 				rows[0].posted_date = new Date(rows[0].posted_date);
-				rows[0].start_date = getDateFormat(rows[0].start_date);
-				rows[0].end_date = getDateFormat(rows[0].end_date);
 				rows[0].posted_date = getDateFormat(rows[0].posted_date);
 				res.json(rows[0]);
 			})
@@ -117,6 +113,7 @@ exports.update = function(req, res) {
 	var	announcement = {
 		title:req.body.title,
 		category: req.body.category,
+		project_id: req.body.project_id,
 		start_date: req.body.start_date,
 		end_date: req.body.end_date,
 		description: req.body.description,
@@ -134,6 +131,7 @@ exports.update = function(req, res) {
 				_id: id,
 				title:req.body.title,
 				category: req.body.category,
+				project_id: req.body.project_id,
 				start_date: req.body.start_date,
 				end_date: req.body.end_date,
 				description: req.body.description,
@@ -154,6 +152,7 @@ exports.add = function(req, res) {
 	var announcement = {
 		title:req.body.title,
 		category: req.body.category,
+		project_id: req.body.project_id,
 		start_date: req.body.start_date,
 		end_date: req.body.end_date,
 		description: req.body.description,

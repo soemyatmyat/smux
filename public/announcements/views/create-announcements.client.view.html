@@ -25,9 +25,9 @@
                             <!--show only if the user is admin-->
                             <li data-ng-if="authentication.user.role == 'Admin'"><a href="/#!/users">User Management</a></li>
                             <!---->
-                            <li class="active"><a href="/#!/projects">Projects <span class="sr-only">(current)</span></a></li>
+                            <li><a href="/#!/projects">Projects <span class="sr-only">(current)</span></a></li>
                             <li data-ng-if="authentication.user.role == 'Organization'"><a href="/#!/requests">Request Inbox</a></li>
-                            <li><a href="/#!/announcements">Faculty Announcements</a></li>
+                            <li class="active non-click"><a href="">Faculty Announcements</a></li>
                             <li><a class="menu1"  href="faq.html">FAQ</a></li>
                         </ul>
                     </div><!-- /.navbar-collapse -->
@@ -65,12 +65,10 @@
             </div>
             <!--Change later-->
             <div class="form-group">
-                    <label for="category" class="col-sm-1 control-label">Course ID </label>
+                    <label for="category" class="col-sm-1 control-label">Course Name </label>
                     <div class="col-sm-9">
-                        <select class="form-control" data-ng-model="category" data-ng-value="Accounting">
-                            <option ng-repeat="cat in categoryIncludes" value="{{cat}}">{{cat}}</option>
-                        </select>
-                    </div><!-- Category -->
+                        <input type="text" class="form-control" data-ng-model="course_id" name = "course_id" ng-maxlength ="30">
+                    </div>
             </div>
             <div class="form-group">
                 <label for="name" class="col-sm-1 control-label">Start Date </label>

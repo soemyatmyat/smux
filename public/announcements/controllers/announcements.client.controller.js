@@ -70,7 +70,13 @@ angular.module('announcements').controller('AnnouncementController', ['$scope', 
     		});
     	};
 
-
+    	$scope.toggleBtn = function(category,id){
+			$("." +category + id).text(function(i, text){
+	          return text === "View More" ? "View Less" : "View More";
+	      });
+		};
+		
+		
         $scope.add = function() {
             
             var newAnnouncement = new Announcements();
