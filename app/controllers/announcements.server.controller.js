@@ -20,6 +20,7 @@ var getErrorMessage = function(err) {
 exports.list = function(req, res, next) {
 	var role = req.user.role;
 	db.connect(function(err, results) {});
+
 	if (role == "Faculty") {
 		db.query("SELECT _id, title, category, description, posted_date, faculty_id, start_date, end_date, status FROM `Announcements` WHERE  faculty_id = ?", [req.user._id], function(err,rows){
 			if (err) {
@@ -119,7 +120,6 @@ exports.update = function(req, res) {
 		start_date: req.body.start_date,
 		end_date: req.body.end_date,
 		description: req.body.description,
-		term: req.body.term,
 		course_id: req.body.course_id,
 		status: "open"
 	}
@@ -130,18 +130,17 @@ exports.update = function(req, res) {
 				message: getErrorMessage(err)
 			});
 		} else {
-			project = {
+			announcement = {
 				_id: id,
 				title:req.body.title,
 				category: req.body.category,
 				start_date: req.body.start_date,
 				end_date: req.body.end_date,
 				description: req.body.description,
-				term: req.body.term,
 				course_id: req.body.course_id,
 				status: "open"
 			}
-			res.json(project);
+			res.json(announcement);
 		}
 	})
 };
@@ -159,9 +158,8 @@ exports.add = function(req, res) {
 		end_date: req.body.end_date,
 		description: req.body.description,
 		posted_date: getDateFormat(today),
-		faculty_id: req.body.faculty_id,
+		faculty_id: req.user._id,
 		course_id: req.body.course_id,
-		term: req.body.term,
 		status: "open"
 	}
 	//alert(announcement);

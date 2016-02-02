@@ -4,6 +4,7 @@ var users = require('../../app/controllers/users.server.controller'),
 
 module.exports = function(app) {
 
+
 	// list the existing users, C
 	app.route('/api/announcements')
 		.get(users.requiresLogin, announcements.list)
