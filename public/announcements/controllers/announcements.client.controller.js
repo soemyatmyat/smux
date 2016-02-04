@@ -1,8 +1,8 @@
 //alert("client-controller");
 angular.module('announcements').controller('AnnouncementController', ['$scope', 'Authentication', '$window', '$uibModal', '$routeParams', '$location', 'Announcements',
     function($scope, Authentication, $window, $uibModal, $routeParams, $location, Announcements) {
-    	
-    	$scope.authentication = Authentication;
+        
+        $scope.authentication = Authentication;
         $scope.statusIncludes = ['open'];
         $scope.categoryIncludes = ['Accounting', 'Arts', 'Capstone', 'IT', 'Social Psychology'];
 
@@ -20,12 +20,12 @@ angular.module('announcements').controller('AnnouncementController', ['$scope', 
             }
         }
 
-        $scope.statusFilter = function(project) {  
+        $scope.statusFilter = function(announcement) {  
             if ($scope.statusIncludes.length > 0) {
-                if ($.inArray(project.status, $scope.statusIncludes) < 0) {
+                if ($.inArray(announcement.status, $scope.statusIncludes) < 0) {
                     return;
                 } else {
-                    return project;
+                    return announcement;
                 }
             } else {
                 return;
@@ -33,11 +33,13 @@ angular.module('announcements').controller('AnnouncementController', ['$scope', 
         }
 
         $scope.includeCategory = function(category) {
+            //alert(category);
             if (category == 'Accounting') $scope.accounting = !$scope.accounting;
             if (category == 'Arts') $scope.arts = !$scope.arts;
             if (category == 'Capstone') $scope.capstone = !$scope.capstone;
             if (category == 'IT') $scope.it = !$scope.it;
             if (category == 'Social Psychology') $scope.social = !$scope.social;
+            
             var i = $.inArray(category, $scope.categoryIncludes);
             if (i > -1) {
                 $scope.categoryIncludes.splice(i, 1);
@@ -46,37 +48,37 @@ angular.module('announcements').controller('AnnouncementController', ['$scope', 
             }
         }
 
-        $scope.categoryFilter = function(project) {  
+        $scope.categoryFilter = function(announcement) {
             if ($scope.categoryIncludes.length > 0) {
-                if ($.inArray(project.category, $scope.categoryIncludes) < 0) {
+                if ($.inArray(announcement.category, $scope.categoryIncludes) < 0) {
                     return;
                 } else {
-                    return project;
+                    return announcement;
                 }
             } else {
                 return;
             }
         }
 
-    	$scope.openModal = function() {
-    		var modalInstance = $uibModal.open ({
-    			templateUrl: 'request.html',
-    			controller: 'ModalInstanceCtrl',
-    			resolve: {
-    				announcement: function() {
-    					return $scope.announcement;
-    				}
-    			}
-    		});
-    	};
+        $scope.openModal = function() {
+            var modalInstance = $uibModal.open ({
+                templateUrl: 'request.html',
+                controller: 'ModalInstanceCtrl',
+                resolve: {
+                    announcement: function() {
+                        return $scope.announcement;
+                    }
+                }
+            });
+        };
 
-    	$scope.toggleBtn = function(category,id){
-			$("." +category + id).text(function(i, text){
-	          return text === "View More" ? "View Less" : "View More";
-	      });
-		};
-		
-		
+        $scope.toggleBtn = function(category,id){
+            $("." +category + id).text(function(i, text){
+              return text === "View More" ? "View Less" : "View More";
+          });
+        };
+        
+
         $scope.add = function() {
             
             var newAnnouncement = new Announcements();
@@ -116,15 +118,23 @@ angular.module('announcements').controller('AnnouncementController', ['$scope', 
         };
 
         $scope.read = function() {
+            //alert($routeParams.announcId);
             $scope.announcement = Announcements.get({
                 announcId: $routeParams.announcId
             });
         };
 
         $scope.list = function() {
-        	//alert("hello");
+            $scope.open= true;
+            $scope.ongoing = false;
+            $scope.completed = false;
+            $scope.requested = false;
+            $scope.accounting = true;
+            $scope.arts = true;
+            $scope.capstone = true;
+            $scope.it = true;
+            $scope.social = true;
             $scope.announcements = Announcements.query();
-            //alert($scope.announcements);
         };
 
 
@@ -150,15 +160,12 @@ angular.module('announcements').controller('AnnouncementController', ['$scope', 
         };
 
         $scope.delete = function(announcement) {
-            var deleteAnnouncement = $window.confirm('Are you sure you want to withdrawal the Announcement?');
-            
-            if (deleteAnnouncement) {
+            	alert(announcement);
                 announcement.$remove(function(response) {
                     $location.path('announcements/')
                 }, function(errorResponse) {
                     $scope.error = errorResponse.data.message;
                 });
-            }
         };
 
         $scope.dateOptions = {
@@ -211,4 +218,5 @@ angular.module('announcements').controller('AnnouncementController', ['$scope', 
     }
 
 ]);
+
 

@@ -73,13 +73,14 @@ exports.list = function(req, res, next) {
 ///////////////////
 exports.read = function(req, res) {
 	var id = req.params.announcId;
+		console.log("read: " + id );
 
 	db.connect(function(err, results) {});
 
 	db.query("SELECT temp._id, title, category, faculty_id, description, posted_date, project_id, start_date, end_date" + 
-		"course_id, status, term, faculty_name from " + 
-		"(SELECT announcements._id, title, category, faculty_id, description, posted_date, start_date, end_date, project_id, course_id,  " + 
-		"course_id, status, term, users.name as faculty_name from `Announcements` left outer join `users` " + 
+		"course_id, status, faculty_name from " + 
+		"(SELECT announcements._id, title, category, faculty_id, description, posted_date, start_date, end_date, project_id, " + 
+		"course_id, status, users.name as faculty_name from `Announcements` left outer join `users` " + 
 		"on announcements.faculty_id = users._id where announcements._id = ?) as temp left outer join users on temp.faculty_id = users._id;", [id], function(err,rows){		
 		if (err) {
 			return res.status(400).send({

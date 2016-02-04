@@ -77,13 +77,13 @@
             <!--List of announcement-->
             <ul class="lists">
                 <!--To add status filter-->
-                <li class="listItem col-md-12 col-sm-12 col-xs-12" data-ng-repeat="announcement in announcements |filter:{status: '!close'} |orderBy : '-posted_date' | filter:query">
+                <li class="listItem col-md-12 col-sm-12 col-xs-12" data-ng-repeat="announcement in announcements |filter:{status: '!close'}|filter:categoryFilter  |orderBy : '-posted_date' | filter:query">
 
                     <div>
 
-                        <p><h4><a href="#!/announcement/{{announcement._id}}"><strong>{{announcement.title}}</strong></a></h4></p>
+                        <p><h4><a href="#!/announcements/{{announcement._id}}"><strong>{{announcement.title}}</strong></a></h4></p>
                         <h6><strong>Description </strong><p class="pull-right">Posted On: {{announcement.posted_date}}</p></h6>
-                        <p>{{announcement.description | limitTo : 150}}</p>
+                        <p>{{announcement.description | limitTo : 100}}</p>
                         <button class="btn btn-primary togglebtn detailsbtn avail{{announcement._id}} pull-right" type="button" ng-click="toggleBtn('avail', announcement._id)" data-toggle="collapse" href="#{{announcement._id}}" aria-expanded="false" aria-controls="announcement">View More</button>
                     </div>
 
@@ -101,11 +101,14 @@
                         <div class="row item">
                             <p class="col-md-3 col-sm-4"><strong>Faculty Name:</strong></p><p class="col-md-9 col-sm-8">{{announcement.faculty_id}}</p>
                         </div>
-                      
+                      <div class="row item">
+                            <p class="col-md-3 col-sm-4"><strong>Expected Start Date:</strong></p><p class="col-md-3 col-sm-8">{{announcement.start_date}}</p>
+                            <p class="col-md-3 col-sm-4"><strong>Expected End Date:</strong></p><p class="col-md-3 col-sm-8">{{announcement.end_date}}</p>
+                        </div>
                       <p class="item"><strong>Description</strong></p>
                       <p class="item">{{announcement.description}}</p>
                       <div class="item btn-toolbar col-md-offset-6 pull-right" style="padding-bottom: 3%;">
-                          <button type="button" class="btn btn-primary warningBtn " data-ng-if="authentication.user.role == 'Faculty' || authentication.user.role == 'Admin'" data-toggle="modal" data-warningtext="Are you sure you want to withdraw this announcement?" data-target="#warning" data-action="deleteRequest({{announcement.id}})">Withdraw Announcement</button><!-- Perform delete-->
+                          <button type="button" class="btn btn-danger warningBtn " data-ng-if="authentication.user.role == 'Faculty' || authentication.user.role == 'Admin'" data-toggle="modal" data-warningtext="Are you sure you want to withdraw this announcement?" data-target="#warning" data-action="delete(announcement)">Withdraw Announcement</button><!-- Perform delete-->
                         
                           <button type="button" data-ng-if="authentication.user.role == 'Organization' || authentication.user.role == 'Admin'" class="btn btn-primary" data-toggle="modal" data-target="#interestModal">Propose Project</button><!-- call a modal-->
                         
@@ -147,13 +150,13 @@
             <!--List of announcement-->
             <ul class="lists">
                 <!--To add status filter-->
-                <li class="listItem col-md-12 col-sm-12 col-xs-12" data-ng-repeat="announcement in announcements |filter:{status: 'close'} |orderBy : '-posted_date' | filter:query">
+                <li class="listItem col-md-12 col-sm-12 col-xs-12" data-ng-repeat="announcement in announcements |filter:{status: 'close'}|filter:categoryFilter  |orderBy : '-posted_date' | filter:query">
 
                     <div>
 
-                        <p><h4><a href="#!/announcement/{{announcement._id}}"><strong>{{announcement.title}}</strong></a></h4></p>
+                        <p><h4><a href="#!/announcements/{{announcement._id}}"><strong>{{announcement.title}}</strong></a></h4></p>
                         <h6><strong>Description </strong><p class="pull-right">Posted On: {{announcement.posted_date}}</p></h6>
-                        <p>{{announcement.description | limitTo : 150}}</p>
+                        <p>{{announcement.description | limitTo : 100}}</p>
                         <button class="btn btn-primary togglebtn detailsbtn avail{{announcement._id}} pull-right" type="button" ng-click="toggleBtn('avail', announcement._id)" data-toggle="collapse" href="#{{announcement._id}}" aria-expanded="false" aria-controls="announcement">View More</button>
                     </div>
 
@@ -171,7 +174,10 @@
                         <div class="row item">
                             <p class="col-md-3 col-sm-4"><strong>Faculty Name:</strong></p><p class="col-md-9 col-sm-8">{{announcement.faculty_id}}</p>
                         </div>
-                      
+                      <div class="row item">
+                            <p class="col-md-3 col-sm-4"><strong>Expected Start Date:</strong></p><p class="col-md-3 col-sm-8">{{announcement.start_date}}</p>
+                            <p class="col-md-3 col-sm-4"><strong>Expected End Date:</strong></p><p class="col-md-3 col-sm-8">{{announcement.end_date}}</p>
+                        </div>
                       <p class="item"><strong>Description</strong></p>
                       <p class="item">{{announcement.description}}</p>
 
@@ -217,13 +223,13 @@
             <!--List of announcement-->
             <ul class="lists">
                 <!--To add status filter-->
-                <li class="listItem col-md-12 col-sm-12 col-xs-12" data-ng-repeat="announcement in announcements |filter:{status: 'requested'} |orderBy : '-posted_date' | filter:query">
+                <li class="listItem col-md-12 col-sm-12 col-xs-12" data-ng-repeat="announcement in announcements |filter:{status: 'requested'}|filter:categoryFilter  |orderBy : '-posted_date' | filter:query">
 
                     <div>
 
-                        <p><h4><a href="#!/announcement/{{announcement._id}}"><strong>{{announcement.title}}</strong></a></h4></p>
+                        <p><h4><a href="#!/announcements/{{announcement._id}}"><strong>{{announcement.title}}</strong></a></h4></p>
                         <h6><strong>Description </strong><p class="pull-right">Posted On: {{announcement.posted_date}}</p></h6>
-                        <p>{{announcement.description | limitTo : 150}}</p>
+                        <p>{{announcement.description | limitTo : 100}}</p>
                         <button class="btn btn-primary togglebtn detailsbtn avail{{announcement._id}} pull-right" type="button" ng-click="toggleBtn('avail', announcement._id)" data-toggle="collapse" href="#{{announcement._id}}" aria-expanded="false" aria-controls="announcement">View More</button>
                     </div>
 
@@ -240,6 +246,10 @@
                         </div>
                         <div class="row item">
                             <p class="col-md-3 col-sm-4"><strong>Faculty Name:</strong></p><p class="col-md-9 col-sm-8">{{announcement.faculty_id}}</p>
+                        </div><!-- May b change to faculty name-->
+                        <div class="row item">
+                            <p class="col-md-3 col-sm-4"><strong>Expected Start Date:</strong></p><p class="col-md-3 col-sm-8">{{announcement.start_date}}</p>
+                            <p class="col-md-3 col-sm-4"><strong>Expected End Date:</strong></p><p class="col-md-3 col-sm-8">{{announcement.end_date}}</p>
                         </div>
                       
                       <p class="item"><strong>Description</strong></p>
@@ -281,7 +291,7 @@
         var action = $(this).data('action');
         $(".modal-body #warningTextarea").empty();
         $(".modal-body #warningTextarea").append(text);
-        $(".modal-body #okBtn").attr('data-ng-submit',action);
+        $(".modal-body .proceedBtn").attr('data-ng-submit',action);
     })
 
    
