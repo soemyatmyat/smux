@@ -1,11 +1,13 @@
 //alert("client-controller");
-angular.module('announcements').controller('AnnouncementController', ['$scope', 'Authentication', '$window', '$uibModal', '$routeParams', '$location', 'Announcements',
-    function($scope, Authentication, $window, $uibModal, $routeParams, $location, Announcements) {
+angular.module('announcements').controller('AnnouncementController', ['$scope', 'Authentication', '$window', '$uibModal', '$routeParams', '$location', 'Announcements', 'Projects',
+    function($scope, Authentication, $window, $uibModal, $routeParams, $location, Announcements, Projects) {
         
         $scope.authentication = Authentication;
         $scope.statusIncludes = ['open'];
         $scope.categoryIncludes = ['Accounting', 'Arts', 'Capstone', 'IT', 'Social Psychology'];
-
+        $scope.projects = Projects.list();
+        console.log($scope.projects);
+        //console.log($scope.Projects);
         $scope.includeStatus = function(status) {
             //alert("filterText");
             if (status == 'On-Going') $scope.ongoing = !$scope.ongoing;
@@ -160,7 +162,7 @@ angular.module('announcements').controller('AnnouncementController', ['$scope', 
         };
 
         $scope.delete = function(announcement) {
-            	alert(announcement);
+            	
                 announcement.$remove(function(response) {
                     $location.path('announcements/')
                 }, function(errorResponse) {

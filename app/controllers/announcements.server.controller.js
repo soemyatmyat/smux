@@ -73,15 +73,16 @@ exports.list = function(req, res, next) {
 ///////////////////
 exports.read = function(req, res) {
 	var id = req.params.announcId;
-		console.log("read: " + id );
 
 	db.connect(function(err, results) {});
 
-	db.query("SELECT temp._id, title, category, faculty_id, description, posted_date, project_id, start_date, end_date" + 
+	/**db.query("SELECT temp._id, title, category, faculty_id, description, posted_date, project_id, start_date, end_date" + 
 		"course_id, status, faculty_name from " + 
-		"(SELECT announcements._id, title, category, faculty_id, description, posted_date, start_date, end_date, project_id, " + 
+		"(SELECT Announcements._id, title, category, faculty_id, description, posted_date, start_date, end_date, project_id, " + 
 		"course_id, status, users.name as faculty_name from `Announcements` left outer join `users` " + 
-		"on announcements.faculty_id = users._id where announcements._id = ?) as temp left outer join users on temp.faculty_id = users._id;", [id], function(err,rows){		
+		"on Announcements.faculty_id = users._id where Announcements._id = ?) as temp left outer join users on temp.faculty_id = users._id;", [id], function(err,rows){		
+	**/
+	db.query("SELECT _id, title, category, description, posted_date, faculty_id, start_date, end_date, project_id, course_id, status FROM `Announcements` WHERE  _id = ?", [id], function(err,rows){
 		if (err) {
 			return res.status(400).send({
 					message: getErrorMessage(err)
@@ -149,6 +150,7 @@ exports.update = function(req, res) {
 // new announcement ///
 //////////////////////
 exports.add = function(req, res) {
+	console.log("add");
 	var today = new Date();
 	var announcement = {
 		title:req.body.title,
@@ -167,6 +169,7 @@ exports.add = function(req, res) {
 	db.query("INSERT INTO `Announcements` SET ? ", announcement, function(err,rows){
 		if (err) {
 			console.log(err);
+
 			return res.status(400).send({
 				message: getErrorMessage(err)
 			});

@@ -81,7 +81,7 @@
 
                     <div>
 
-                        <p><h4><a href="#!/announcements/{{announcement._id}}"><strong>{{announcement.title}}</strong></a></h4></p>
+                        <p><h4><a href="/#!/announcements/{{announcement._id}}"><strong>{{announcement.title}}</strong></a></h4></p>
                         <h6><strong>Description </strong><p class="pull-right">Posted On: {{announcement.posted_date}}</p></h6>
                         <p>{{announcement.description | limitTo : 100}}</p>
                         <button class="btn btn-primary togglebtn detailsbtn avail{{announcement._id}} pull-right" type="button" ng-click="toggleBtn('avail', announcement._id)" data-toggle="collapse" href="#{{announcement._id}}" aria-expanded="false" aria-controls="announcement">View More</button>
@@ -435,9 +435,8 @@ $('.modal-backdrop').remove();
               <div class="col-md-6">
               <select class="form-control" ng-model="project.courseId" name="projectId" id="projectId">
 
-                <optgroup >
-                  <option value=""></option>
-                </optgroup>
+                    <option  value="">{{project.title}}</option>
+                  <option ng-repeat = "project in Projects" value="{{project._id}}">{{project.title}}</option>
               </select>
               </div>
             </div>
