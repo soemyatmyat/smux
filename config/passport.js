@@ -10,11 +10,11 @@ module.exports = function() {
 
 	passport.deserializeUser(function(_id, done) {
 		var db = mysql();
-		db.connect(function(err, results) {});
+		//db.getConnection(function(err, results) {});
 		db.query("SELECT _id, name, email_address, role FROM `users` WHERE `_id` = '" + _id + "'", function(err,rows){
 			done(err, rows[0]);
 		})
-		db.end();
+		//db.end();
 	});
 
 	require('./strategies/local.js')();
