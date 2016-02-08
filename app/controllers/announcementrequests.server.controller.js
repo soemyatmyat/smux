@@ -19,12 +19,40 @@ var getErrorMessage = function(err) {
 // list requests ///
 ///////////////////
 exports.list = function(req, res, next) {
-	var org_id = req.user._id;
+	var role = req.user.role;
+
+	var id = req.user._id;
 	db.connect(function(err, results) {});	
-	db.query("SELECT temp._id, temp.course_code, temp.project_id, temp.faculty_id, temp.message, temp.requested_date, temp.status, " + 
-		"projects.title as project_name, users.name as faculty_name, users.email_address as faculty_email FROM projects, users, " + 
-		"(SELECT * from `requests` where project_id in (SELECT _id as project_id FROM `projects` WHERE `org_id` = ?)) as temp " + 
-		"WHERE projects._id = temp.project_id and users._id = temp.faculty_id;", [org_id], function(err, rows) {
+
+	if(role == 'faculty'){
+		db.query("SELECT t1.*, name as organization FROM " + 
+		"(SELECT AR._id, org_id, announcement_id, title, AR.posted_date as requested_date, " +
+		" AR.course_id, AR.project_id, message, AR.status" +
+		" FROM AnnouncementRequests as AR LEFT OUTER JOIN Announcements " +
+		" ON announcement_id = Announcements._id " +
+		" WHERE Announcements.faculty_id = ? AND AnnouncementRequests.status != ?) AS t1 " + 
+		" LEFT OUTER JOIN Users ON t1.org_id = Users._id;", [id, 'accepted'], function(err, rows) {
+		if (err) {
+			return res.status(400).send({
+				message: getErrorMessage(err)
+			});
+		} else {
+			for (var i = 0; i < rows.length; i++) {
+				rows[i].requested_date = getDateFormat(rows[i].requested_date);
+				rows[i].posted_date = getDateFormat(rows[i].posted_date);
+			}
+			res.json(rows);
+		}
+	})
+
+	}else if(role == 'organization'){
+		db.query("SELECT t1.*, name as organization FROM" + 
+		"(SELECT AR._id, org_id, announcement_id, title, AR.posted_date as requested_date," +
+		" AR.course_id, AR.project_id, message, AR.statuscategory, Announcements.posted_date, start_date, end_date, description" +
+		" FROM AnnouncementRequests as AR LEFT OUTER JOIN Announcements" +
+		" ON announcement_id = Announcements._id " +
+		" WHERE org_id = ? AND AnnouncementRequests.status != ?) AS t1" + 
+		" LEFT OUTER JOIN Users ON t1.org_id = Users._id;", [id, 'accepted'], function(err, rows) {
 		if (err) {
 			return res.status(400).send({
 				message: getErrorMessage(err)
@@ -32,11 +60,14 @@ exports.list = function(req, res, next) {
 		} else {
 			for (var i = 0; i < rows.length; i++) {
 				rows[i].posted_date = getDateFormat(rows[i].posted_date);
-				rows[i].requested_date = getDateFormat(rows[i].requested_date);
 			}
 			res.json(rows);
 		}
 	})
+
+	}
+
+	
 
 };
 
@@ -45,11 +76,11 @@ exports.list = function(req, res, next) {
 ///////////////////
 exports.read = function(req, res) {
 	
-	var project_id = req.params.project_id;
-	var faculty_id = req.query.faculty_id;
+	var announcement_id = req.params.announcement_id;
+	var org_id = req.query.org_id;
 
 	db.connect(function(err, results) {});
-	db.query("SELECT * FROM `requests` WHERE `project_id` = ? and `faculty_id`", [project_id, faculty_id], function(err,rows){
+	db.query("SELECT * FROM `AnnouncementRequests` WHERE `announcement_id` = ? and `org_id`", [announcement_id, org_id], function(err,rows){
 		if (err) {
 			return res.status(400).send({
 				message: getErrorMessage(err)
@@ -70,25 +101,26 @@ exports.read = function(req, res) {
 exports.add = function(req, res) {	
 	var today = new Date();
 	var request = {
-		course_code: req.body.course_code,
+		org_id: req.user._id,
 		project_id: req.body.project_id,
-		faculty_id: req.user._id,
-		message: req.body.message,
-		requested_date: getDateFormat(today),
+		announcement_id: req.body.announcement_id,
+		message: req.body.description,
+		posted_date: getDateFormat(today),
 		status: 'submitted'
 	}
 	
 	db.connect(function(err,results) {});
-	db.query("INSERT INTO `Requests` SET ? ", request, function(err,rows){
+	db.query("INSERT INTO `AnnouncementRequests` SET ? ", request, function(err,rows){
 		if (err) {
+			console.log("stuck in inserting");
 			return res.status(400).send({
 				message: getErrorMessage(err)
 			});
 		} else {
-			db.query("SELECT _id FROM `Requests` WHERE `project_id` = ? and `faculty_id`", [request.project_id, request.faculty_id], function(err,rows){
+			db.query("SELECT _id FROM `AnnouncementRequests` WHERE `announcement_id` = ? and `org_id` = ?", [request.announcement_id, request.org_id], function(err,rows){
 				if (err) {
 					return res.status(400).send({
-						message: getErrorMessage(err)
+						message: "getErrorMessage(err)"
 					});
 				} else {
 					request._id = rows[0]._id;

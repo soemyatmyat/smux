@@ -29,6 +29,7 @@
                             <li><a href="/#!/projects">Projects <span class="sr-only">(current)</span></a></li>
                             <li data-ng-if="authentication.user.role == 'Organization'"><a href="/#!/requests">Request Inbox</a></li>
                             <li class="active non-click"><a href="">Faculty Announcements</a></li>
+                            <li data-ng-if="authentication.user.role == 'Faculty'"><a href="/#!/announcementrequests">Request Inbox</a></li>
                             <li><a class="menu1"  href="faq.html">FAQ</a></li>
                         </ul>
                     </div><!-- /.navbar-collapse -->
@@ -110,7 +111,7 @@
                       <div class="item btn-toolbar col-md-offset-6 pull-right" style="padding-bottom: 3%;">
                           <button type="button" class="btn btn-danger warningBtn " data-ng-if="authentication.user.role == 'Faculty' || authentication.user.role == 'Admin'" data-toggle="modal" data-warningtext="Are you sure you want to withdraw this announcement?" data-target="#warning" data-action="delete(announcement)">Withdraw Announcement</button><!-- Perform delete-->
                         
-                          <button type="button" data-ng-if="authentication.user.role == 'Organization' || authentication.user.role == 'Admin'" class="btn btn-primary" data-toggle="modal" data-target="#interestModal">Propose Project</button><!-- call a modal-->
+                          <button type="button" data-ng-if="authentication.user.role == 'Organization' || authentication.user.role == 'Admin'" class="btn btn-primary"  data-annocid="{{announcement._id}}" id="proposeProjBtn" data-toggle="modal" data-target="#interestModal">Propose Project</button><!-- call a modal-->
                         
                           <button type="button" 
                           class="btn btn-default togglebtn " 
@@ -189,9 +190,6 @@
                           data-toggle="collapse" 
                           href="#{{announcement._id}}">Close</button>
                         </div>
-                        <div class=" col-md-4">
-                          <a type="button" class="btn btn-primary" data-toggle="modal" href="/#!/projects/{{announcement.project_id}}"  data-target="#interestModal">View Project</a><!-- Call modal box and send message to organization-->
-                        </div>
                       </div>
                     </div>
                     <br/>
@@ -203,7 +201,7 @@
         </div>
 
         <!--- requested Announcements -->  
-        <div class="listdiv" ng-show="tab === 'requested'">
+        <div class="listdiv" ng-show="tab === 'requested'" data-ng-controller = "AnnouncementRequestsController" data-ng-init="list()">
             
             <!--Header-->
             <h3 class="mainTitle"><strong>Requested Announcements</strong></h3>
@@ -302,6 +300,13 @@
         $('.modal-backdrop').remove();
     })
 
+        $(document).on('click', '#proposeProjBtn', function(){
+
+        var id = $(this).data('annocid');
+         window.announcementId = id;
+        
+    })
+
 </script>
 
 
@@ -326,91 +331,9 @@
         </div>
     </div>
 
-    <!--Create Announcement Modal-->
-    <div class="modal fade modal-lg" id="createAnnoc" tabindex="-1" role="dialog" aria-labelledby="newAnnocLabel" style="z-index: 2147483647;">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="newAnnocLabel"><strong>Add New Announcement</strong></h4>
-                </div>
-
-                <div class="modal-body">
-                    <form data-ng-submit="add()" name="annocAdd" id="addAnnoc" class="form-horizontal" novalidate>
-                        <div class="form-group">
-                                <label for="title" class="col-md-2 col-sm-2 control-label">Title </label>
-                                <div class="col-md-10 col-sm-10">
-                                    <input type="text" class="form-control" data-ng-model="title" name="title" ng-maxlength="100" required/>
-                                </div><!-- Title -->
-                        </div> 
-                        <div class="form-group">
-                                <label for="category" class="col-md-2 col-sm-2 control-label">Category </label>
-                                <div class="col-md-10 col-sm-10">
-                                    <select class="form-control" data-ng-model="category">
-                                        <option selected></option>
-                                        <option ng-repeat="cat in categoryIncludes">{{cat}}</option>
-                                    </select>
-                                </div><!-- Category -->
-                        </div>
-                        <div class="form-group">
-                            <label for="name" class="col-md-2 col-sm-2 control-label">Start Date </label>
-                            <div class="col-md-5 col-sm-4">
-                                <div class="input-group">
-                                    <input 
-                                    type="date" 
-                                    class="form-control" 
-                                    uib-datepicker-popup ng-model="start_date" 
-                                    is-open="status.opened" 
-                                    min-date="minDate" 
-                                    datepicker-options="dateOptions" 
-                                    date-disabled="disabled(date, mode)" 
-                                    close-text="Close" />
-                                    <!--span class="input-group-btn">
-                                        <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-                                    </span-->
-                                </div>
-                            </div>
-                            </div>
-                            <div class="form-group">
-                            <label for="name" class="col-md-2 col-sm-2 control-label">End Date </label>
-                            <div class="col-md-4 col-sm-4">
-                                <p class="input-group">
-                                  <input 
-                                    type="date" 
-                                    class="form-control" 
-                                    uib-datepicker-popup ng-model="end_date" 
-                                    is-open="status.opened" 
-                                    min-date="minDate" 
-                                    datepicker-options="dateOptions" 
-                                    date-disabled="disabled(date, mode)" 
-                                    close-text="Close" />
-                                  <!--span class="input-group-btn">
-                                    <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-                                  </span-->
-                                </p>
-                            </div><!-- Start Date/End Date -->
-                        </div><!-- row -->
-                        <div class="form-group"><!-- Description -->
-                                <label for="desc" class="col-md-2 col-sm-2 control-label">Description </label>
-                                <div class="col-md-10 col-sm-10">
-                                    <textarea class="form-control" data-ng-model="description" name="description" ng-maxlength="1500" rows="7" required/>
-                                    <span>{{1500-description.length}} characters left</span>
-                                </div>
-                        </div> 
-                        <div class="col-md-9 col-sm-7"></div>
-                        <div class="form-group"><!-- Button -->
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            <button type="submit" ng-disabled="project_Add.$invalid" class="btn btn-primary">Post</button>  
-                        </div>
-                        <div data-ng-show="error"><strong data-ng-bind="error"></strong></div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 <script>
-    $('#addAnnoc').on('submit', function() {
-  $('#createAnnoc').modal('hide');
+    $('#projPropose').on('submit', function() {
+  $('#interestModal').modal('hide');
   $('body').removeClass('modal-open');
 $('.modal-backdrop').remove();
 });
@@ -418,7 +341,7 @@ $('.modal-backdrop').remove();
 </script>
 
     <!-- Indicate Interest modal -->
-  <div class="modal fade" id="interestModal" tabindex="-1" role="dialog" aria-labelledby="indicateInterestLabel" style="z-index: 2147483647;">
+  <div data-ng-init="projectList();" class="modal fade" id="interestModal" tabindex="-1" role="dialog" aria-labelledby="indicateInterestLabel" style="z-index: 2147483647;" data-ng-controller="AnnouncementRequestsController">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -428,15 +351,15 @@ $('.modal-backdrop').remove();
         
           <div class="modal-body">
             <!-- Indicate Interest form-->
-            <form  name="indicateInterestForm" novalidate>
+            <form  name="indicateInterestForm" data-ng-if="announcement.status !== 'closed'" data-ng-submit="add()" novalidate>
             
             <div class="form-group col-md-12 col-sm-12">
               <label class="col-md-6" for="projectId">Project ID</label>
               <div class="col-md-6">
-              <select class="form-control" ng-model="project.courseId" name="projectId" id="projectId">
+              <select class="form-control" ng-model="projectId" name="projectId" id="projectId">
 
-                    <option  value="">{{project.title}}</option>
-                  <option ng-repeat = "project in Projects" value="{{project._id}}">{{project.title}}</option>
+                  
+                  <option ng-repeat = "project in projects " value="{{project._id}}">{{project.title}}</option>
               </select>
               </div>
             </div>
@@ -444,9 +367,10 @@ $('.modal-backdrop').remove();
               <label for="descIn">Project Request Message to Faculty</label>
               <textarea rows="3" ng-model="description" class="form-control" id="descIn" placeholder="Description" ng-maxlength="1000" required></textarea>
             </div>
+            <input type="hidden" id="announcementId" >
             <div class="col-md-offset-9 col-sm-offset-6">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Send</button>
+              <button type="submit" id="projPropose" data-ng-disabled="indicateInterestFrom.$invalid" ng-click="cancel()" class="btn btn-primary">Send</button>
               </div>
             </form>
           </div>
