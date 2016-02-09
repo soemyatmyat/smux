@@ -19,7 +19,7 @@ var getErrorMessage = function(err) {
 ////////////////////////
 exports.list = function(req, res, next) {
 	var role = req.user.role;
-	//db.connect(function(err, results) {});
+	db.connect(function(err, results) {});
 
 	if (role == "Faculty") {
 		db.query("SELECT _id, title, category, description, posted_date, faculty_id, start_date, end_date, project_id, course_id, status FROM `Announcements` WHERE  faculty_id = ?", [req.user._id], function(err,rows){
@@ -74,7 +74,7 @@ exports.list = function(req, res, next) {
 exports.read = function(req, res) {
 	var id = req.params.announcId;
 
-	//db.connect(function(err, results) {});
+	db.connect(function(err, results) {});
 
 	/**db.query("SELECT temp._id, title, category, faculty_id, description, posted_date, project_id, start_date, end_date" + 
 		"course_id, status, faculty_name from " + 
@@ -122,7 +122,7 @@ exports.update = function(req, res) {
 		course_id: req.body.course_id,
 		status: "open"
 	}
-	//db.connect(function(err,results) {});
+	db.connect(function(err,results) {});
 	db.query("UPDATE `Announcements` SET ? WHERE `_id` = ?", [announcement, id], function(err,rows){
 		if (err) {
 			return res.status(400).send({
@@ -165,7 +165,7 @@ exports.add = function(req, res) {
 		status: "open"
 	}
 	//alert(announcement);
-	//db.connect(function(err,results) {});
+	db.connect(function(err,results) {});
 	db.query("INSERT INTO `Announcements` SET ? ", announcement, function(err,rows){
 		if (err) {
 			console.log(err);
@@ -195,7 +195,7 @@ exports.add = function(req, res) {
 ///////////////////
 exports.delete = function(req, res) {
 	var id = req.params.announcId;
-	//db.connect(function(err, results) {});	
+	db.connect(function(err, results) {});	
 	test = db.query("DELETE FROM `Announcements` WHERE `_id` = '" + [id] + "';" , function(err,rows){
 		if (err) {
 			return res.status(400).send({

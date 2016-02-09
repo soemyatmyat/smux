@@ -22,7 +22,7 @@ exports.list = function(req, res, next) {
 	var role = req.user.role;
 
 	var id = req.user._id;
-	//db.connect(function(err, results) {});	
+	db.connect(function(err, results) {});	
 
 	if(role == 'faculty'){
 		db.query("SELECT t1.*, name as organization FROM " + 
@@ -79,7 +79,7 @@ exports.read = function(req, res) {
 	var announcement_id = req.params.announcement_id;
 	var org_id = req.query.org_id;
 
-	//db.connect(function(err, results) {});
+	db.connect(function(err, results) {});
 	db.query("SELECT * FROM `AnnouncementRequests` WHERE `announcement_id` = ? and `org_id`", [announcement_id, org_id], function(err,rows){
 		if (err) {
 			return res.status(400).send({
@@ -109,7 +109,7 @@ exports.add = function(req, res) {
 		status: 'submitted'
 	}
 	
-	//db.connect(function(err,results) {});
+	db.connect(function(err,results) {});
 	db.query("INSERT INTO `AnnouncementRequests` SET ? ", request, function(err,rows){
 		if (err) {
 			console.log("stuck in inserting");
@@ -145,7 +145,7 @@ exports.update = function(req, res) {
 		_id: req.body.project_id
 	}
 
-	//db.connect(function(err, results) {});
+	db.connect(function(err, results) {});
 	db.query("UPDATE `Projects` SET `status` = ?, `faculty_id` = ?, `course_id` = ? WHERE `_id` = ?", ["On-Going", faculty_id, course_id, project_id], function(err, rows) {
 		if (err) {
 			return res.status(400).send({
@@ -166,7 +166,7 @@ exports.update = function(req, res) {
 	/*
 	var project_id = req.params.project_id;
 	var faculty_id = req.params.faculty_id;
-	//db.connect(function(err, results) {});	
+	db.connect(function(err, results) {});	
 	test = db.query("DELETE FROM `Requests` WHERE `project_id` = ? and `faculty_id`" + [id] + "';" , function(err,rows){
 		if (err) {
 			return res.status(400).send({

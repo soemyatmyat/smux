@@ -20,7 +20,7 @@ var getErrorMessage = function(err) {
 ///////////////////
 exports.list = function(req, res, next) {
 	var org_id = req.user._id;
-	//db.connect((function(err, results) {});	
+	db.connect(function(err, results) {});	
 	db.query("SELECT temp._id, temp.course_code, temp.project_id, temp.faculty_id, temp.message, temp.requested_date, temp.status, " + 
 		"projects.title as project_name, users.name as faculty_name, users.email_address as faculty_email FROM projects, users, " + 
 		"(SELECT * from `requests` where project_id in (SELECT _id as project_id FROM `projects` WHERE `org_id` = ?)) as temp " + 
@@ -48,7 +48,7 @@ exports.read = function(req, res) {
 	var project_id = req.params.project_id;
 	var faculty_id = req.query.faculty_id;
 
-	//db.connect((function(err, results) {});
+	db.connect(function(err, results) {});
 	db.query("SELECT * FROM `requests` WHERE `project_id` = ? and `faculty_id`", [project_id, faculty_id], function(err,rows){
 		if (err) {
 			return res.status(400).send({
@@ -78,7 +78,7 @@ exports.add = function(req, res) {
 		status: 'submitted'
 	}
 	
-	//db.connect((function(err,results) {});
+	db.connect(function(err,results) {});
 	db.query("INSERT INTO `Requests` SET ? ", request, function(err,rows){
 		if (err) {
 			return res.status(400).send({
@@ -113,7 +113,7 @@ exports.update = function(req, res) {
 		_id: req.body.project_id
 	}
 
-	//db.connect((function(err, results) {});
+	db.connect(function(err, results) {});
 	db.query("UPDATE `Projects` SET `status` = ?, `faculty_id` = ?, `course_id` = ? WHERE `_id` = ?", ["On-Going", faculty_id, course_id, project_id], function(err, rows) {
 		if (err) {
 			return res.status(400).send({

@@ -65,7 +65,7 @@ exports.logout = function(req, res) {
 ///////////////
 exports.list = function(req, res, next) {
 	if (req.user) {
-		//db.connect(function(err, results) {});
+		db.connect(function(err, results) {});
 		db.query("SELECT _id, name, email_address, role FROM `users`", function(err,rows){
 			if (err) {
 				return res.status(400).send({
@@ -86,7 +86,7 @@ exports.list = function(req, res, next) {
 ////////////////
 exports.read = function(req, res) {
 	var id = req.params.userId;
-	//db.connect(function(err, results) {});
+	db.connect(function(err, results) {});
 	var test = db.query("SELECT _id, name, email_address, role FROM `users` WHERE `_id` = ?", [id], function(err,rows){
 		if (err) {
 
@@ -106,7 +106,7 @@ exports.update = function(req, res) {
 		email_address: req.body.email_address,
 		role: req.body.role
 	}
-	//db.connect(function(err,results) {});
+	db.connect(function(err,results) {});
 	test = db.query("UPDATE `users` SET ? WHERE `_id` = ?", [data, id], function(err,rows){
 		if (err) {
 			return res.status(400).send({
@@ -139,7 +139,7 @@ exports.register = function(req, res) {
 			password: pwd,
 			role: "Organization"
 		}
-		//db.connect(function(err,results) {});
+		db.connect(function(err,results) {});
 		db.query("INSERT INTO `users` SET ? ", data, function(err,rows){
 			if (err) {
 				var message = getErrorMessage(err);
@@ -165,7 +165,7 @@ exports.add = function(req, res) {
 		password: pwd,
 		role: req.body.role
 	}
-	//db.connect(function(err,results) {});
+	db.connect(function(err,results) {});
 	db.query("INSERT INTO `users` SET ? ", data, function(err,rows){
 		if (err) {
 			return res.status(400).send({
@@ -194,7 +194,7 @@ exports.add = function(req, res) {
 exports.delete = function(req, res) {
 	var id = req.params.userId;
 	
-	//db.connect(function(err, results) {});	
+	db.connect(function(err, results) {});	
 	db.query("DELETE FROM `users` WHERE `_id` = '" + [id] + "';" , function(err,rows){
 		if (err) {
 			return res.status(400).send({

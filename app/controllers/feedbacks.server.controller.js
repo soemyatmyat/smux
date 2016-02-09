@@ -26,7 +26,7 @@ exports.add = function(req, res) {
 		feedback_text: req.body.feedback_text
 	}
 
-	////db.connect(((function(err, results) {});
+	db.connect(function(err, results) {});
 	db.query("INSERT INTO Feedbacks SET ? ", feedback, function(err, rows) {
 		if (err) {
 			return res.status(400).send({
@@ -59,7 +59,7 @@ exports.read = function(req, res) {
 		faculty_feedback: {},
 		org_feedback: {}
 	}
-	//db.connect((function(err, results) {});
+	db.connect(function(err, results) {});
 	db.query("SELECT * FROM `feedbacks` WHERE `project_id` = ?", [project_id], function(err,rows){
 		if (err) {
 			return res.status(400).send({
