@@ -10,10 +10,20 @@ module.exports = function() {
 
 	passport.deserializeUser(function(_id, done) {
 		var db = mysql();
-		//db.getConnection(function(err, results) {});
-		db.query("SELECT _id, name, email_address, role FROM `users` WHERE `_id` = '" + _id + "'", function(err,rows){
-			done(err, rows[0]);
-		})
+		db.getConnection(function(err, Connection) {
+			if (err) {
+				Connection.release();
+				console.log(err);
+			} else {
+				Connection.query("SELECT _id, name, email_address, role FROM `users` WHERE `_id` = '" + _id + "'", function(err,rows){
+					Connection.release();
+					if (err) {
+						console.log(err);
+					}
+					done(err, rows[0]);
+				})
+			}
+		});
 		//db.end();
 	});
 
