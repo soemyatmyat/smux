@@ -5,8 +5,9 @@ angular.module('announcements').controller('AnnouncementController', ['$scope', 
         $scope.authentication = Authentication;
         $scope.statusIncludes = ['open'];
         $scope.categoryIncludes = ['Accounting', 'Arts', 'Capstone', 'IT', 'Social Psychology'];
-        $scope.projects = Projects.list();
-        console.log($scope.projects);
+       
+        
+        //console.log(Projects);
         //console.log($scope.Projects);
         $scope.includeStatus = function(status) {
             //alert("filterText");
@@ -139,6 +140,10 @@ angular.module('announcements').controller('AnnouncementController', ['$scope', 
             $scope.announcements = Announcements.query();
         };
 
+        $scope.projectList = function(){
+            $scope.projects = Projects.query();
+            console.log($scope.projects);
+        }
 
 
         $scope.update = function() {

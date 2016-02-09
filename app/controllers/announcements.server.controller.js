@@ -207,6 +207,7 @@ exports.delete = function(req, res) {
 	});
 };
 
+
 var getDateFormat = function(date) {
 	var yyyy = date.getFullYear().toString();
 	var mm = (date.getMonth()+1).toString(); // getMonth() is zero-based

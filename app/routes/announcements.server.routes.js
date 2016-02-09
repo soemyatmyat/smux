@@ -1,13 +1,14 @@
 
 var users = require('../../app/controllers/users.server.controller'),
-	announcements = require('../../app/controllers/announcements.server.controller');
+	announcements = require('../../app/controllers/announcements.server.controller'),
+	projects = require('../../app/controllers/announcements.server.controller');
 
 module.exports = function(app) {
 
 
 	// list the existing users, C
 	app.route('/api/announcements')
-		.get(users.requiresLogin, announcements.list)
+		.get(users.requiresLogin, announcements.list, projects.list)
 		.post(users.requiresLogin, announcements.add);
 
 	// R,U,D

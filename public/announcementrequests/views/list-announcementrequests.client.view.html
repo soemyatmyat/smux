@@ -1,4 +1,4 @@
-<div data-ng-controller="RequestsController">
+<div data-ng-controller="AnnouncementRequestsController">
 
     <div class="header col-md-12 col-sm-12 col-xs-12">
         <div class="header_resize col-md-12 col-sm-12 col-xs-12">
@@ -26,9 +26,9 @@
                             <li data-ng-if="authentication.user.role == 'Admin'"><a href="/#!/users">User Management</a></li>
                             <!---->
                             <li><a href="/#!/projects">Projects <span class="sr-only">(current)</span></a></li>
-                            <li class="active" data-ng-if="authentication.user.role == 'Organization'"><a href="/#!/requests">Request Inbox</a></li>
+                            <li data-ng-if="authentication.user.role == 'Organization'"><a href="/#!/requests">Request Inbox</a></li>
                             <li><a href="/#!/announcements">Faculty Announcements</a></li>
-                            <li data-ng-if="authentication.user.role == 'Faculty'"><a href="/#!/announcementrequests">
+                            <li class="active" data-ng-if="authentication.user.role == 'Faculty'"><a href="/#!/announcementrequests">Request Inbox</a></li>
                             <li><a class="menu1"  href="faq.html">FAQ</a></li>
                         </ul>
                     </div><!-- /.navbar-collapse -->
@@ -37,30 +37,23 @@
         </div>
     </div>
     
-    <section data-ng-init="list()" class="main-content-body col-md-12">
-        <br/>
-        <div class="row display">
-            <div class="col-md-8">
-                Sort by: 
-                <button type="button" data-ng-class="{'btn-primary':accounting,'btn-default':!accounting}" class="btn btn-sm" data-ng-click="includeCategory('Accounting')">Accounting</button>
-                <button type="button" data-ng-class="{'btn-primary':arts,'btn-default':!arts}" class="btn btn-sm" data-ng-click="includeCategory('Arts')">Arts</button>
-                <button type="button" data-ng-class="{'btn-primary':capstone,'btn-default':!capstone}" class="btn btn-sm" data-ng-click="includeCategory('Capstone')">Capstone</button>
-                <button type="button" data-ng-class="{'btn-primary':it,'btn-default':!it}" class="btn btn-sm" data-ng-click="includeCategory('IT')">IT</button>
-                <button type="button" data-ng-class="{'btn-primary':social,'btn-default':!social}" class="btn btn-sm" data-ng-click="includeCategory('Social Psychology')">Social Psychology</button> 
-            </div>
-        </div>
+    <section data-ng-init="list()">
+        <p>Sort By:
+        <button type="button" class="btn btn-default btn-sm" ng-click="tabs[0].active = true">Project</button>
+        <button type="button" class="btn btn-default btn-sm" ng-click="tabs[0].active = true">Requested Date</button>
+        <button type="button" class="btn btn-default btn-sm" ng-click="tabs[0].active = true">Category3</button> 
+        <button type="button" class="btn btn-default btn-sm" ng-click="tabs[0].active = true">Category1</button>
+        <button type="button" class="btn btn-default btn-sm" ng-click="tabs[0].active = true">Category1</button>
+        Search Box
+        </p>
         <!--- Requests Lists -->    
-        <div class="listdiv">
-            
-            <!--Header-->
-            <h4 class="mainTitle"><strong>Requests</strong></h4>
-
-            <hr/>     
-            <ul class="lists">
-                <li class="list-group-item" data-ng-repeat="request in requests">
+        <div class = "panel panel-default">
+            <div class = "panel-heading">Requests</div>       
+            <ul class="list-group">
+                <li class="list-group-item" data-ng-repeat="request in announcementrequests">
                     <p>
-                        <a data-ng-href="/#!/projects/{{request.project_id}}"><h4>{{request.project_name}}</a> <em class="small pull-right">Requested on: {{request.requested_date}}</em></h4>
-                        <h5>Faculty: {{request.faculty_name}} ({{request.faculty_email}})</h5>
+                        <a data-ng-href="/#!/announcements/{{request.announcement_id}}"><h4>{{request.title}}</a> <em class="small pull-right">Requested on: {{request.requested_date}}</em></h4>
+                        <h5>Organization: {{request.organization}} </h5>
                         <span data-ng-bind="request.message"></span>
                     </p>
                     <p>
