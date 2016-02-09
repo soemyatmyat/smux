@@ -1,5 +1,7 @@
 var	mysql = require('../../config/mysql'),
 	db = mysql();
+	/*db.connect(function(err,results){});*/
+	/*db;*/
 
 ////////////////////
 // Error Message //
@@ -21,7 +23,7 @@ var getErrorMessage = function(err) {
 exports.list = function(req, res, next) {
 	var role = req.user.role;
 
-	/*
+	
 	db.getConnection(function(err, Connection) {
 		if (err) {
 			Connection.release();
@@ -68,7 +70,9 @@ exports.list = function(req, res, next) {
 				})
 			}
 		}
-	});*/
+	});
+
+	/*
 
 	db.connect(function(err, results) {});
 	if (role == "Faculty" || role == "Admin") {
@@ -110,6 +114,7 @@ exports.list = function(req, res, next) {
 			}
 		});
 	}
+	*/
 };
 
 
@@ -119,42 +124,49 @@ exports.list = function(req, res, next) {
 exports.read = function(req, res) {
 	var id = req.params.projectId;
 
-	db.connect(function(err, results) {});
-
-	db.query("SELECT project._id, title, category, contact_person, contact_email, contact_HP, description, posted_date, start_date, end_date, " +
-		"org_id, faculty_id, course_id, status, term, faculty_name, org_name, feedbacks._id as feedback_id " + 
-		"FROM (SELECT temp._id, title, category, contact_person, contact_email, contact_HP, description, posted_date, start_date, end_date, " + 
-		"org_id, faculty_id, course_id, status, term, faculty_name, users.name as org_name from " + 
-		"(SELECT projects._id, title, category, contact_person, contact_email, contact_HP, description, posted_date, start_date, " + 
-		"end_date, org_id, faculty_id, course_id, status, term, users.name as faculty_name from `projects` left outer join `users` " + 
-		"on projects.faculty_id = users._id where projects._id = ?) as temp left outer join users on temp.org_id = users._id) as Project " +
-		"left outer join FEEDBACKS on project._id = feedbacks.project_id and feedbacks.user_id = org_id;", [id], function(err,rows){		
-		if (err) {
-			return res.status(400).send({
-					message: getErrorMessage(err)
-			});
-		} else {
-			db.query("SELECT * from `requests` WHERE `project_id` =? and `faculty_id` = ?", [rows[0]._id, req.user._id], function(err, results) {
-				if (err) {
-					return res.status(400).send({
+	db.getConnection(function(err, Connection) {
+	//db.connect(function(err, results) {});
+	if (err) {
+		return res.status(400).send({ message: getErrorMessage(err) });
+	} else {
+		Connection.query("SELECT project._id, title, category, contact_person, contact_email, contact_HP, description, posted_date, start_date, end_date, " +
+			"org_id, faculty_id, course_id, status, term, faculty_name, org_name, feedbacks._id as feedback_id " + 
+			"FROM (SELECT temp._id, title, category, contact_person, contact_email, contact_HP, description, posted_date, start_date, end_date, " + 
+			"org_id, faculty_id, course_id, status, term, faculty_name, users.name as org_name from " + 
+			"(SELECT projects._id, title, category, contact_person, contact_email, contact_HP, description, posted_date, start_date, " + 
+			"end_date, org_id, faculty_id, course_id, status, term, users.name as faculty_name from `projects` left outer join `users` " + 
+			"on projects.faculty_id = users._id where projects._id = ?) as temp left outer join users on temp.org_id = users._id) as Project " +
+			"left outer join FEEDBACKS on project._id = feedbacks.project_id and feedbacks.user_id = org_id;", [id], function(err,rows){	
+			if (err) {
+				return res.status(400).send({
 						message: getErrorMessage(err)
-					});
-				} else {
-					if (results.length != 0) {
-						rows[0].status = "requested";
-					} 
-				}
-				//if (rows[0].start_date != null) rows[0].start_date = new Date(rows[0].start_date);
-				//if (rows[0].end_date != null) rows[0].end_date = new Date(rows[0].end_date);
-				rows[0].posted_date = new Date(rows[0].posted_date);
-				//if (rows[0].start_date != null) rows[0].start_date = getDateFormat(rows[0].start_date);
-				//if (rows[0].end_date != null) rows[0].end_date = getDateFormat(rows[0].end_date);
-				rows[0].posted_date = getDateFormat(rows[0].posted_date);
-				res.json(rows[0]);
-			})
+				});
+			} else {
+				Connection.query("SELECT * from `requests` WHERE `project_id` =? and `faculty_id` = ?", [rows[0]._id, req.user._id], function(err, results) {
+					Connection.release();	
+					if (err) {
+						return res.status(400).send({
+							message: getErrorMessage(err)
+						});
+					} else {
+						if (results.length != 0) {
+							rows[0].status = "requested";
+						} 
+					}
+					//if (rows[0].start_date != null) rows[0].start_date = new Date(rows[0].start_date);
+					//if (rows[0].end_date != null) rows[0].end_date = new Date(rows[0].end_date);
+					rows[0].posted_date = new Date(rows[0].posted_date);
+					//if (rows[0].start_date != null) rows[0].start_date = getDateFormat(rows[0].start_date);
+					//if (rows[0].end_date != null) rows[0].end_date = getDateFormat(rows[0].end_date);
+					rows[0].posted_date = getDateFormat(rows[0].posted_date);
+					res.json(rows[0]);
+				})
 
-		}	
-	})
+			}	
+		})
+	}
+	
+	});
 };
 
 ////////////////////////
@@ -179,28 +191,35 @@ exports.update = function(req, res) {
 	if (project.end_date != null) {
 		project.end_date = new Date(project.end_date);
 	}
-	db.connect(function(err,results) {});
-	db.query("UPDATE `projects` SET ? WHERE `_id` = ?", [project, id], function(err,rows){
+	db.getConnection(function(err, Connection){
+		//db.connect(function(err,results) {});
 		if (err) {
-			return res.status(400).send({
-				message: getErrorMessage(err)
-			});
+			return res.status(400).send({ message: getErrorMessage(err) });
 		} else {
-			project = {
-				_id: id,
-				title:req.body.title,
-				category: req.body.category,
-				start_date: req.body.start_date,
-				end_date: req.body.end_date,
-				contact_person: req.body.contact_person,
-				contact_email: req.body.contact_email,
-				contact_HP: req.body.contact_HP,
-				description: req.body.description,
-				status: "open"
-			}
-			res.json(project);
+			Connection.query("UPDATE `projects` SET ? WHERE `_id` = ?", [project, id], function(err,rows){
+				Connection.release();
+				if (err) {
+					return res.status(400).send({
+						message: getErrorMessage(err)
+					});
+				} else {
+					project = {
+						_id: id,
+						title:req.body.title,
+						category: req.body.category,
+						start_date: req.body.start_date,
+						end_date: req.body.end_date,
+						contact_person: req.body.contact_person,
+						contact_email: req.body.contact_email,
+						contact_HP: req.body.contact_HP,
+						description: req.body.description,
+						status: "open"
+					}
+					res.json(project);
+				}
+			});
 		}
-	})
+	});
 };
 
 
@@ -224,23 +243,30 @@ exports.add = function(req, res) {
 		course_id: null,
 		status: "open"
 	}
-	db.connect(function(err,results) {});
-	db.query("INSERT INTO `projects` SET ? ", project, function(err,rows){
+	db.getConnection(function(err, Connection) {
+		//db.connect(function(err,results) {});
 		if (err) {
-			return res.status(400).send({
-				message: getErrorMessage(err)
-			});
+			return res.status(400).send({ message: getErrorMessage(err) });
 		} else {
-			db.query("SELECT _id FROM `projects` WHERE `title` = ? and `org_id`", [project.title, project.org_id], function(err,rows){
+			Connection.query("INSERT INTO `projects` SET ? ", project, function(err,rows){
 				if (err) {
 					return res.status(400).send({
 						message: getErrorMessage(err)
 					});
 				} else {
-					project._id = rows[0]._id;
-					res.json(project);
+					Connection.query("SELECT _id FROM `projects` WHERE `title` = ? and `org_id`", [project.title, project.org_id], function(err,rows){
+						Connection.release();
+						if (err) {
+							return res.status(400).send({
+								message: getErrorMessage(err)
+							});
+						} else {
+							project._id = rows[0]._id;
+							res.json(project);
+						}
+						
+					});
 				}
-				
 			});
 		}
 	});
@@ -252,15 +278,22 @@ exports.add = function(req, res) {
 ///////////////////
 exports.delete = function(req, res) {
 	var id = req.params.projectId;
-	db.connect(function(err, results) {});	
-	test = db.query("DELETE FROM `projects` WHERE `_id` = '" + [id] + "';" , function(err,rows){
+	db.getConnection(function(err, Connection){
+	//db.connect(function(err, results) {});	
 		if (err) {
-			return res.status(400).send({
-				message: getErrorMessage(err)
-			});
+			return res.status(400).send({ message: getErrorMessage(err) });
 		} else {
-			res.json(req.params.projectId);
-		}	
+			Connection.query("DELETE FROM `projects` WHERE `_id` = '" + [id] + "';" , function(err,rows){
+				Connection.release();
+				if (err) {
+					return res.status(400).send({
+						message: getErrorMessage(err)
+					});
+				} else {
+					res.json(req.params.projectId);
+				}	
+			});
+		}
 	});
 };
 
