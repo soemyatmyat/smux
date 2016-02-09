@@ -23,11 +23,7 @@ exports.list = function(req, res, next) {
 
 	var id = req.user._id;
 	db.connect(function(err, results) {});	
-	console.log("outside");
-	console.log(id);
-	console.log(role);
 	if(role == 'Faculty'){
-		console.log('faculty');
 		db.query("SELECT t1._id as _id, title, t1.requested_date as requested_date, t1.message as message, t1.project_id as project_id, name as organization FROM " + 
 		"(SELECT AR._id as _id, org_id, announcement_id, title, AR.posted_date as requested_date, " +
 		" AR.course_id, AR.project_id, message, AR.status" +
@@ -42,13 +38,11 @@ exports.list = function(req, res, next) {
 		" on announcement_id = Announcements._id" + 
 		" WHERE Announcements.faculty_id = ?;",[id], function(err, rows){ **/
 		if (err) {
-			console.log("error");
 			console.log(getErrorMessage(err));
 			return res.status(400).send({
 				message: getErrorMessage(err)
 			});
 		} else {
-			console.log("let's get the value");
 			for (var i = 0; i < rows.length; i++) {
 				rows[i].requested_date = getDateFormat(rows[i].requested_date);
 				//rows[i].posted_date = getDateFormat(rows[i].posted_date);
@@ -87,8 +81,7 @@ exports.list = function(req, res, next) {
 ////////////////////
 // read a request //
 ///////////////////
-exports.read = function(req, res) {
-	
+exports.read = function(req, res) {	
 	var announcement_id = req.params.announcement_id;
 	var org_id = req.query.org_id;
 
