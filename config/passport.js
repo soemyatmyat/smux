@@ -19,8 +19,9 @@ module.exports = function() {
 					Connection.release();
 					if (err) {
 						console.log(err);
+					} else {
+						done(err, rows[0]);
 					}
-					done(err, rows[0]);
 				})
 			}
 		});

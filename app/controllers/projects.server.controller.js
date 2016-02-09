@@ -30,7 +30,6 @@ exports.list = function(req, res, next) {
 					"FROM `projects` left outer join `users` on projects.org_id = users._id WHERE status = ? OR faculty_id = ?) as temp " + 
 					"left outer join requests on temp._id = requests.project_id and faculty_id = ?", 
 					["open", req.user._id, req.user._id], function(err,rows){
-					console.log("connection release");
 					Connection.release();
 					if (err) {
 						return res.status(400).send({
@@ -53,7 +52,6 @@ exports.list = function(req, res, next) {
 					"FROM `projects` left outer join `users` on projects.org_id = users._id WHERE org_id = ?) as project left outer join feedbacks on " + 
 					"project._id = feedbacks.project_id and feedbacks.user_id = org_id", 
 					[org_id], function(err,rows){
-					console.log("connection release");
 					Connection.release();
 					if (err) {
 						return res.status(400).send({
