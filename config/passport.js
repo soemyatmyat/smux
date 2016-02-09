@@ -12,7 +12,6 @@ module.exports = function() {
 		var db = mysql();
 		db.getConnection(function(err, Connection) {
 			if (err) {
-				Connection.release();
 				console.log(err);
 			} else {
 				Connection.query("SELECT _id, name, email_address, role FROM `users` WHERE `_id` = '" + _id + "'", function(err,rows){
