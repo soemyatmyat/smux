@@ -3,7 +3,7 @@ var users = require('../../app/controllers/users.server.controller'),
 	announcementrequests = require('../../app/controllers/announcementrequests.server.controller');
 
 module.exports = function(app) {
-
+	console.log("server route");
 	// list the existing requests, C
 	app.route('/api/announcementrequests')
 		.get(users.requiresLogin, announcementrequests.list)
