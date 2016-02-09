@@ -41,7 +41,6 @@
     </div>
     
 
-    <!-- <section data-ng-init="list(); tab = 'available';category=['Accounting', 'Arts', 'Capstone', 'IT', 'Social Psychology']" class="main-content-body col-md-12" > -->
     <section data-ng-init="list()" class="main-content-body col-md-12" >
         <br/>
 
@@ -52,7 +51,7 @@
 
         <div class="row display" data-ng-show="show">
             <div class="col-md-8">
-                <button type="button" data-ng-class="{'btn-primary':open,'btn-default':!open}" class="btn btn-sm" data-ng-click="includeStatus('open')">My Available Projects</button>
+                <button type="button" data-ng-class="{'btn-primary':open,'btn-default':!open}" class="btn btn-sm" data-ng-click="includeStatus('open')">Available Projects</button>
                 <button type="button" data-ng-class="{'btn-primary':ongoing,'btn-default':!ongoing}" class="btn btn-sm" data-ng-click="includeStatus('On-Going')">My On-Going Projects</button>
                 <button type="button" data-ng-class="{'btn-primary':completed,'btn-default':!completed}" class="btn btn-sm" data-ng-click="includeStatus('Completed')">My Completed Projects</button>
                 <button type="button" data-ng-class="{'btn-primary':requested,'btn-default':!requested}" class="btn btn-sm" data-ng-click="includeStatus('requested')">My Requested Projects</button>

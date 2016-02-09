@@ -26,7 +26,7 @@ exports.list = function(req, res, next) {
 	
 	db.getConnection(function(err, Connection) {
 		if (err) {
-			Connection.release();
+			return res.status(400).send({ message: getErrorMessage(err) });
 		} else {
 			if (role == "Faculty" || role == "Admin") {
 				Connection.query("SELECT temp._id as _id, title, category, description, posted_date, org_id, temp.status, org_name, requests._id as req_id " +
