@@ -30,7 +30,7 @@ exports.list = function(req, res, next) {
 		" FROM AnnouncementRequests as AR LEFT OUTER JOIN Announcements " +
 		" ON announcement_id = Announcements._id " +
 		" WHERE Announcements.faculty_id = ? AND AnnouncementRequests.status != ?) AS t1 " + 
-		" LEFT OUTER JOIN Users ON t1.org_id = Users._id;", [id, 'submitted'], function(err, rows) {**/
+		" LEFT OUTER JOIN Users ON t1.org_id = Users._id;", [id, 'submitted'], function(err, rows) {
 		/**db.query("SELECT AnnouncementRequests._id, org_id, announcement_id," + 
 			" title, AnnouncementRequests.posted_date as requested_date, AnnouncementRequests.message" +
 			" AnnouncementRequests.course_id, AnnouncementRequests.project_id, AnnouncementRequests.status " +
