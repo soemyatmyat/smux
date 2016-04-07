@@ -10,6 +10,8 @@ var passport = require('passport');
 var session = require('express-session');
 // load flash module
 var flash = require('connect-flash');
+// load node mailer
+var nodemailer = require('nodemailer');
 
 // CommonJS module - initialize the Express application
 module.exports = function() {
@@ -41,6 +43,8 @@ module.exports = function() {
   // use flash
   app.use(flash());
 
+  // 
+
   // template location
   app.set('views', './app/views');
   // Node.js's templating engine EJS
@@ -60,5 +64,7 @@ module.exports = function() {
   require('../app/routes/announcements.server.routes.js')(app);
   // load the announcement request by passing the app
   require('../app/routes/announcementrequests.server.routes.js')(app);
+  // load the categories by passing the app
+  require('../app/routes/categories.server.routes.js')(app);
   return app;
 }

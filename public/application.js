@@ -1,5 +1,5 @@
 var appName = 'smux';
-var app = angular.module(appName, [ 'ui.bootstrap', 'ngResource', 'ngRoute', 'users', 'projects', 'requests', 'feedbacks', 'announcements','announcementrequests']);
+var app = angular.module(appName, ['dndLists', 'ui.bootstrap', 'ngResource', 'ngRoute', 'users', 'projects', 'requests', 'feedbacks', 'announcements','announcementrequests','categories']);
 
 app.config(['$locationProvider', function($locationProvider) {
         //if (window.history && window.history.pushState) {

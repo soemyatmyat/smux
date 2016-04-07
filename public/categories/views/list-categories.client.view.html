@@ -1,0 +1,168 @@
+<style>
+.ul[dnd-list], .ul[dnd-list] > li {
+    position: relative;
+}
+
+.box li {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    display: block;
+    padding: 0px;
+}
+
+/**
+ * Reduce opacity of elements during the drag operation. This allows the user
+ * to see where he is dropping his element, even if the element is huge. The
+ * .dndDragging class is automatically set during the drag operation.
+ */
+.box .dndDragging {
+    opacity: 0.7;
+}
+
+/**
+ * The dndDraggingSource class will be applied to the source element of a drag
+ * operation. It makes sense to hide it to give the user the feeling that he's
+ * actually moving it. Note that the source element has also .dndDragging class.
+ */
+.box .dndDraggingSource {
+    display: none;
+}
+
+/**
+ * An element with .dndPlaceholder class will be added as child of the dnd-list
+ * while the user is dragging over it.
+ */
+.box .dndPlaceholder {
+    background-color: #ddd;
+    min-height: 42px;
+    display: block;
+    position: relative;
+}
+
+/***************************** Element Selection *****************************/
+
+.box .selected .item {
+    color: #3c763d;
+    background-color: #dff0d8;
+}
+
+.box .selected .box {
+    border-color: #d6e9c6;
+}
+
+.box .selected .box > h3 {
+    color: #3c763d;
+    background-color: #dff0d8;
+    background-image: linear-gradient(to bottom,#dff0d8 0,#d0e9c6 100%);
+    border-color: #d6e9c6;
+}
+
+/***************************** Element type specific styles *****************************/
+
+.box .item {
+    padding: 10px 15px;
+}
+</style>
+<div class="main" data-ng-controller="CategoriesController">
+
+    <!-- navigation menu -->
+    <div class="header col-md-12 col-sm-12 col-xs-12">
+        <div class="header_resize col-md-12 col-sm-12 col-xs-12">
+            <div class="logo col-md-6 col-sm-6 col-xs-12" >
+                <a href="#"><img class="img-responsive" src="images/smu_logo.png" style="max-width : 40%; padding:4% 6%"/></a> 
+            </div>
+            <div class="profile-bar col-md-offset-2 col-md-4 col-sm-6 col-xs-12 pull-right" >
+                <span>
+                <h5>
+                    <a href="#"><img src="images/userpic.gif"/></a>
+                    Welcome, <span data-ng-bind="authentication.user.name"></span>
+                    <a href ="/logout">Log Out</a>
+                </h5>
+                </span>
+            </div>
+            <div class="clr"></div>
+
+            <nav class="navbar">
+                <div class="container-fluid">
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav">
+                            <li><a href="/#!/home">Home </a></li>
+                            <!--show only if the user is admin-->
+                            <li data-ng-if="authentication.user.role == 'Admin'"><a href="/#!/users">User Management</a></li>
+                            <li class="active" data-ng-if="authentication.user.role == 'Admin'"><a href="/#!/categories">Category Management</a></li>
+                            <!---->
+                            <li><a href="/#!/projects">Projects <span class="sr-only">(current)</span></a></li>
+                            <li data-ng-if="authentication.user.role == 'Organization'"><a href="/#!/requests">Request Inbox</a></li>
+                            <li><a href="/#!/announcements">Faculty Announcements</a></li>
+                            <li data-ng-if="authentication.user.role == 'Faculty'"><a href="/#!/announcementrequests">
+                            <li><a class="menu1"  href="faq.html">FAQ</a></li>
+                        </ul>
+                    </div><!-- /.navbar-collapse -->
+                </div><!-- /.container-fluid -->
+            </nav>
+        </div>
+    </div>
+    
+
+    <section data-ng-init="list()" class="main-content-body col-md-12" >
+        <br/>
+
+        <!-- Notification goes here! notify organization about project closure and ask for feedback -->
+        
+        <div class="display" data-ng-repeat="project in projects |filter:{status: 'Completed', feedback_id: null}">
+            <div class="flash alert alert-danger">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span> Project <a href="#!/projects/{{project._id}}">{{project.title}}</a> has been closed! Please give feedback to the project.</span>
+            </div>
+        </div>
+
+        <div data-ng-if="categories.lists.A !=  null">{{categories.lists.A}}</div>
+
+        <div class="box col-md-6" >
+            <h3>Categories</h3>
+        <ul dnd-list="list">
+    <!-- The dnd-draggable directive makes an element draggable and will
+         transfer the object that was assigned to it. If an element was
+         dragged away, you have to remove it from the original list
+         yourself using the dnd-mo  ved attribute -->
+            <li ng-repeat="item in categories.lists.A"
+                dnd-draggable="item"
+                dnd-effect-allowed="move"
+                dnd-selected="categories.selected = item"
+                ng-class="{'selected': categories.selected === item}"><div class="item">{{item.label}}</div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="col-md-6">
+            <div class="toolbox box box-grey box-padding">
+            <h3>New Category</h3>
+                <button type="button" class="btn btn-default btn-lg" dnd-effect-allowed="copy" dnd-draggable="item in categories.lists.A" dnd-copied="item.label = 'something'" disabled="disabled" >New</button>
+
+            <div ng-if="categories.lists.A.selected" class="box box-grey box-padding">
+                <h3>Selected</h3>
+                <input type="text" ng-model="categories.lists.A.selected.label" class="form-control" style="margin-top: 5px" />
+            </div>
+
+            <div class="trashcan box box-grey box-padding">
+                <!-- If you use [] as referenced list, the dropped elements will be lost -->
+                <h3>Trashcan</h3>
+                <ul dnd-list="[]">
+                    <li><img src="nested/trashcan.jpg"></li>
+                </ul>
+            </div>
+    </div>
+    </div>
+
+        
+    </section>
+
+    <div class="footer">
+        <div class="footer_resize center" style="align:centre">
+            <p class="lf" >&copy; Copyright 2015 Singapore Management University. All Rights Reserved</p>
+      
+        </div>
+    </div>
+
+</div>
