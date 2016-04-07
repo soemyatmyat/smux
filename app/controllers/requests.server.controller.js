@@ -20,29 +20,24 @@ var getErrorMessage = function(err) {
 ///////////////////
 exports.list = function(req, res, next) {
 	var org_id = req.user._id;
-	db.getConnection(function(err, Connection){
-	//db.connect(function(err, results) {});	
+	db.connect(function(err, results) {});	
+	db.query("SELECT temp._id, temp.course_code, temp.project_id, temp.faculty_id, temp.message, temp.requested_date, temp.status, " + 
+		"projects.title as project_name, users.name as faculty_name, users.email_address as faculty_email FROM projects, users, " + 
+		"(SELECT * from `requests` where project_id in (SELECT _id as project_id FROM `projects` WHERE `org_id` = ?)) as temp " + 
+		"WHERE projects._id = temp.project_id and users._id = temp.faculty_id;", [org_id], function(err, rows) {
 		if (err) {
-			return res.status(400).send({ message: getErrorMessage(err) });
+			return res.status(400).send({
+				message: getErrorMessage(err)
+			});
 		} else {
-			Connection.query("SELECT temp._id, temp.course_code, temp.project_id, temp.faculty_id, temp.message, temp.requested_date, temp.status, " + 
-				"projects.title as project_name, projects.category as category, users.name as faculty_name, users.email_address as faculty_email FROM projects, users, " + 
-				"(SELECT * from `requests` where project_id in (SELECT _id as project_id FROM `projects` WHERE `org_id` = ?)) as temp " + 
-				"WHERE projects._id = temp.project_id and users._id = temp.faculty_id;", [org_id], function(err, rows) {
-				Connection.release();
-				if (err) {
-					return res.status(400).send({
-						message: getErrorMessage(err)
-					});
-				} else {
-					for (var i = 0; i < rows.length; i++) {
-						rows[i].requested_date = getDateFormat(rows[i].requested_date);
-					}
-					res.json(rows);
-				}
-			})
+			for (var i = 0; i < rows.length; i++) {
+				rows[i].posted_date = getDateFormat(rows[i].posted_date);
+				rows[i].requested_date = getDateFormat(rows[i].requested_date);
+			}
+			res.json(rows);
 		}
-	});
+	})
+
 };
 
 ////////////////////
@@ -53,26 +48,19 @@ exports.read = function(req, res) {
 	var project_id = req.params.project_id;
 	var faculty_id = req.query.faculty_id;
 
-	db.getConnection(function(err, Connection){
-		//db.connect(function(err, results) {});
+	db.connect(function(err, results) {});
+	db.query("SELECT * FROM `requests` WHERE `project_id` = ? and `faculty_id`", [project_id, faculty_id], function(err,rows){
 		if (err) {
-			return res.status(400).send({ message: getErrorMessage(err) });
+			return res.status(400).send({
+				message: getErrorMessage(err)
+			});
 		} else {
-			Connection.query("SELECT * FROM `requests` WHERE `project_id` = ? and `faculty_id`", [project_id, faculty_id], function(err,rows){
-				Connection.release();
-				if (err) {
-					return res.status(400).send({
-						message: getErrorMessage(err)
-					});
-				} else {
-					if (rows.length != 0) {
-						rows[0].requested_date = getDateFormat(rows[0].requested_date);
-					}
-					res.json(rows[0]);
-				}	
-			})
-		}
-	});
+			if (rows.length != 0) {
+				rows[0].requested_date = getDateFormat(rows[0].requested_date);
+			}
+			res.json(rows[0]);
+		}	
+	})
 };
 
 
@@ -89,31 +77,24 @@ exports.add = function(req, res, next) {
 		requested_date: getDateFormat(today),
 		status: 'submitted'
 	}
-	db.getConnection(function(err, Connection){
-		//db.connect(function(err,results) {});
+	
+	db.connect(function(err,results) {});
+	db.query("INSERT INTO `Requests` SET ? ", request, function(err,rows){
 		if (err) {
-			return res.status(400).send({ message: getErrorMessage(err) });
+			return res.status(400).send({
+				message: getErrorMessage(err)
+			});
 		} else {
-			Connection.query("INSERT INTO `Requests` SET ? ", request, function(err,rows){
+			db.query("SELECT _id FROM `Requests` WHERE `project_id` = ? and `faculty_id`", [request.project_id, request.faculty_id], function(err,rows){
 				if (err) {
-					Connection.release();
 					return res.status(400).send({
 						message: getErrorMessage(err)
 					});
 				} else {
-					Connection.query("SELECT _id FROM `Requests` WHERE `project_id` = ? and `faculty_id`", [request.project_id, request.faculty_id], function(err,rows){
-						Connection.release();
-						if (err) {
-							return res.status(400).send({
-								message: getErrorMessage(err)
-							});
-						} else {
-							request._id = rows[0]._id;
-							res.json(request);
-						}
-						
-					});
+					request._id = rows[0]._id;
+					res.json(request);
 				}
+				
 			});
 		}
 	});
@@ -133,31 +114,24 @@ exports.update = function(req, res) {
 		_id: req.body.project_id
 	}
 
-	db.getConnection(function(err, Connection){
-		//db.connect(function(err, results) {});
+	db.connect(function(err, results) {});
+	db.query("UPDATE `Projects` SET `status` = ?, `faculty_id` = ?, `course_id` = ? WHERE `_id` = ?", ["On-Going", faculty_id, course_id, project_id], function(err, rows) {
 		if (err) {
-			return res.status(400).send({ message: getErrorMessage(err) });
+			return res.status(400).send({
+				message: getErrorMessage(err)
+			});
 		} else {
-			Connection.query("UPDATE `Projects` SET `status` = ?, `faculty_id` = ?, `course_id` = ? WHERE `_id` = ?", ["On-Going", faculty_id, course_id, project_id], function(err, rows) {
+			db.query("DELETE FROM `Requests` WHERE `project_id` = ?", [project_id], function(err, rows) {
 				if (err) {
 					return res.status(400).send({
 						message: getErrorMessage(err)
 					});
 				} else {
-					Connection.query("DELETE FROM `Requests` WHERE `project_id` = ?", [project_id], function(err, rows) {
-						Connection.release();
-						if (err) {
-							return res.status(400).send({
-								message: getErrorMessage(err)
-							});
-						} else {
-							res.json(project);
-						}
-					})
+					res.json(project);
 				}
 			})
 		}
-	});
+	})
 	/*
 	var project_id = req.params.project_id;
 	var faculty_id = req.params.faculty_id;

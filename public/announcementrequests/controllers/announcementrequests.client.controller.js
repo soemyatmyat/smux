@@ -16,9 +16,9 @@ angular.module('announcementrequests').controller('AnnouncementRequestsControlle
         };
 
         $scope.list = function() {
-            console.log("hello");
+            //console.log("hello");
             $scope.announcementrequests = AnnouncementRequests.query();
-            console.log($scope.announcementrequests);
+            //console.log($scope.announcementrequests);
         };
 
 		$scope.add = function() {;

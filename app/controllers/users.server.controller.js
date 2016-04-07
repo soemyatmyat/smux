@@ -65,23 +65,16 @@ exports.logout = function(req, res) {
 ///////////////
 exports.list = function(req, res, next) {
 	if (req.user) {
-		db.getConnection(function(err, Connection){
-			//db.connect(function(err, results) {});
+		db.connect(function(err, results) {});
+		db.query("SELECT _id, name, email_address, role FROM `users`", function(err,rows){
 			if (err) {
-				return res.status(400).send({ message: getErrorMessage(err) });
+				return res.status(400).send({
+					message: getErrorMessage(err)
+				});
 			} else {
-				Connection.query("SELECT _id, name, email_address, role FROM `users`", function(err,rows){
-					Connection.release();
-					if (err) {
-						return res.status(400).send({
-							message: getErrorMessage(err)
-						});
-					} else {
-						res.json(rows);
-					}
-				})
+				res.json(rows);
 			}
-		});
+		})
 	} else {
 		return res.redirect('/');
 	}
@@ -93,20 +86,13 @@ exports.list = function(req, res, next) {
 ////////////////
 exports.read = function(req, res) {
 	var id = req.params.userId;
-	db.getConnection(function(err, Connection){
-	//db.connect(function(err, results) {});
+	db.connect(function(err, results) {});
+	var test = db.query("SELECT _id, name, email_address, role FROM `users` WHERE `_id` = ?", [id], function(err,rows){
 		if (err) {
-			return res.status(400).send({ message: getErrorMessage(err) });
-		} else {
-			Connection.query("SELECT _id, name, email_address, role FROM `users` WHERE `_id` = ?", [id], function(err,rows){
-				Connection.release();
-				if (err) {
 
-				} else {
-					res.json(rows[0]);
-				}	
-			});
-		}
+		} else {
+			res.json(rows[0]);
+		}	
 	});
 };
 
@@ -120,27 +106,20 @@ exports.update = function(req, res) {
 		email_address: req.body.email_address,
 		role: req.body.role
 	}
-	db.getConnection(function(err, Connection){
-		//db.connect(function(err,results) {});
+	db.connect(function(err,results) {});
+	test = db.query("UPDATE `users` SET ? WHERE `_id` = ?", [data, id], function(err,rows){
 		if (err) {
-			return res.status(400).send({ message: getErrorMessage(err) });
-		} else {
-			Connection.query("UPDATE `users` SET ? WHERE `_id` = ?", [data, id], function(err,rows){
-				Connection.release();
-				if (err) {
-					return res.status(400).send({
-						message: getErrorMessage(err)
-					});
-				} else {
-					data = {
-						_id: id,
-						name:req.body.name,
-						email_address: req.body.email_address,
-						role: req.body.role
-					}
-					res.json(data);
-				}
+			return res.status(400).send({
+				message: getErrorMessage(err)
 			});
+		} else {
+			data = {
+				_id: id,
+				name:req.body.name,
+				email_address: req.body.email_address,
+				role: req.body.role
+			}
+			res.json(data);
 		}
 	});
 
@@ -160,22 +139,15 @@ exports.register = function(req, res) {
 			password: pwd,
 			role: "Organization"
 		}
-		db.getConnection(function(err, Connection){
-		//db.connect(function(err,results) {});
+		db.connect(function(err,results) {});
+		db.query("INSERT INTO `users` SET ? ", data, function(err,rows){
 			if (err) {
-				return res.status(400).send({ message: getErrorMessage(err) });
-			} else {
-				Connection.query("INSERT INTO `users` SET ? ", data, function(err,rows){
-					Connection.release();
-					if (err) {
-						var message = getErrorMessage(err);
-						req.flash('error', message);
-						return res.redirect('/register');
-					}
-					return res.redirect('/');
-				})
+				var message = getErrorMessage(err);
+				req.flash('error', message);
+				return res.redirect('/register');
 			}
-		});
+			return res.redirect('/');
+		})
 	} else {
 		return res.redirect('/');
 	}
@@ -193,30 +165,23 @@ exports.add = function(req, res) {
 		password: pwd,
 		role: req.body.role
 	}
-	db.getConnection(function(err, Connection){
-		//db.connect(function(err,results) {});
+	db.connect(function(err,results) {});
+	db.query("INSERT INTO `users` SET ? ", data, function(err,rows){
 		if (err) {
-			return res.status(400).send({ message: getErrorMessage(err) });
+			return res.status(400).send({
+				message: getErrorMessage(err)
+			});
 		} else {
-			Connection.query("INSERT INTO `users` SET ? ", data, function(err,rows){
+			db.query("SELECT _id FROM `users` WHERE `email_address` = ?", [data.email_address], function(err,rows){
 				if (err) {
 					return res.status(400).send({
 						message: getErrorMessage(err)
 					});
 				} else {
-					Connection.query("SELECT _id FROM `users` WHERE `email_address` = ?", [data.email_address], function(err,rows){
-						Connection.release();
-						if (err) {
-							return res.status(400).send({
-								message: getErrorMessage(err)
-							});
-						} else {
-							data._id = rows[0]._id;
-							res.json(data);
-						}
-						
-					});
+					data._id = rows[0]._id;
+					res.json(data);
 				}
+				
 			});
 		}
 	});
@@ -229,23 +194,16 @@ exports.add = function(req, res) {
 exports.delete = function(req, res) {
 	var id = req.params.userId;
 	
-	db.getConnection(function(err, Connection){
-		//db.connect(function(err, results) {});	
+	db.connect(function(err, results) {});	
+	db.query("DELETE FROM `users` WHERE `_id` = '" + [id] + "';" , function(err,rows){
 		if (err) {
-			return res.status(400).send({ message: getErrorMessage(err) });
+			return res.status(400).send({
+				message: getErrorMessage(err)
+			});
 		} else {
-			Connection.query("DELETE FROM `users` WHERE `_id` = '" + [id] + "';" , function(err,rows){
-				Connection.release();
-				if (err) {
-					return res.status(400).send({
-						message: getErrorMessage(err)
-					});
-				} else {
-					res.json(req.params.userId);
-				}	
-			})
-		}
-	});
+			res.json(req.params.userId);
+		}	
+	})
 	/*
 	userModel.delete(id, function(err, userId) {
 		if (err) {

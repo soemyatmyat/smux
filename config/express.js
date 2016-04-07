@@ -19,9 +19,6 @@ module.exports = function() {
   // create express obj
   var app = express();
 
-  // locate the static folder
-  app.use(express.static('./public'));
-
   // use body parser to handle request
   app.use(bodyParser.urlencoded({
     extended: true
@@ -49,6 +46,8 @@ module.exports = function() {
   app.set('views', './app/views');
   // Node.js's templating engine EJS
   app.set('view engine', 'ejs');
+  // locate the static folder
+  app.use(express.static('./public'));
 
   // load routing file and call it as a function while passing the app
   require('../app/routes/index.server.routes.js')(app);
