@@ -24,13 +24,15 @@ exports.list = function(req, res, next) {
 	var id = req.user._id;
 	db.connect(function(err, results) {});	
 	if(role == 'Faculty'){
+		//db.query("Select * from AnnouncementRequests", [], function(err, rows) {
+		
 		db.query("SELECT t1._id as _id, title, t1.requested_date as requested_date, t1.message as message, t1.project_id as project_id, name as organization FROM " + 
 		"(SELECT AR._id as _id, org_id, announcement_id, title, AR.posted_date as requested_date, " +
 		" AR.course_id, AR.project_id, message, AR.status" +
 		" FROM AnnouncementRequests as AR LEFT OUTER JOIN Announcements " +
 		" ON announcement_id = Announcements._id " +
-		" WHERE Announcements.faculty_id = ? AND AnnouncementRequests.status != ?) AS t1 " + 
-		" LEFT OUTER JOIN Users ON t1.org_id = Users._id;", [id, 'submitted'], function(err, rows) {
+		" WHERE Announcements.faculty_id = ? AND AR.status != ?) AS t1 " + 
+		" LEFT OUTER JOIN Users ON t1.org_id = Users._id;", [id, 'requested'], function(err, rows) {
 		/**db.query("SELECT AnnouncementRequests._id, org_id, announcement_id," + 
 			" title, AnnouncementRequests.posted_date as requested_date, AnnouncementRequests.message" +
 			" AnnouncementRequests.course_id, AnnouncementRequests.project_id, AnnouncementRequests.status " +
@@ -55,11 +57,11 @@ exports.list = function(req, res, next) {
 		console.log("organization");
 		db.query("SELECT t1._id as _id, title, t1.requested_date as requested_date, t1.message as message, t1.project_id as project_id, name as organization FROM" + 
 		"(SELECT AR._id, org_id, announcement_id, title, AR.posted_date as requested_date," +
-		" AR.course_id, AR.project_id, message, AR.statuscategory, Announcements.posted_date, start_date, end_date, description" +
+		" AR.course_id, AR.project_id, message, AR.status, category, Announcements.posted_date, start_date, end_date, description" +
 		" FROM AnnouncementRequests as AR LEFT OUTER JOIN Announcements" +
 		" ON announcement_id = Announcements._id " +
-		" WHERE org_id = ? AND AnnouncementRequests.status != ?) AS t1" + 
-		" LEFT OUTER JOIN Users ON t1.org_id = Users._id;", [id, 'submitted'], function(err, rows) {
+		" WHERE org_id = ? AND AR.status != ?) AS t1" + 
+		" LEFT OUTER JOIN Users ON t1.org_id = Users._id;", [id, 'requested'], function(err, rows) {
 		if (err) {
 			return res.status(400).send({
 				message: getErrorMessage(err)
@@ -112,7 +114,7 @@ exports.add = function(req, res) {
 		announcement_id: req.body.announcement_id,
 		message: req.body.description,
 		posted_date: getDateFormat(today),
-		status: 'submitted'
+		status: 'requested'
 	}
 	
 	db.connect(function(err,results) {});

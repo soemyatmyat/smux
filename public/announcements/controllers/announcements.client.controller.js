@@ -88,14 +88,15 @@ angular.module('announcements').controller('AnnouncementController', ['$scope', 
             newAnnouncement.title = this.title;
             //console.log(this.title);
             newAnnouncement.category = this.category;
-            if(typeof this.start_date !== 'undefined'){
+            
+            if($scope.start_date !== null){
                 var yyyy = this.start_date.getFullYear().toString();
                 var mm = (this.start_date.getMonth()+1).toString(); // getMonth() is zero-based
                 var dd  = this.start_date.getDate().toString();
                 newAnnouncement.start_date = yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
 
             }
-            if(typeof this.end_date !== 'undefined'){
+            if($scope.end_date !== null){
                 yyyy = this.end_date.getFullYear().toString();
                 mm = (this.end_date.getMonth()+1).toString(); // getMonth() is zero-based
                 dd  = this.end_date.getDate().toString();
@@ -108,9 +109,19 @@ angular.module('announcements').controller('AnnouncementController', ['$scope', 
             //console.log(this.term);
             newAnnouncement.course_id = this.course_id;
 
-
-            //if (nweProject.hp === undefined) {newProject.hp = null}
             
+            var f = document.getElementById('uploadFile').files[0],
+                r = new FileReader();
+                r.onloadend = function(e){
+                    var data = e.target.result;
+                    //send you binary data via $http or $resource or do anything else with it
+                }
+                r.readAsBinaryString(f);
+                //console.log(f);
+            //if (nweProject.hp === undefined) {newProject.hp = null}
+            newAnnouncement.uploadFile = f.name;
+            
+            console.log(newAnnouncement.uploadFile);
             newAnnouncement.$save(function(response) {
                 
                 $location.path('announcements/');

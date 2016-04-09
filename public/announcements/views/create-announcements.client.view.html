@@ -45,6 +45,7 @@
             <!-- Error Message -->
             <div class="col-md-offset-1">
                 <p ng-show="!announcementAdd.title.$pristine && announcementAdd.title.$invalid && announcementAdd.title.$touched" class="help-block">Title cannot be empty.</p><p ng-show="announcementAdd.title.$error.maxlength && announcementAdd.title.$touched && !announcementAdd.title.$pristine" class="help-block">Title cannot be longer than 100 characters.</p>
+                <p ng-show="!announcementAdd.category.$pristine && announcementAdd.category.$invalid && announcementAdd.category.$touched" class="help-block">Category cannot be empty.</p>
                 <p ng-show="!announcementAdd.description.$pristine && announcementAdd.description.$invalid && announcementAdd.description.$touched" class="help-block">Description cannot be empty.</p>
                 <p ng-show="announcementAdd.description.$error.maxlength && announcementAdd.description.$touched && !announcementAdd.description.$pristine" class="help-block">Description cannot be longer than 1500 characters.</p>
             </div>
@@ -60,7 +61,7 @@
             <div class="form-group">
                     <label for="category" class="col-sm-1 control-label">Category </label>
                     <div class="col-sm-9">
-                        <select class="form-control" data-ng-model="category" data-ng-value="Accounting">
+                        <select class="form-control" data-ng-class="{'has-error' : announcementAdd.category.$invalid && !announcementAdd.category.$pristine}" data-ng-model="category"  required>
                             <option ng-repeat="cat in categoryIncludes" value="{{cat}}">{{cat}}</option>
                         </select>
                     </div><!-- Category -->
@@ -114,6 +115,12 @@
                     <textarea class="form-control" data-ng-model="description" name="description" ng-maxlength="1500" rows="7" required/>
                     <span>{{1500-description.length}} characters left</span>
                 </div>
+            </div> 
+            <div class="form-group" >
+                <label for="uploadFile" class="col-sm-1 control-label">Related Documents </label>
+                <div class="col-sm-9">
+                    <input type="file" class="form-control" name="uploadFile"  file-model="uploadFile" id = "uploadFile" data-ng-model="uploadFile" />
+                </div><!-- Title -->
             </div> 
             <div class="col-sm-3 pull-right"><!-- Button -->
                 <button type="submit" ng-disabled="announcementAdd.$invalid" class="btn btn-primary">Post</button>  

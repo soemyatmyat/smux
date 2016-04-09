@@ -43,9 +43,11 @@
         <br/>
 
         <p >
-            <button type="button" ng-class="{active:tab === 'open'}" class="btn btn-default btn-sm" ng-click="tab = 'open'">My Open Announcements</button>
-            <button type="button" ng-class="{active:tab === 'closed'}"  class="btn btn-default btn-sm" ng-click="tab = 'closed'">My Closed Announcements</button>
-            <button type="button" ng-class="{active:tab === 'requested'}"  class="btn btn-default btn-sm" ng-click="tab = 'requested'">My Requested Announcements</button>
+            <button type="button" ng-class="{active:tab === 'open'}" class="btn btn-default btn-sm" ng-click="tab = 'open'">Open Announcements</button>
+            <button type="button" ng-class="{active:tab === 'closed'}"  class="btn btn-default btn-sm" ng-click="tab = 'closed'">Closed Announcements</button>
+            <button type="button" ng-show="authentication.user.role == 'Organization'" ng-class="{active:tab === 'requested'}"  class="btn btn-default btn-sm" ng-click="tab = 'requested'" >Requested Announcements</button>
+            
+            
             
             <a data-ng-if="authentication.user.role == 'Faculty' || authentication.user.role =='Admin'" class="btn btn-primary pull-right" href="/#!/announcements/create">Add A New Announcement</a>
             <br/><br/>
@@ -332,14 +334,7 @@
         </div>
     </div>
 
-<script>
-    $('#projPropose').on('submit', function() {
-  $('#interestModal').modal('hide');
-  $('body').removeClass('modal-open');
-$('.modal-backdrop').remove();
-});
 
-</script>
 
     <!-- Indicate Interest modal -->
   <div data-ng-init="projectList();" class="modal fade" id="interestModal" tabindex="-1" role="dialog" aria-labelledby="indicateInterestLabel" style="z-index: 2147483647;" data-ng-controller="AnnouncementRequestsController">
@@ -371,12 +366,22 @@ $('.modal-backdrop').remove();
             <input type="hidden" id="announcementId" >
             <div class="col-md-offset-9 col-sm-offset-6">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="submit" id="projPropose" data-ng-disabled="indicateInterestFrom.$invalid" ng-click="cancel()" class="btn btn-primary">Send</button>
+              <button type="submit" ng-click="cancel()" id="projPropose"  class="btn btn-primary">Send</button>
               </div>
             </form>
           </div>
       </div>
     </div>
   </div>
+<script>
+$(document).on('click', '#projPropose', function(){
 
+  $('#interestModal').modal('hide');
+  $('body').removeClass('modal-open');
+$('.modal-backdrop').remove();
+        
+    })
+
+
+</script>
 </div>

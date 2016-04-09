@@ -52,7 +52,7 @@ exports.list = function(req, res, next) {
 		})
 	}else {
 		var org_id = req.user._id;
-		db.query("SELECT _id, title, category, description, posted_date, start_date, end_date faculty_id, project_id, course_id, status FROM `Announcements` WHERE status = ?", ["open"], function(err,rows){
+		db.query("SELECT _id, title, category, description, posted_date, start_date, end_date faculty_id, project_id, course_id, status FROM `Announcements` WHERE status != ? AND status != ?", ["completed", "ongoing"], function(err,rows){
 			if (err) {
 				return res.status(400).send({
 					message: getErrorMessage(err)
@@ -152,6 +152,8 @@ exports.update = function(req, res) {
 exports.add = function(req, res) {
 	console.log("add");
 	var today = new Date();
+	console.log(req.files);
+	console.log(req.body.uploadFile.name);
 	var announcement = {
 		title:req.body.title,
 		category: req.body.category,
