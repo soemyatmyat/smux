@@ -18,57 +18,9 @@ var getErrorMessage = function(err) {
 /////////////////////
 // list categories ///
 ///////////////////
-exports.list = function(req, res, next) {
+exports.list = function(req, res) {
 	var role = req.user.role;
-
-	
-	db.getConnection(function(err, Connection) {
-		if (err) {
-			return res.status(400).send({ message: getErrorMessage(err) });
-		} else {
-			if (role == "Faculty" || role == "Admin") {
-				Connection.query("SELECT temp._id as _id, title, category, description, posted_date, org_id, temp.status, org_name, requests._id as req_id " +
-					"FROM (SELECT projects._id as _id, title, category, description, posted_date, org_id, status, users.name as org_name " + 
-					"FROM `projects` left outer join `users` on projects.org_id = users._id WHERE status = ? OR faculty_id = ?) as temp " + 
-					"left outer join requests on temp._id = requests.project_id and faculty_id = ?", 
-					["open", req.user._id, req.user._id], function(err,rows){
-					Connection.release();
-					if (err) {
-						return res.status(400).send({
-							message: getErrorMessage(err)
-						});
-					} else {
-						for (var i =0; i <rows.length; i++) {
-							if (rows[i].req_id != null) {
-								rows[i].status = "requested";
-							}
-							rows[i].posted_date = getDateFormat(rows[i].posted_date);
-						}
-						res.json(rows);
-					}
-				})
-			} else {
-				var org_id = req.user._id;
-				Connection.query("SELECT project._id, title, category, description, posted_date, org_id, status, org_name, feedbacks._id as feedback_id from " + 
-					"(SELECT projects._id as _id, title, category, description, posted_date, org_id, status, users.name as org_name " + 
-					"FROM `projects` left outer join `users` on projects.org_id = users._id WHERE org_id = ?) as project left outer join feedbacks on " + 
-					"project._id = feedbacks.project_id and feedbacks.user_id = org_id", 
-					[org_id], function(err,rows){
-					Connection.release();
-					if (err) {
-						return res.status(400).send({
-							message: getErrorMessage(err)
-						});
-					} else {
-						for (var i =0; i <rows.length; i++) {
-							rows[i].posted_date = getDateFormat(rows[i].posted_date);
-						}
-						res.json(rows);
-					}
-				})
-			}
-		}
-	});
+	console.log("here in list");
 };
 
 

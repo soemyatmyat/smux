@@ -2,24 +2,40 @@
 angular.module('categories').controller('CategoriesController', ['$scope', 'Authentication', '$window', '$uibModal', '$routeParams', '$location', 'Categories',
     function($scope, Authentication, $window, $uibModal, $routeParams, $location, Categories) {
 
-    	$scope.authentication = Authentication;
+        $scope.authentication = Authentication;
+        $scope.list = function() {
 
-    	$scope.list = function() {
-    		$scope.categories = {
+            $scope.models = {
                 selected: null,
-    			lists: {"A": []}
-    		}
+                templates: [
+                    {type: "category", id: 1}
+                ],
+                lists: {
+                    "A": [
+                        {
+                            "type": "category",
+                            "description": "aaa",
+                            "id": "1"
+                        },
+                        {
+                            "type": "category",
+                            "description": "bbb",
+                            "id": "2"
+                        },
+                        {
+                            "type": "category",
+                            "description": "ccc",
+                            "id": "3"
+                        }
+                    ]
+                }
+            };
+        };
 
-    		alert($scope.categories.lists.A);
+        $scope.$watch('models.lists', function(model) {
+            $scope.modelAsJson = angular.toJson(model, true);
+        }, true);
 
-    		for (var i = 1; i <= 8; i++) {
-    			$scope.categories.lists.A.push({label: "Item " + i});
-    		}
-    	};
-
-    	$scope.$watch('categories', function(categories) {
-        	$scope.modelAsJson = angular.toJson(categories, true);
-    	}, true);
-    }
+    }   
 
 ]);

@@ -42,7 +42,6 @@
     </div>
     
 
-    <!-- <section data-ng-init="list(); tab = 'available';category=['Accounting', 'Arts', 'Capstone', 'IT', 'Social Psychology']" class="main-content-body col-md-12" > -->
     <section data-ng-init="list()" class="main-content-body col-md-12" >
         <br/>
 
@@ -53,7 +52,7 @@
 
         <div class="row display" data-ng-show="show">
             <div class="col-md-8">
-                <button type="button" data-ng-class="{'btn-primary':open,'btn-default':!open}" class="btn btn-sm" data-ng-click="includeStatus('open')">My Available Projects</button>
+                <button type="button" data-ng-class="{'btn-primary':open,'btn-default':!open}" class="btn btn-sm" data-ng-click="includeStatus('open')">Available Projects</button>
                 <button type="button" data-ng-class="{'btn-primary':ongoing,'btn-default':!ongoing}" class="btn btn-sm" data-ng-click="includeStatus('On-Going')">My On-Going Projects</button>
                 <button type="button" data-ng-class="{'btn-primary':completed,'btn-default':!completed}" class="btn btn-sm" data-ng-click="includeStatus('Completed')">My Completed Projects</button>
                 <button type="button" data-ng-class="{'btn-primary':requested,'btn-default':!requested}" class="btn btn-sm" data-ng-click="includeStatus('requested')">My Requested Projects</button>
@@ -114,11 +113,53 @@
                         </div>
                     </div>
 
+                    <!-- view details -->
+                    <div class="well collapse" id="{{project._id}}">
+                        
+                        <div class="row item">
+                            <h3 class="col-md-8 col-sm-12 col-xs-12"><strong>{{project.title}}</strong></h3>
+                            <p class="col-md-4 col-sm-12 col-xs-12 text-right"><strong>Posted on:</strong>{{project.posted_date}}</p>
+                        </div>
+                        <div class="row item">
+                            <p class="col-md-3 col-sm-4"><strong>Organization:</strong></p><p class="col-md-3 col-sm-8">{{project.org_id}}</p> <!-- change to name-->
+                            <p class="col-md-3 col-sm-4"><strong>Category:</strong></p><p class="col-md-3 col-sm-8">{{project.category}}</p>
+                        </div>
+                        <div class="row item">
+                            <p class="col-md-3 col-sm-4"><strong>Expected Start Date:</strong></p><p class="col-md-3 col-sm-8">{{project.start_date}}</p>
+                            <p class="col-md-3 col-sm-4"><strong>Expected End Date:</strong></p><p class="col-md-3 col-sm-8">{{project.end_date}}</p>
+                        </div>
+                        <div class="row item" >
+                            <p class="col-md-3 col-sm-4"><strong>Course ID:</strong></p><p class="col-md-3 col-sm-8">{{project.course_id}}</p>
+                            <p class="col-md-3 col-sm-4"><strong>Course Name:</strong></p><p class="col-md-3 col-sm-8">Analytical Skills</p><!--Show only if the project is taken-->
+                        </div>
+                        <div class="row item">
+                            <p class="col-md-3 col-sm-4"><strong>Primary Contact Name:</strong></p><p class="col-md-9 col-sm-8">{{project.contact_person}}</p>
+                        </div>
+                        <div class="row item">
+                            <p class="col-md-3 col-sm-4"><strong>Primary Contact Email:</strong></p><p class="col-md-3 col-sm-8">{{project.contact_email}}</p>
+                            <p class="col-md-3 col-sm-4"><strong>Primary Contact Phone:</strong></p><p class="col-md-3 col-sm-8">{{project.contact_HP}}</p>
+                          </div>
+                      
+                      <p class="item"><strong>Description</strong></p>
+                      <p class="item">{{project.description}}</p>
+                      <div class="item col-md-offset-9" style="padding-bottom: 3%">
+                        <div class="col-md-4 ">
+                          <button type="button" 
+                          class="btn btn-default togglebtn" 
+                          ng-click="toggleBtn('avail', project._id)" 
+                          data-toggle="collapse" 
+                          href="#{{project._id}}">Close</button>
+                        </div>
+                        <div class=" col-md-4">
+                          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#interestModal">Indicate Interest</button><!-- Call modal box and send message to organization-->
+                        </div>
+                      </div>
+                    </div>
+
                     <br/>
                     <hr/>
                 </li>
             </ul>
-            <span>{{currentPage}}</span>
             <uib-pagination ng-model="currentPage" total-items="projects.length" max-size="maxSize" class="pagination-sm" rotate="false" 
             num-pages="numPages" items-per-page="itemsPerPage" boundary-links="true"></uib-pagination>
         </div>

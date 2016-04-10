@@ -1,4 +1,3 @@
-console.log("utilites.server.controller");
 /////////////////
 // Send Email //
 ///////////////
@@ -10,9 +9,9 @@ exports.sendEmail = function(req, res) {
 	// Mail Options
 	mailOpts = {
 		from: "smuxauto@gmail.com",
-		to: "smuxauto@gmail.com", //this to be replace with project's owner's mail address
-		subject: "SMUX - Project Request",
-		text: req.body.message
+		to: "smuxauto@gmail.com", //this to be replace with project's owner's mail address [req.body.contact_email]
+		subject: "SMUX - You have a project request for Project - " + req.body.title,
+		text: req.body.message + "/n Please access your request here" //to add link to smux site
 	};
 
 	smtpTrans.sendMail(mailOpts, function(error, response) {

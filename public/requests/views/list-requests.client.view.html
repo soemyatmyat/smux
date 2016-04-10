@@ -24,7 +24,6 @@
                             <li><a href="/">Home </a></li>
                             <!--show only if the user is admin-->
                             <li data-ng-if="authentication.user.role == 'Admin'"><a href="/#!/users">User Management</a></li>
-                            <li data-ng-if="authentication.user.role == 'Admin'"><a href="/#!/categories">Category Management</a></li>
                             <!---->
                             <li><a href="/#!/projects">Projects <span class="sr-only">(current)</span></a></li>
                             <li class="active" data-ng-if="authentication.user.role == 'Organization'"><a href="/#!/requests">Request Inbox</a></li>
@@ -38,28 +37,45 @@
         </div>
     </div>
     
-    <section data-ng-init="list()">
-        <p>Sort By:
-        <button type="button" class="btn btn-default btn-sm" ng-click="tabs[0].active = true">Project</button>
-        <button type="button" class="btn btn-default btn-sm" ng-click="tabs[0].active = true">Requested Date</button>
-        <button type="button" class="btn btn-default btn-sm" ng-click="tabs[0].active = true">Category3</button> 
-        <button type="button" class="btn btn-default btn-sm" ng-click="tabs[0].active = true">Category1</button>
-        <button type="button" class="btn btn-default btn-sm" ng-click="tabs[0].active = true">Category1</button>
-        Search Box
-        </p>
+    <section data-ng-init="list()" class="main-content-body col-md-12">
+        <br/>
+        <div class="row display">
+            <div class="col-md-8">
+                <button type="button" data-ng-class="{'btn-primary':accounting,'btn-default':!accounting}" class="btn btn-sm" data-ng-click="includeCategory('Accounting')">Accounting</button>
+                <button type="button" data-ng-class="{'btn-primary':arts,'btn-default':!arts}" class="btn btn-sm" data-ng-click="includeCategory('Arts')">Arts</button>
+                <button type="button" data-ng-class="{'btn-primary':capstone,'btn-default':!capstone}" class="btn btn-sm" data-ng-click="includeCategory('Capstone')">Capstone</button>
+                <button type="button" data-ng-class="{'btn-primary':it,'btn-default':!it}" class="btn btn-sm" data-ng-click="includeCategory('IT')">IT</button>
+                <button type="button" data-ng-class="{'btn-primary':social,'btn-default':!social}" class="btn btn-sm" data-ng-click="includeCategory('Social Psychology')">Social Psychology</button> 
+            </div>
+        </div><br/>
+
+        <!-- search box -->
+        <div class="row display">
+            <label class="col-md-1 control-label" for="searchText">Search:</label> 
+            <div class=" col-md-11">
+                <input class="form-control" name="searchText" id="searchText" type="text" ng-model="query.$">
+            </div>
+        </div><br/>
+
         <!--- Requests Lists -->    
-        <div class = "panel panel-default">
-            <div class = "panel-heading">Requests</div>       
-            <ul class="list-group">
-                <li class="list-group-item" data-ng-repeat="request in requests">
+        <div class="listdiv">
+            
+            <!--Header-->
+            <h4 class="mainTitle"><strong>Requests</strong></h4>
+
+            <hr/>     
+            <ul class="lists">
+                <li class="listItem col-md-12 col-sm-12 col-xs-12" data-ng-repeat="request in requests| filter:query| filter:categoryFilter">
                     <p>
-                        <a data-ng-href="/#!/projects/{{request.project_id}}"><h4>{{request.project_name}}</a> <em class="small pull-right">Requested on: {{request.requested_date}}</em></h4>
-                        <h5>Faculty: {{request.faculty_name}} ({{request.faculty_email}})</h5>
+                        <a data-ng-href="/#!/projects/{{request.project_id}}"><h4><strong>{{request.project_name}}</strong></a> <em class="small pull-right">Requested on: {{request.requested_date}}</em></h4>
+                        <h5>Requested from: {{request.faculty_name}} ({{request.faculty_email}})</h5>
+                        <h6><strong>Message</strong></h6>
                         <span data-ng-bind="request.message"></span>
                     </p>
                     <p>
                         <button class="btn btn-primary" type="button" data-ng-click="accept(request, $event)">Accept</button>
                     </p>
+                    <hr>
                 </li>
             </ul>
         </div>

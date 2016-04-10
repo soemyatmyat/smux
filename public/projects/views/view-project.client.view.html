@@ -247,6 +247,8 @@
                         <span data-ng-show="requestAdd.message.$error.maxlength && requestAdd.message.$touched && !requestAdd.message.$pristine" class="help-block">Message cannot be longer than 500 characters.</span>
                     </div>
                     <input type="hidden" ng-value=project._id/>
+                    <input type="hidden" ng-value=project.contact_email/>
+                    <input type="hidden" ng-value=project.title/>
                     <div class="col-md-offset-9 col-sm-offset-10">
                         <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
                         <button type="submit" class="btn btn-primary" data-ng-disabled="requestAdd.$invalid" ng-click="cancel()">Send</button> 

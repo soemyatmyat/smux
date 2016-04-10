@@ -1,67 +1,67 @@
 <style>
-.ul[dnd-list], .ul[dnd-list] > li {
-    position: relative;
-}
+    .ul[dnd-list], .ul[dnd-list] > li {
+        position: relative;
+    }
 
-.box li {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    display: block;
-    padding: 0px;
-}
+    .box li {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        display: block;
+        padding: 0px;
+    }
 
-/**
- * Reduce opacity of elements during the drag operation. This allows the user
- * to see where he is dropping his element, even if the element is huge. The
- * .dndDragging class is automatically set during the drag operation.
- */
-.box .dndDragging {
-    opacity: 0.7;
-}
+    /**
+     * Reduce opacity of elements during the drag operation. This allows the user
+     * to see where he is dropping his element, even if the element is huge. The
+     * .dndDragging class is automatically set during the drag operation.
+     */
+    .box .dndDragging {
+        opacity: 0.7;
+    }
 
-/**
- * The dndDraggingSource class will be applied to the source element of a drag
- * operation. It makes sense to hide it to give the user the feeling that he's
- * actually moving it. Note that the source element has also .dndDragging class.
- */
-.box .dndDraggingSource {
-    display: none;
-}
+    /**
+     * The dndDraggingSource class will be applied to the source element of a drag
+     * operation. It makes sense to hide it to give the user the feeling that he's
+     * actually moving it. Note that the source element has also .dndDragging class.
+     */
+    .box .dndDraggingSource {
+        display: none;
+    }
 
-/**
- * An element with .dndPlaceholder class will be added as child of the dnd-list
- * while the user is dragging over it.
- */
-.box .dndPlaceholder {
-    background-color: #ddd;
-    min-height: 42px;
-    display: block;
-    position: relative;
-}
+    /**
+     * An element with .dndPlaceholder class will be added as child of the dnd-list
+     * while the user is dragging over it.
+     */
+    .box .dndPlaceholder {
+        background-color: #ddd;
+        min-height: 42px;
+        display: block;
+        position: relative;
+    }
 
-/***************************** Element Selection *****************************/
+    /***************************** Element Selection *****************************/
 
-.box .selected .item {
-    color: #3c763d;
-    background-color: #dff0d8;
-}
+    .box .selected .item {
+        color: #3c763d;
+        background-color: #dff0d8;
+    }
 
-.box .selected .box {
-    border-color: #d6e9c6;
-}
+    .box .selected .box {
+        border-color: #d6e9c6;
+    }
 
-.box .selected .box > h3 {
-    color: #3c763d;
-    background-color: #dff0d8;
-    background-image: linear-gradient(to bottom,#dff0d8 0,#d0e9c6 100%);
-    border-color: #d6e9c6;
-}
+    .box .selected .box > h3 {
+        color: #3c763d;
+        background-color: #dff0d8;
+        background-image: linear-gradient(to bottom,#dff0d8 0,#d0e9c6 100%);
+        border-color: #d6e9c6;
+    }
 
-/***************************** Element type specific styles *****************************/
+    /***************************** Element type specific styles *****************************/
 
-.box .item {
-    padding: 10px 15px;
-}
+    .box .item {
+        padding: 10px 15px;
+    }
 </style>
 <div class="main" data-ng-controller="CategoriesController">
 
@@ -104,45 +104,63 @@
         </div>
     </div>
     
-
     <section data-ng-init="list()" class="main-content-body col-md-12" >
         <br/>
 
-        <!-- Notification goes here! notify organization about project closure and ask for feedback -->
-        
-        <div class="display" data-ng-repeat="project in projects |filter:{status: 'Completed', feedback_id: null}">
-            <div class="flash alert alert-danger">
-                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                <span> Project <a href="#!/projects/{{project._id}}">{{project.title}}</a> has been closed! Please give feedback to the project.</span>
+        <!-- Template for list item -->
+        <script type="text/ng-template" id="category.html">
+            <div class="item">{{category.description}}</div>
+        </script>
+
+        <!-- Main area -->
+        <div class="col-md-8">
+            <div class="row">
+                <div ng-repeat="list in models.lists" class="col-md-8">
+                    <div class="dropzone box box-yellow">
+                        <!-- The dropzone also uses the list template -->
+                        <h3>Categories</h3>
+                        <ul dnd-list="list">
+                            <li ng-repeat="category in list"
+                                dnd-draggable="category"
+                                dnd-effect-allowed="move"
+                                dnd-moved="list.splice($index, 1)"
+                                dnd-selected="models.selected = category"
+                                ng-class="{selected: models.selected === category}"
+                                ng-include="category.type + '.html'">
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
+
+            <div view-source="nested"></div>
+
+            
+            <h2>Generated Model</h2>
+            <pre>{{modelAsJson}}</pre> 
         </div>
 
-        <div data-ng-if="categories.lists.A !=  null">{{categories.lists.A}}</div>
+        <!-- Sidebar -->
+        <div class="col-md-4">
 
-        <div class="box col-md-6" >
-            <h3>Categories</h3>
-        <ul dnd-list="list">
-    <!-- The dnd-draggable directive makes an element draggable and will
-         transfer the object that was assigned to it. If an element was
-         dragged away, you have to remove it from the original list
-         yourself using the dnd-mo  ved attribute -->
-            <li ng-repeat="item in categories.lists.A"
-                dnd-draggable="item"
-                dnd-effect-allowed="move"
-                dnd-selected="categories.selected = item"
-                ng-class="{'selected': categories.selected === item}"><div class="item">{{item.label}}</div>
-            </li>
-        </ul>
-    </div>
-
-    <div class="col-md-6">
             <div class="toolbox box box-grey box-padding">
-            <h3>New Category</h3>
-                <button type="button" class="btn btn-default btn-lg" dnd-effect-allowed="copy" dnd-draggable="item in categories.lists.A" dnd-copied="item.label = 'something'" disabled="disabled" >New</button>
+                <h3>New Category</h3>
+                <ul>
+                    <!-- The toolbox only allows to copy objects, not move it. After a new
+                         element was created, dnd-copied is invoked and we generate the next id -->
+                    <li ng-repeat="category in models.templates"
+                        dnd-draggable="category"
+                        dnd-effect-allowed="copy"
+                        dnd-copied="category.id = category.id + 1"
+                        >
+                        <button type="button" class="btn btn-default btn-lg" disabled="disabled">{{category.type}}</button>
+                    </li>
+                </ul>
+            </div>
 
-            <div ng-if="categories.lists.A.selected" class="box box-grey box-padding">
+            <div ng-if="models.selected" class="box box-grey box-padding">
                 <h3>Selected</h3>
-                <input type="text" ng-model="categories.lists.A.selected.label" class="form-control" style="margin-top: 5px" />
+                <input type="text" ng-model="models.selected.description" class="form-control" style="margin-top: 5px" />
             </div>
 
             <div class="trashcan box box-grey box-padding">
@@ -152,8 +170,8 @@
                     <li><img src="nested/trashcan.jpg"></li>
                 </ul>
             </div>
-    </div>
-    </div>
+
+        </div>
 
         
     </section>
