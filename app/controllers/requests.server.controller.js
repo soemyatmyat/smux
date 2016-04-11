@@ -20,12 +20,14 @@ var getErrorMessage = function(err) {
 ///////////////////
 exports.list = function(req, res, next) {
 	var org_id = req.user._id;
+	console.log(org_id);
 	db.connect(function(err, results) {});	
-	db.query("SELECT temp._id, temp.course_code, temp.project_id, temp.faculty_id, temp.message, temp.requested_date, temp.status, " + 
+	db.query("SELECT temp._id, temp.course_code, temp.project_id, temp.faculty_id, temp.message, temp.requested_date, status, " + 
 		"projects.title as project_name, users.name as faculty_name, users.email_address as faculty_email FROM projects, users, " + 
 		"(SELECT * from `requests` where project_id in (SELECT _id as project_id FROM `projects` WHERE `org_id` = ?)) as temp " + 
 		"WHERE projects._id = temp.project_id and users._id = temp.faculty_id;", [org_id], function(err, rows) {
 		if (err) {
+			console.log("here i come");
 			return res.status(400).send({
 				message: getErrorMessage(err)
 			});

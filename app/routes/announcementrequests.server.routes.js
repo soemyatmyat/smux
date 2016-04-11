@@ -11,8 +11,9 @@ module.exports = function(app) {
 		.put(users.requiresLogin, announcementrequests.update)
 
 
-	// R, D
+	// R, U, D
 	app.route('/api/announcementrequests/:announcement_id')
-		.get(users.requiresLogin, announcementrequests.read);
+		.get(users.requiresLogin, announcementrequests.read)
+		.put(users.requiresLogin, announcementrequests.update);
 
 };

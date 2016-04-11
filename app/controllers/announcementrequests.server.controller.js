@@ -26,13 +26,13 @@ exports.list = function(req, res, next) {
 	if(role == 'Faculty'){
 		//db.query("Select * from AnnouncementRequests", [], function(err, rows) {
 		
-		db.query("SELECT t1._id as _id, title, t1.requested_date as requested_date, t1.message as message, t1.project_id as project_id, name as organization FROM " + 
+		db.query("SELECT t1._id as _id, announcement_id, org_id, title, t1.requested_date as requested_date, t1.message as message, t1.project_id as project_id, name as organization FROM " + 
 		"(SELECT AR._id as _id, org_id, announcement_id, title, AR.posted_date as requested_date, " +
 		" AR.course_id, AR.project_id, message, AR.status" +
 		" FROM AnnouncementRequests as AR LEFT OUTER JOIN Announcements " +
 		" ON announcement_id = Announcements._id " +
 		" WHERE Announcements.faculty_id = ? AND AR.status != ?) AS t1 " + 
-		" LEFT OUTER JOIN Users ON t1.org_id = Users._id;", [id, 'requested'], function(err, rows) {
+		" LEFT OUTER JOIN Users ON t1.org_id = Users._id;", [id, 'accepted'], function(err, rows) {
 		/**db.query("SELECT AnnouncementRequests._id, org_id, announcement_id," + 
 			" title, AnnouncementRequests.posted_date as requested_date, AnnouncementRequests.message" +
 			" AnnouncementRequests.course_id, AnnouncementRequests.project_id, AnnouncementRequests.status " +
@@ -54,7 +54,7 @@ exports.list = function(req, res, next) {
 	})
 
 	}else if(role == 'Organization'){
-		console.log("organization");
+		//console.log("organization");
 		db.query("SELECT t1._id as _id, title, t1.requested_date as requested_date, t1.message as message, t1.project_id as project_id, name as organization FROM" + 
 		"(SELECT AR._id, org_id, announcement_id, title, AR.posted_date as requested_date," +
 		" AR.course_id, AR.project_id, message, AR.status, category, Announcements.posted_date, start_date, end_date, description" +
@@ -120,7 +120,7 @@ exports.add = function(req, res) {
 	db.connect(function(err,results) {});
 	db.query("INSERT INTO `AnnouncementRequests` SET ? ", request, function(err,rows){
 		if (err) {
-			console.log("stuck in inserting");
+			//console.log("stuck in inserting");
 			return res.status(400).send({
 				message: getErrorMessage(err)
 			});
@@ -145,28 +145,43 @@ exports.add = function(req, res) {
 // update request //
 ///////////////////
 exports.update = function(req, res) {
-	var announcement_id = req.body.announcement_id;
-	var organization_id = req.body.organization_id;
-	var project_id = req.body.project_id;
+	console.log("updateing");
 
+	var announcement_id = req.body.announcement_id;
+	var organization_id = req.body.org_id;
+	//console.log(organization_id);
+	//console.log(announcement_id);
+	var project_id = req.body.project_id;
+	//console.log(project_id);
+	//console.log(req.body.organization);
 	var	project = {
 		_id: req.body.project_id
 	}
+	//console.log(project);
+	var announcementRequest = {
+		_id:req.body._id
+	}
 
+	//console.log(announcementRequest._id);
+	var annoc_id;
 	db.connect(function(err, results) {});
-	db.query("UPDATE `AnnouncementRequests` SET `status` = ?, `organization_id` = ? WHERE `_id` = ?", ["accepted", organization_id, announcement_id], function(err, rows) {
+	db.query("UPDATE `AnnouncementRequests` SET `status` = ? WHERE `_id` = ?", ["accepted", announcementRequest._id], function(err, rows) {
 		if (err) {
 			return res.status(400).send({
 				message: getErrorMessage(err)
 			});
 		} else {
-			db.query("DELETE FROM `AnnouncementRequests` WHERE `announcement_id` = ?", [announcement_id], function(err, rows) {
+			//console.log('updated');
+			
+			db.query("DELETE FROM `AnnouncementRequests` WHERE `announcement_id` = ? AND _id != ?", [announcement_id, announcementRequest._id], function(err, rows) {
 				if (err) {
+					//console.log("error here")
 					return res.status(400).send({
 						message: getErrorMessage(err)
 					});
 				} else {
-					res.json(project);
+					//console.log(announcementRequest);
+					res.json(announcementRequest);
 				}
 			})
 		}

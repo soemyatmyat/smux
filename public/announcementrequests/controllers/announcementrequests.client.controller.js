@@ -5,11 +5,17 @@ angular.module('announcementrequests').controller('AnnouncementRequestsControlle
         $scope.authentication = Authentication;
         
 
-        $scope.accept = function(announcementrequest) {
+        $scope.accept = function(request) {
+           // $scope.announcement_id = $window.announcement_id;
+            //$scope.organization_id = $window.organization_id;
+            //console.log($scope.announcement_id);
+            //console.log($scope.organization_id);
             var acceptRequest = $window.confirm('Are you sure you want to accept this Request?');   
-            
-            announcementrequest.$update(function(response) {
-                $location.path('announcements/' + response._id);   
+            //alert('Are you sure you want to accept this Request?');
+            console.log(request);
+            request.$update(function(response) {
+                //console.log("hello");
+                $location.path('announcements/');   
             }, function(errorResponse) {
                 $scope.error = errorResponse.data.message;
             });

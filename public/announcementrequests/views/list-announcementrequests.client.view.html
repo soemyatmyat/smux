@@ -49,12 +49,13 @@
         </p-->
         <!--- Requests Lists -->    
         <div class = "panel panel-default">
-            <div class = "panel-heading">Requests</div>       
+            <div class = "panel-heading"> <h3>Requests</h3></div>       
             <ul class="list-group">
                 <li class="list-group-item" data-ng-repeat="request in announcementrequests">
                     <p>
-                        <a data-ng-href="/#!/announcements/{{request.announcement_id}}"><h4>{{request.title}}</a> <em class="small pull-right">Requested on: {{request.requested_date}}</em></h4>
+                        <a data-ng-href="/#!/announcements/{{request.announcement_id}}"><h4>{{request._id}}{{request.title}}</a> <em class="small pull-right">Requested on: {{request.requested_date}}</em></h4>
                         <h5>Organization: {{request.organization}} </h5>
+                        <input type="hidden" data-ng="org_id" value='{{request.org_id}}'>
                         <span data-ng-bind="request.message"></span>
                     </p>
                     <p>
