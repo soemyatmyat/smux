@@ -24,6 +24,8 @@ module.exports = function() {
     extended: true
   }));
 
+  app.multer = require('multer');
+
   app.use(bodyParser.json());
 
   // use session 
@@ -40,7 +42,7 @@ module.exports = function() {
   // use flash
   app.use(flash());
 
-  // 
+  //var storage = n
 
   // template location
   app.set('views', './app/views');
