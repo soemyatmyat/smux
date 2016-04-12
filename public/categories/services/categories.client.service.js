@@ -7,10 +7,6 @@ angular.module('categories').factory('Categories', ['$resource',
 		}, {
 			update: {
 				method: 'PUT',
-				transformResponse: transformResponse
-			},
-			get: {
-				transformResponse: transformResponse
 			}
 		});
 

@@ -132,7 +132,9 @@
                     </div>
                 </div>
             </div>
-
+            <br/><br/>
+            <br/>
+            <button type="button" data-ng-click="update(models.lists)" class="btn btn-primary">Save Changes</button> 
             <div view-source="nested"></div>
 
             
@@ -143,30 +145,30 @@
         <!-- Sidebar -->
         <div class="col-md-4">
 
-            <div class="toolbox box box-grey box-padding">
+            <div class="toolbox box-padding">
                 <h3>New Category</h3>
-                <ul>
+                <ul class="list-unstyled">
                     <!-- The toolbox only allows to copy objects, not move it. After a new
                          element was created, dnd-copied is invoked and we generate the next id -->
                     <li ng-repeat="category in models.templates"
                         dnd-draggable="category"
                         dnd-effect-allowed="copy"
-                        dnd-copied="category.id = category.id + 1"
+                        dnd-copied="category.description = 'New Category'"
                         >
                         <button type="button" class="btn btn-default btn-lg" disabled="disabled">{{category.type}}</button>
                     </li>
                 </ul>
             </div>
 
-            <div ng-if="models.selected" class="box box-grey box-padding">
+            <div ng-if="models.selected" class="box-padding">
                 <h3>Selected</h3>
                 <input type="text" ng-model="models.selected.description" class="form-control" style="margin-top: 5px" />
             </div>
 
-            <div class="trashcan box box-grey box-padding">
+            <div class="trashcan box-padding">
                 <!-- If you use [] as referenced list, the dropped elements will be lost -->
                 <h3>Trashcan</h3>
-                <ul dnd-list="[]">
+                <ul class="list-unstyled" dnd-list="[]">
                     <li><img src="nested/trashcan.jpg"></li>
                 </ul>
             </div>

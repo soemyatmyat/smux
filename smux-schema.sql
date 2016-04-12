@@ -33,6 +33,7 @@ CREATE TABLE Courses
 CREATE TABLE Category /* for Project Grace Email */
 (
 	_id int not null AUTO_INCREMENT PRIMARY KEY,
+	order_id int not null,
 	description VARCHAR(100) not null
 )ENGINE = InnoDB;
 

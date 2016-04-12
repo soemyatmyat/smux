@@ -21,6 +21,25 @@ var getErrorMessage = function(err) {
 exports.list = function(req, res) {
 	var role = req.user.role;
 	console.log("here in list");
+	db.getConnection(function(err, Connection){
+		if (err) {
+			return res.status(400).send({ message: getErrorMessage(err) });
+		} else {
+			Connection.query("SELECT _id, description FROM `Category`", function(err, rows) {
+				Connection.release();
+				if (err) {
+					return res.status(400).send({
+						message: getErrorMessage(err)
+					});
+				} else {
+					for (var i =0; i <rows.length; i++) {
+						rows[i].type = "category";
+					}
+					res.json(rows);
+				}
+			})
+		}
+	});
 };
 
 
@@ -29,53 +48,9 @@ exports.list = function(req, res) {
 // edit a category  ///
 //////////////////////
 exports.update = function(req, res) {
-	var id = req.body._id;
-	var	project = {
-		title:req.body.title,
-		category: req.body.category,
-		start_date: req.body.start_date,
-		end_date: req.body.end_date,
-		contact_person: req.body.contact_person,
-		contact_email: req.body.contact_email,
-		contact_HP: req.body.contact_HP,
-		description: req.body.description,
-		status: "open"
-	}
-	if (project.start_date != null) {
-		project.start_date = new Date(project.start_date);
-	}
-	if (project.end_date != null) {
-		project.end_date = new Date(project.end_date);
-	}
-	db.getConnection(function(err, Connection){
-		//db.connect(function(err,results) {});
-		if (err) {
-			return res.status(400).send({ message: getErrorMessage(err) });
-		} else {
-			Connection.query("UPDATE `projects` SET ? WHERE `_id` = ?", [project, id], function(err,rows){
-				Connection.release();
-				if (err) {
-					return res.status(400).send({
-						message: getErrorMessage(err)
-					});
-				} else {
-					project = {
-						_id: id,
-						title:req.body.title,
-						category: req.body.category,
-						start_date: req.body.start_date,
-						end_date: req.body.end_date,
-						contact_person: req.body.contact_person,
-						contact_email: req.body.contact_email,
-						contact_HP: req.body.contact_HP,
-						description: req.body.description,
-						status: "open"
-					}
-					res.json(project);
-				}
-			});
-		}
-	});
+	console.log("--- update start here ---")
+	console.log(req);
+	res.json("sth");
 };
 
 
@@ -83,49 +58,9 @@ exports.update = function(req, res) {
 // new category //
 /////////////////
 exports.add = function(req, res) {
-	var today = new Date();
-	var project = {
-		title:req.body.title,
-		category: req.body.category,
-		start_date: req.body.start_date,
-		end_date: req.body.end_date,
-		contact_person: req.body.contact_person,
-		contact_email: req.body.contact_email,
-		contact_HP: req.body.contact_HP,
-		description: req.body.description,
-		posted_date: getDateFormat(today),
-		org_id: req.user._id,
-		faculty_id: null,
-		course_id: null,
-		status: "open"
-	}
-	db.getConnection(function(err, Connection) {
-		//db.connect(function(err,results) {});
-		if (err) {
-			return res.status(400).send({ message: getErrorMessage(err) });
-		} else {
-			Connection.query("INSERT INTO `projects` SET ? ", project, function(err,rows){
-				if (err) {
-					return res.status(400).send({
-						message: getErrorMessage(err)
-					});
-				} else {
-					Connection.query("SELECT _id FROM `projects` WHERE `title` = ? and `org_id`", [project.title, project.org_id], function(err,rows){
-						Connection.release();
-						if (err) {
-							return res.status(400).send({
-								message: getErrorMessage(err)
-							});
-						} else {
-							project._id = rows[0]._id;
-							res.json(project);
-						}
-						
-					});
-				}
-			});
-		}
-	});
+	console.log("--- update start here ---")
+	console.log(req);
+	res.json("sth");
 };
 
 

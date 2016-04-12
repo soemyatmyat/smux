@@ -8,33 +8,41 @@ angular.module('categories').controller('CategoriesController', ['$scope', 'Auth
             $scope.models = {
                 selected: null,
                 templates: [
-                    {type: "category", id: 1}
+                    {type: "category", description: "New Category",_id: 0}
                 ],
                 lists: {
-                    "A": [
-                        {
-                            "type": "category",
-                            "description": "aaa",
-                            "id": "1"
-                        },
-                        {
-                            "type": "category",
-                            "description": "bbb",
-                            "id": "2"
-                        },
-                        {
-                            "type": "category",
-                            "description": "ccc",
-                            "id": "3"
-                        }
-                    ]
+                    "A": []
                 }
             };
+
+            //$scope.models.lists = Projects.query();
+            // alert($scope.models.lists.A);
+            $scope.models.lists.A = Categories.query();
+            //alert($scope.models.lists.A);
+
         };
 
         $scope.$watch('models.lists', function(model) {
             $scope.modelAsJson = angular.toJson(model, true);
         }, true);
+
+
+        $scope.update = function(sth) {
+            var category = new Categories();
+            for (var i = 0; i < sth.A.length; i++) {
+                category._id = sth.A[i]._id;
+                category.description = sth.A[i].description;
+                category.order_id = i+1;
+                category.$save(function(response) {
+                    $window.alert('Updated Successfully!');
+                    $location.path('categories/');
+                }, function(errorResponse) {
+                    $scope.error = errorResponse.data.message;
+                });
+            }
+
+        };
+
 
     }   
 
