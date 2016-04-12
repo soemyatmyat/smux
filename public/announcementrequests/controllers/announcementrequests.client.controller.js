@@ -5,11 +5,11 @@ angular.module('announcementrequests').controller('AnnouncementRequestsControlle
         $scope.authentication = Authentication;
         
 
-        $scope.accept = function(announcementrequest) {
+        $scope.accept = function(request) {
             var acceptRequest = $window.confirm('Are you sure you want to accept this Request?');   
-            
-            announcementrequest.$update(function(response) {
-                $location.path('announcements/' + response._id);   
+            console.log(request);
+            request.$update(function(response) {
+                $location.path('announcements/');   
             }, function(errorResponse) {
                 $scope.error = errorResponse.data.message;
             });

@@ -55,7 +55,6 @@
                     <p>
                         <a data-ng-href="/#!/announcements/{{request.announcement_id}}"><h4>{{request.title}}</a> <em class="small pull-right">Requested on: {{request.requested_date}}</em></h4>
                         <h5>Organization: {{request.organization}} </h5>
-                        <span data-ng-bind="request.message"></span>
                     </p>
                     <p>
                         <button class="btn btn-primary" type="button" data-ng-click="accept(request, $event)">Accept</button>

@@ -1,11 +1,11 @@
 //alert("client-controller");
-angular.module('announcements').controller('AnnouncementController', ['$scope', 'Authentication', '$window', '$uibModal', '$routeParams', '$location', 'Announcements', 'Projects',
-    function($scope, Authentication, $window, $uibModal, $routeParams, $location, Announcements, Projects) {
+angular.module('announcements',['ngFileUpload']).controller('AnnouncementController', ['$scope', 'Authentication', 'Upload', '$window', '$uibModal', '$routeParams', '$location', 'Announcements', 'Projects', '$timeout',
+    function($scope, Authentication, Upload, $window, $uibModal, $routeParams, $location, Announcements, Projects, $timeout) {
         
         $scope.authentication = Authentication;
         $scope.statusIncludes = ['open'];
         $scope.categoryIncludes = ['Accounting', 'Arts', 'Capstone', 'IT', 'Social Psychology'];
-       
+        $scope.fileName = '';
         
         //console.log(Projects);
         //console.log($scope.Projects);
@@ -81,6 +81,36 @@ angular.module('announcements').controller('AnnouncementController', ['$scope', 
           });
         };
         
+        function upload(file){
+            var val;
+            Upload.upload({
+                url: '../upload',
+                data: {file:file}
+            }).then(function(resp){
+                //console.log(resp);
+
+                if(resp.data.error_code === 0){
+                    //vaidate success
+                    $window.alert('Success ' + resp.config.data.file.name + 'uploaded. Response: ');
+                    $scope.fileName = resp.data.filename;
+                    console.log(resp.data.filename);
+                    return resp.data.filename;
+                }else{
+                    $window.alert('an error occured');
+                    return "";
+                }
+            }, function (resp) { //catch error
+                console.log('Error status: ' + resp.status);
+                $window.alert('Error status: ' + resp.status);
+                return resp.status;
+            }/**, function (evt) { 
+                console.log(evt);
+                var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
+                //vm.progress = 'progress: ' + progressPercentage + '% '; // capture upload progress
+            }**/)
+            return "";
+        }
 
         $scope.add = function() {
             
@@ -117,11 +147,28 @@ angular.module('announcements').controller('AnnouncementController', ['$scope', 
                     //send you binary data via $http or $resource or do anything else with it
                 }
                 r.readAsBinaryString(f);
+                var filename = "";
+                if($scope.announcementAdd.file){
+                    console.log('found the file');
+                    upload($scope.announcementAdd.file);
+                        
+                    $scope.$watch('fileName', function() {
+                        //alert('hey, myVar has changed!');
+                        console.log($scope.fileName);
+                        newAnnouncement.filename = $scope.fileName;
+                    });    
+
+                   // wait();  
+                    console.log(fileName);
+                }else{
+                    
+                }
+                
                 //console.log(f);
             //if (nweProject.hp === undefined) {newProject.hp = null}
-            newAnnouncement.uploadFile = f.name;
+            //newAnnouncement.uploadFile = f.name;
             
-            console.log(newAnnouncement.uploadFile);
+            //console.log(newAnnouncement.uploadFile);
             newAnnouncement.$save(function(response) {
                 
                 $location.path('announcements/');
@@ -130,6 +177,12 @@ angular.module('announcements').controller('AnnouncementController', ['$scope', 
                 
             });
         };
+
+        function wait(){
+            if(fileName === ''){
+                $timeout(function(){},1000);
+            }
+        }
 
         $scope.read = function() {
             //alert($routeParams.announcId);
@@ -153,7 +206,7 @@ angular.module('announcements').controller('AnnouncementController', ['$scope', 
 
         $scope.projectList = function(){
             $scope.projects = Projects.query();
-            console.log($scope.projects);
+            //console.log($scope.projects);
         }
 
 

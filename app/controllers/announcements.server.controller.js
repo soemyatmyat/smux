@@ -19,52 +19,62 @@ var getErrorMessage = function(err) {
 ////////////////////////
 exports.list = function(req, res, next) {
 	var role = req.user.role;
-	db.connect(function(err, results) {});
 
-	if (role == "Faculty") {
-		db.query("SELECT _id, title, category, description, posted_date, faculty_id, start_date, end_date, project_id, course_id, status FROM `Announcements` WHERE  faculty_id = ?", [req.user._id], function(err,rows){
-			if (err) {
-				return res.status(400).send({
-					message: getErrorMessage(err)
-				});
-			} else {
-				for (var i =0; i <rows.length; i++) {
-					rows[i].posted_date = getDateFormat(rows[i].posted_date);
-				}
-				res.json(rows);
-			}
-		})
-	} else if(role == "Admin"){
-		
-		db.query("SELECT _id, title, category, description, posted_date, start_date, end_date faculty_id, project_id, course_id, status FROM `Announcements`", function(err,rows){
-			if (err) {
-				return res.status(400).send({
-					message: getErrorMessage(err)
-				});
-			} else {
+	db.getConnection(function(err, Connection) {
+	if (err) {
+		return res.status(400).send({ message: getErrorMessage(err) });
+	} else {
 
-				for (var i =0; i <rows.length; i++) {
-					rows[i].posted_date = getDateFormat(rows[i].posted_date);
+		if (role == "Faculty") {
+			Connection.query("SELECT _id, title, category, description, posted_date, faculty_id, start_date, end_date, project_id, course_id, status FROM `Announcements` WHERE  faculty_id = ?", [req.user._id], function(err,rows){
+				Connection.release();
+				if (err) {
+					return res.status(400).send({
+						message: getErrorMessage(err)
+					});
+				} else {
+					for (var i =0; i <rows.length; i++) {
+						rows[i].posted_date = getDateFormat(rows[i].posted_date);
+					}
+					res.json(rows);
 				}
-				res.json(rows);
-				
-			}
-		})
-	}else {
-		var org_id = req.user._id;
-		db.query("SELECT _id, title, category, description, posted_date, start_date, end_date faculty_id, project_id, course_id, status FROM `Announcements` WHERE status != ? AND status != ?", ["completed", "ongoing"], function(err,rows){
-			if (err) {
-				return res.status(400).send({
-					message: getErrorMessage(err)
-				});
-			} else {
-				for (var i =0; i <rows.length; i++) {
-					rows[i].posted_date = getDateFormat(rows[i].posted_date);
+			})
+		} else if(role == "Admin"){
+			
+			Connection.query("SELECT _id, title, category, description, posted_date, start_date, end_date faculty_id, project_id, course_id, status FROM `Announcements`", function(err,rows){
+				Connection.release();
+				if (err) {
+					return res.status(400).send({
+						message: getErrorMessage(err)
+					});
+				} else {
+
+					for (var i =0; i <rows.length; i++) {
+						rows[i].posted_date = getDateFormat(rows[i].posted_date);
+					}
+					res.json(rows);
+					
 				}
-				res.json(rows);
-			}
-		})
+			})
+		}else {
+			var org_id = req.user._id;
+			Connection.query("SELECT _id, title, category, description, posted_date, start_date, end_date faculty_id, project_id, course_id, status FROM `Announcements` WHERE status != ? AND status != ?", ["completed", "ongoing"], function(err,rows){
+				Connection.release();
+				if (err) {
+					return res.status(400).send({
+						message: getErrorMessage(err)
+					});
+				} else {
+					for (var i =0; i <rows.length; i++) {
+						rows[i].posted_date = getDateFormat(rows[i].posted_date);
+					}
+					res.json(rows);
+				}
+			})
+		}
 	}
+		});
+	
 };
 
 
@@ -74,21 +84,19 @@ exports.list = function(req, res, next) {
 exports.read = function(req, res) {
 	var id = req.params.announcId;
 
-	db.connect(function(err, results) {});
-
-	/**db.query("SELECT temp._id, title, category, faculty_id, description, posted_date, project_id, start_date, end_date" + 
-		"course_id, status, faculty_name from " + 
-		"(SELECT Announcements._id, title, category, faculty_id, description, posted_date, start_date, end_date, project_id, " + 
-		"course_id, status, users.name as faculty_name from `Announcements` left outer join `users` " + 
-		"on Announcements.faculty_id = users._id where Announcements._id = ?) as temp left outer join users on temp.faculty_id = users._id;", [id], function(err,rows){		
-	**/
-	db.query("SELECT _id, title, category, description, posted_date, faculty_id, start_date, end_date, project_id, course_id, status FROM `Announcements` WHERE  _id = ?", [id], function(err,rows){
+	db.getConnection(function(err, Connection) {
+	//db.connect(function(err, results) {});
+	if (err) {
+		return res.status(400).send({ message: getErrorMessage(err) });
+	} else {
+		Connection.query("SELECT _id, title, category, description, posted_date, faculty_id, start_date, end_date, project_id, course_id, status FROM `Announcements` WHERE  _id = ?", [id], function(err,rows){
 		if (err) {
 			return res.status(400).send({
 					message: getErrorMessage(err)
 			});
 		} else {
-			db.query("SELECT * from `AnnouncementRequests` WHERE `announcement_id` =? and `org_id` = ?", [rows[0]._id, req.user._id], function(err, results) {
+			Connection.query("SELECT * from `AnnouncementRequests` WHERE `announcement_id` =? and `org_id` = ?", [rows[0]._id, req.user._id], function(err, results) {
+				Connection.release();
 				if (err) {
 					return res.status(400).send({
 						message: getErrorMessage(err)
@@ -104,7 +112,18 @@ exports.read = function(req, res) {
 			})
 
 		}	
-	})
+	});
+	}
+});
+	//db.connect(function(err, results) {});
+
+	/**db.query("SELECT temp._id, title, category, faculty_id, description, posted_date, project_id, start_date, end_date" + 
+		"course_id, status, faculty_name from " + 
+		"(SELECT Announcements._id, title, category, faculty_id, description, posted_date, start_date, end_date, project_id, " + 
+		"course_id, status, users.name as faculty_name from `Announcements` left outer join `users` " + 
+		"on Announcements.faculty_id = users._id where Announcements._id = ?) as temp left outer join users on temp.faculty_id = users._id;", [id], function(err,rows){		
+	**/
+	
 };
 
 ////////////////////////
@@ -122,27 +141,36 @@ exports.update = function(req, res) {
 		course_id: req.body.course_id,
 		status: "open"
 	}
-	db.connect(function(err,results) {});
-	db.query("UPDATE `Announcements` SET ? WHERE `_id` = ?", [announcement, id], function(err,rows){
+
+	//db.connect(function(err,results) {});
+	db.getConnection(function(err, Connection) {
 		if (err) {
-			return res.status(400).send({
-				message: getErrorMessage(err)
-			});
+			return res.status(400).send({ message: getErrorMessage(err) });
 		} else {
-			announcement = {
-				_id: id,
-				title:req.body.title,
-				category: req.body.category,
-				project_id: req.body.project_id,
-				start_date: req.body.start_date,
-				end_date: req.body.end_date,
-				description: req.body.description,
-				course_id: req.body.course_id,
-				status: "open"
-			}
-			res.json(announcement);
+			Connection.query("UPDATE `Announcements` SET ? WHERE `_id` = ?", [announcement, id], function(err,rows){
+				Connection.release();
+				if (err) {
+					return res.status(400).send({
+						message: getErrorMessage(err)
+					});
+				} else {
+					announcement = {
+						_id: id,
+						title:req.body.title,
+						category: req.body.category,
+						project_id: req.body.project_id,
+						start_date: req.body.start_date,
+						end_date: req.body.end_date,
+						description: req.body.description,
+						course_id: req.body.course_id,
+						status: "open"
+					}
+					res.json(announcement);
+				}
+			})
+
 		}
-	})
+	});
 };
 
 
@@ -150,10 +178,12 @@ exports.update = function(req, res) {
 // new announcement ///
 //////////////////////
 exports.add = function(req, res) {
-	console.log("add");
+	//console.log("add");
 	var today = new Date();
-	console.log(req.files);
-	console.log(req.body.uploadFile.name);
+	console.log(req);
+	console.log(req.body.filename);
+	//console.log(req.files);
+	//console.log(req.body.uploadFile.name);
 	var announcement = {
 		title:req.body.title,
 		category: req.body.category,
@@ -167,28 +197,37 @@ exports.add = function(req, res) {
 		status: "open"
 	}
 	//alert(announcement);
-	db.connect(function(err,results) {});
-	db.query("INSERT INTO `Announcements` SET ? ", announcement, function(err,rows){
+	//db.connect(function(err,results) {});
+	db.getConnection(function(err, Connection) {
 		if (err) {
-			console.log(err);
-
-			return res.status(400).send({
-				message: getErrorMessage(err)
-			});
+			return res.status(400).send({ message: getErrorMessage(err) });
 		} else {
-			db.query("SELECT _id FROM `Announcements` WHERE `title` = ? and `faculty_id`", [announcement.title, announcement.faculty_id], function(err,rows){
-				if (err) {
-					return res.status(400).send({
-						message: getErrorMessage(err)
-					});
-				} else {
-					announcement._id = rows[0]._id;
-					res.json(announcement);
-				}
-				
-			});
+			Connection.query("INSERT INTO `Announcements` SET ? ", announcement, function(err,rows){
+			//Connection.release();
+			if (err) {
+				console.log(err);
+
+				return res.status(400).send({
+					message: getErrorMessage(err)
+				});
+			} else {
+				Connection.query("SELECT _id FROM `Announcements` WHERE `title` = ? and `faculty_id`", [announcement.title, announcement.faculty_id], function(err,rows){
+					Connection.release();
+					if (err) {
+						return res.status(400).send({
+							message: getErrorMessage(err)
+						});
+					} else {
+						announcement._id = rows[0]._id;
+						res.json(announcement);
+					}
+					
+				});
+			}
+		});
 		}
 	});
+	
 };
 
 
@@ -197,16 +236,24 @@ exports.add = function(req, res) {
 ///////////////////
 exports.delete = function(req, res) {
 	var id = req.params.announcId;
-	db.connect(function(err, results) {});	
-	test = db.query("DELETE FROM `Announcements` WHERE `_id` = '" + [id] + "';" , function(err,rows){
+	//db.connect(function(err, results) {});	
+	db.getConnection(function(err, Connection) {
 		if (err) {
-			return res.status(400).send({
-				message: getErrorMessage(err)
-			});
+			return res.status(400).send({ message: getErrorMessage(err) });
 		} else {
-			res.json(req.params.announcId);
-		}	
+			test = Connection.query("DELETE FROM `Announcements` WHERE `_id` = '" + [id] + "';" , function(err,rows){
+			Connection.release();
+			if (err) {
+				return res.status(400).send({
+					message: getErrorMessage(err)
+				});
+			} else {
+				res.json(req.params.announcId);
+			}	
+		});
+		}
 	});
+	
 };
 
 

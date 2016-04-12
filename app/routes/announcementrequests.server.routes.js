@@ -8,11 +8,12 @@ module.exports = function(app) {
 	app.route('/api/announcementrequests')
 		.get(users.requiresLogin, announcementrequests.list)
 		.post(users.requiresLogin, announcementrequests.add)
-		.put(users.requiresLogin, announcementrequests.update)
+		.put(users.requiresLogin, announcementrequests.update);
 
 
 	// R, D
 	app.route('/api/announcementrequests/:announcement_id')
-		.get(users.requiresLogin, announcementrequests.read);
+		.get(users.requiresLogin, announcementrequests.read)
+		.put(users.requiresLogin, announcementrequests.update);
 
 };

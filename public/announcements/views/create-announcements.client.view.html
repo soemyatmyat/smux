@@ -119,8 +119,8 @@
             <div class="form-group" >
                 <label for="uploadFile" class="col-sm-1 control-label">Related Documents </label>
                 <div class="col-sm-9">
-                    <input type="file" class="form-control" name="uploadFile"  file-model="uploadFile" id = "uploadFile" data-ng-model="uploadFile" />
-                </div><!-- Title -->
+                    <input type="file" class="form-control" name="uploadFile"  file-model="uploadFile" id = "uploadFile" accept="application/pdf" data-ng-model="announcementAdd.file" ngf-select ngf-max-size ="50MB"/>
+                </div><!-- FILE -->
             </div> 
             <div class="col-sm-3 pull-right"><!-- Button -->
                 <button type="submit" ng-disabled="announcementAdd.$invalid" class="btn btn-primary">Post</button>  
