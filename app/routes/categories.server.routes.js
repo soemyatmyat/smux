@@ -6,11 +6,9 @@ module.exports = function(app) {
 
 	// list the existing users, C
 	app.route('/api/categories')
-		.get(users.requiresLogin, categories.list)
-		.post(users.requiresLogin, categories.add);
-
+		.get(users.requiresLogin, categories.list);
 	// U,D
-	app.route('/api/projects/:projectId')
+	app.route('/api/categories/:categoryId')
 		.put(users.requiresLogin, categories.update)
 		.delete(users.requiresLogin, categories.delete);
 
