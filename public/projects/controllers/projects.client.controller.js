@@ -1,6 +1,6 @@
 //alert("client-controller");
-angular.module('projects').controller('ProjectsController', ['$scope', 'Authentication', '$window', '$uibModal', '$routeParams', '$location', 'Projects',
-    function($scope, Authentication, $window, $uibModal, $routeParams, $location, Projects) {
+angular.module('projects',['ngFileUpload']).controller('ProjectsController', ['$scope', 'Authentication', 'Upload', '$window', '$uibModal', '$routeParams', '$location', 'Projects',
+    function($scope, Authentication, Upload,  $window, $uibModal, $routeParams, $location, Projects) {
     	
     	$scope.authentication = Authentication;
     	$scope.statusIncludes = ['open'];

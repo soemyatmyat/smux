@@ -132,6 +132,12 @@
                     <span>{{1500-project.description.length}} characters left</span>
                 </div>
             </div> 
+            <div class="form-group" >
+                <label for="uploadFile" class="col-sm-1 control-label">Related Documents </label>
+                <div class="col-sm-9">
+                    <input type="file" class="form-control" name="uploadFile"  file-model="myFile" id = "uploadFile" accept="application/pdf" data-ng-model="projectEdit.file" ngf-select ngf-max-size ="50MB"/>
+                </div><!-- FILE -->
+            </div> 
             <div class="form-group">
                 <div class="col-sm-3 col-sm-offset-8"><!-- Button -->
                     <button type="button" data-ng-click="delete(project, $event)" class="btn btn-danger">Withdraw</button>  
@@ -206,6 +212,13 @@
                     <span data-ng-bind="project.description"></span>
                 </div><!-- Description -->
             </div>
+             <div class="row" >
+                <label for='file' class="col-sm-2 control-label">Related Document</label>
+                <div class="col-sm-8">
+                <span><a ng-show='project.uploadFile' href='../upload/{{project.uploadFile}}'  target="_blank">Download here</a></span>
+                            </div>
+            </div>
+
         </div>
 
         <!-- only Faculty can indicate interest -->
