@@ -12,6 +12,7 @@ var session = require('express-session');
 var flash = require('connect-flash');
 // load node mailer
 var nodemailer = require('nodemailer');
+
 // load node multer
 var multer = require('multer');
 
@@ -41,14 +42,20 @@ module.exports = function() {
 
   // use flash
   app.use(flash());
+
   var storage = multer.diskStorage({ //multers disk storage settings
     destination: function (req, file, cb) {
-      cb(null, './upload/')
+      cb(null, './public/upload/')
     },
     filename: function (req, file, cb) {
+        //console.log(req);
         var datetimestamp = Date.now();
-        var newName = file.fieldname + '-' + datetimestamp + '.' + file.originalname.split('.')[file.originalname.split('.').length -1];
-        cb(null, newName);
+        //console.log("express js line 53");
+        //console.log(req);
+        //console.log(file);
+        var newName = file.originalname.split('.')[0] + '.' + file.originalname.split('.')[file.originalname.split('.').length -1];
+        //console.log(file);
+        cb(null, file.originalname);
         //return newName;
     }
   });
@@ -57,13 +64,15 @@ module.exports = function() {
     storage: storage
   }).single('file');
 
-  /** API path that will upload the files */
+  /** API path that will upload the files **/
   app.post('/upload', function(req, res) {
       upload(req,res,function(err){
         //console.log(res.req);
-        
+        //console.log(res.req);
         //console.log(res.req.file.filename);
         var fileName = res.req.file.filename;
+        console.log(req);
+        console.log(res.req.newName);
           if(err){
                res.json({error_code:1,err_desc:err});
                //console.log(storage.filename);

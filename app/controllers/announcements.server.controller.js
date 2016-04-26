@@ -26,7 +26,7 @@ exports.list = function(req, res, next) {
 	} else {
 
 		if (role == "Faculty") {
-			Connection.query("SELECT _id, title, category, description, posted_date, faculty_id, start_date, end_date, project_id, course_id, status FROM `Announcements` WHERE  faculty_id = ?", [req.user._id], function(err,rows){
+			Connection.query("SELECT _id, title, category, description, posted_date, faculty_id, start_date, end_date, project_id, course_id, status, uploadFile FROM `Announcements` WHERE  faculty_id = ? ORDER BY posted_date DESC", [req.user._id], function(err,rows){
 				Connection.release();
 				if (err) {
 					return res.status(400).send({
@@ -41,7 +41,7 @@ exports.list = function(req, res, next) {
 			})
 		} else if(role == "Admin"){
 			
-			Connection.query("SELECT _id, title, category, description, posted_date, start_date, end_date faculty_id, project_id, course_id, status FROM `Announcements`", function(err,rows){
+			Connection.query("SELECT _id, title, category, description, posted_date, start_date, end_date faculty_id, project_id, course_id, status, uploadFile FROM `Announcements` ORDER BY posted_date DESC", function(err,rows){
 				Connection.release();
 				if (err) {
 					return res.status(400).send({
@@ -58,7 +58,7 @@ exports.list = function(req, res, next) {
 			})
 		}else {
 			var org_id = req.user._id;
-			Connection.query("SELECT _id, title, category, description, posted_date, start_date, end_date faculty_id, project_id, course_id, status FROM `Announcements` WHERE status != ? AND status != ?", ["completed", "ongoing"], function(err,rows){
+			Connection.query("SELECT _id, title, category, description, posted_date, start_date, end_date faculty_id, project_id, course_id, status, uploadFile FROM `Announcements` WHERE status != ? AND status != ? ORDER BY posted_date DESC", ["completed", "ongoing"], function(err,rows){
 				Connection.release();
 				if (err) {
 					return res.status(400).send({
@@ -139,6 +139,7 @@ exports.update = function(req, res) {
 		end_date: req.body.end_date,
 		description: req.body.description,
 		course_id: req.body.course_id,
+		uploadFile: req.body.uploadFile,
 		status: "open"
 	}
 
@@ -180,10 +181,10 @@ exports.update = function(req, res) {
 exports.add = function(req, res) {
 	//console.log("add");
 	var today = new Date();
-	console.log(req);
-	console.log(req.body.filename);
+	//console.log(req);
+	//console.log(req.body.filename);
 	//console.log(req.files);
-	//console.log(req.body.uploadFile.name);
+	console.log(req.body.uploadFile);
 	var announcement = {
 		title:req.body.title,
 		category: req.body.category,
@@ -194,7 +195,8 @@ exports.add = function(req, res) {
 		posted_date: getDateFormat(today),
 		faculty_id: req.user._id,
 		course_id: req.body.course_id,
-		status: "open"
+		status: "open",
+		uploadFile: req.body.uploadFile
 	}
 	//alert(announcement);
 	//db.connect(function(err,results) {});

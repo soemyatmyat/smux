@@ -109,6 +109,7 @@
                             <p class="col-md-3 col-sm-4"><strong>Expected Start Date:</strong></p><p class="col-md-3 col-sm-8">{{announcement.start_date}}</p>
                             <p class="col-md-3 col-sm-4"><strong>Expected End Date:</strong></p><p class="col-md-3 col-sm-8">{{announcement.end_date}}</p>
                         </div>
+
                       <p class="item"><strong>Description</strong></p>
                       <p class="item">{{announcement.description}}</p>
                       <div class="item btn-toolbar col-md-offset-6 pull-right" style="padding-bottom: 3%;">
@@ -123,6 +124,11 @@
                           href="#{{announcement._id}}">Close</button>
          
                       </div>
+                      <div class="row item" >
+                            <p class="col-md-3 col-sm-4"><strong>Related Document:</strong></p><p class="col-md-9 col-sm-8">
+                            <a ng-show='announcement.uploadFile' href='../upload/{{announcement.uploadFile}}'  target="_blank">Download here</a>
+                            </p>
+                        </div>
                       <br/><br/>
                     </div>
                     <br/>
@@ -381,7 +387,22 @@ $(document).on('click', '#projPropose', function(){
 $('.modal-backdrop').remove();
         
     })
+$(document).ready(function(){
+    function getFileFromServer(url, doneCallback) {
+    var xhr;
 
+    xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = handleStateChange;
+    xhr.open("GET", url, true);
+    xhr.send();
+
+    function handleStateChange() {
+        if (xhr.readyState === 4) {
+            doneCallback(xhr.status == 200 ? xhr.responseText : null);
+        }
+    }
+}
+})
 
 </script>
 </div>

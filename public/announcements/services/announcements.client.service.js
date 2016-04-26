@@ -24,3 +24,25 @@ angular.module('announcements').factory('Announcements', ['$resource',
 	}
 ]);
 
+angular.module('announcements').service('fileUpload', ['$http', function($http){
+    this.uploadFileToUrl = function(file, uploadUrl){
+        console.log(file);
+        var fd = new FormData();
+        fd.append('file', file);
+        console.log(fd);
+        $http.post(uploadUrl, fd, {
+            transformRequest: angular.identity,
+            headers: {'Content-Type': undefined}
+        })
+    	
+        .success(function(){
+            console.log('success!');
+        })
+    
+        .error(function(e){
+        	console.log(e);
+            console.log("error here");
+        });
+
+    }
+}]);

@@ -1,12 +1,29 @@
 //alert("client-controller");
+angular.module('announcements').directive('fileModel',['$parse', function ($parse){
+    return{
+        restrict: 'A',
+        link: function(scope, element, attrs){
+            var model = $parse(attrs.fileModel);
+            var modelSetter = model.assign;
+                  console.log("in fileModel");
+            element.bind('change', function(){
+                scope.$apply(function(){
+                    modelSetter(scope, element[0].files[0]);
+                });
+            });
+        }
+    };
+}]);
+
+
+
 angular.module('announcements',['ngFileUpload']).controller('AnnouncementController', ['$scope', 'Authentication', 'Upload', '$window', '$uibModal', '$routeParams', '$location', 'Announcements', 'Projects', '$timeout',
     function($scope, Authentication, Upload, $window, $uibModal, $routeParams, $location, Announcements, Projects, $timeout) {
         
         $scope.authentication = Authentication;
         $scope.statusIncludes = ['open'];
         $scope.categoryIncludes = ['Accounting', 'Arts', 'Capstone', 'IT', 'Social Psychology'];
-        $scope.fileName = '';
-        
+
         //console.log(Projects);
         //console.log($scope.Projects);
         $scope.includeStatus = function(status) {
@@ -81,19 +98,32 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
           });
         };
         
-        function upload(file){
+       
+        $scope.upload = function(file){
             var val;
+            console.log(file);
+            var fileName = file.name.split('.')[0];
+            var extension = file.name.split('.')[1];
+            console.log(fileName);
+            console.log(Date.now());
+            var newName = fileName + '_' + Date.now() + '.' + extension;
+            console.log(newName);
+            file.name = newName;
+            console.log('after');
+            console.log(file);
             Upload.upload({
                 url: '../upload',
-                data: {file:file}
+                data: {file:file},
+                newName : newName
             }).then(function(resp){
-                //console.log(resp);
+                console.log(resp);
 
                 if(resp.data.error_code === 0){
                     //vaidate success
-                    $window.alert('Success ' + resp.config.data.file.name + 'uploaded. Response: ');
+                    //$window.alert('Success ' + resp.config.data.file.name + 'uploaded. Response: ');
                     $scope.fileName = resp.data.filename;
                     console.log(resp.data.filename);
+                    
                     return resp.data.filename;
                 }else{
                     $window.alert('an error occured');
@@ -103,12 +133,12 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
                 console.log('Error status: ' + resp.status);
                 $window.alert('Error status: ' + resp.status);
                 return resp.status;
-            }/**, function (evt) { 
-                console.log(evt);
+            }, function (evt) { 
+                //console.log(evt);
                 var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-                console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
+                //console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
                 //vm.progress = 'progress: ' + progressPercentage + '% '; // capture upload progress
-            }**/)
+            })
             return "";
         }
 
@@ -139,6 +169,13 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
             //console.log(this.term);
             newAnnouncement.course_id = this.course_id;
 
+            /**var file = $scope.myFile;
+               
+            console.log('file is ' );
+            console.dir(file);
+               
+            var uploadUrl = "public/upload";
+            fileUpload.uploadFileToUrl(file, uploadUrl);**///
             
             var f = document.getElementById('uploadFile').files[0],
                 r = new FileReader();
@@ -148,9 +185,10 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
                 }
                 r.readAsBinaryString(f);
                 var filename = "";
+               
                 if($scope.announcementAdd.file){
                     console.log('found the file');
-                    upload($scope.announcementAdd.file);
+                    $scope.upload($scope.announcementAdd.file);
                         
                     $scope.$watch('fileName', function() {
                         //alert('hey, myVar has changed!');
@@ -159,18 +197,25 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
                     });    
 
                    // wait();  
-                    console.log(fileName);
-                }else{
-                    
+                    //console.log(fileName);
                 }
+                var f = document.getElementById('uploadFile').files[0],
+                r = new FileReader();
+                r.onloadend = function(e){
+                    var data = e.target.result;
+                    //send you binary data via $http or $resource or do anything else with it
+                }
+                r.readAsBinaryString(f);
+
+                //console.log(f);
                 
                 //console.log(f);
             //if (nweProject.hp === undefined) {newProject.hp = null}
-            //newAnnouncement.uploadFile = f.name;
+            newAnnouncement.uploadFile = f.name;
             
             //console.log(newAnnouncement.uploadFile);
             newAnnouncement.$save(function(response) {
-                
+                console.log($scope.fileName);
                 $location.path('announcements/');
             }, function(errorResponse) {
                 $scope.error = errorResponse.data.message;

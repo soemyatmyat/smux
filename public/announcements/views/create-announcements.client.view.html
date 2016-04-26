@@ -5,7 +5,7 @@
             <div class="logo col-md-6 col-sm-6 col-xs-12" >
                 <a href="#"><img class="img-responsive" src="images/smu_logo.png" style="max-width : 40%; padding:4% 6%"/></a> 
             </div>
-            <div class="profile-bar col-md-offset-2 col-md-4 col-sm-6 col-xs-12 pull-right" >
+            <div class="profile-bar col-md-offset-2 col-md-4 col-sm-offset-2 col-sm-4 col-xs-offset-2 col-xs-8 pull-right" >
                 <span>
                 <h5>
                   <a href="#"><img src="images/userpic.gif"/></a>
@@ -29,7 +29,7 @@
                             <li><a href="/#!/projects">Projects <span class="sr-only">(current)</span></a></li>
                             <li data-ng-if="authentication.user.role == 'Organization'"><a href="/#!/requests">Request Inbox</a></li>
                             <li class="active non-click"><a href="">Faculty Announcements</a></li>
-                            <li data-ng-if="authentication.user.role == 'Faculty'"><a href="/#!/announcementrequests">
+                            <li data-ng-if="authentication.user.role == 'Faculty'"><a href="/#!/announcementrequests">Request Inbox</a></li>
                             <li><a class="menu1"  href="faq.html">FAQ</a></li>
                         </ul>
                     </div><!-- /.navbar-collapse -->
@@ -119,7 +119,7 @@
             <div class="form-group" >
                 <label for="uploadFile" class="col-sm-1 control-label">Related Documents </label>
                 <div class="col-sm-9">
-                    <input type="file" class="form-control" name="uploadFile"  file-model="uploadFile" id = "uploadFile" accept="application/pdf" data-ng-model="announcementAdd.file" ngf-select ngf-max-size ="50MB"/>
+                    <input type="file" class="form-control" name="uploadFile"  file-model="myFile" id = "uploadFile" accept="application/pdf" data-ng-model="announcementAdd.file" ngf-select ngf-max-size ="50MB"/>
                 </div><!-- FILE -->
             </div> 
             <div class="col-sm-3 pull-right"><!-- Button -->
