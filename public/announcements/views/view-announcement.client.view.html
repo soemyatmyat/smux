@@ -40,10 +40,10 @@
     </div>
 
     <!-- Begin Page Content -->
-    <section data-ng-init="read()">
-        <ol class="breadcrumb"><li><a href="#!/announcements">Announcements</a></li><li class="active" data-ng-bind="announcement.title"></li></ol>
+    <section data-ng-init="read()" class="main-content-body col-md-12"> <br/>
+        <ol class="breadcrumb"><li><a href="#!/announcements">Announcements</a></li><li class="active" data-ng-bind="(announcement.title)"></li></ol>
         <p data-ng-show="{{announcement === undefined}}">Show this if $scope.project ==== undefined</p>
-        <form data-ng-if="(authentication.user.role == 'Admin' || authentication.user.role == 'Faculty') && announcement.status == 'open'" data-ng-submit="update()" name="announcementEdit" class="form-horizontal" novalidate>
+        <form data-ng-if="(authentication.user.role == 'Admin' || authentication.user.role == 'Faculty') && announcement.status == 'open'" data-ng-submit="uploadingFile('update')" name="announcementEdit" class="form-horizontal" novalidate>
             <div data-ng-show="error"><strong data-ng-bind="error"></strong></div>
             <div class="form-group"><!-- Title -->
                 <label for="title" class="col-sm-1 control-label">Title </label>
@@ -51,15 +51,15 @@
                     <input type="text" class="form-control" data-ng-model="announcement.title" name="title" ng-maxlength="100" required autofocus/>
                 </div>
             </div> 
-            <div class="form-group"><!-- Category -->
-                <label for="category" class="col-sm-1 control-label">Category </label>
-                <div class="col-sm-9">
-                    <select class="form-control" data-ng-model="announcement.category">
-                        <option selected value="aaa">aaa</option>
-                        <option value="bbb">bbb</option>
-                        <option value="ccc">ccc</option>
-                    </select>
-                </div>
+            <div class="form-group">
+                    <label for="category" class="col-sm-1 control-label">Category </label>
+                    <div class="col-sm-9">
+                        
+                        <select class="form-control" data-ng-class="{'has-error' : announcementAdd.category.$invalid && !announcementAdd.category.$pristine}" data-ng-model="announcement.category" required>
+                        <option ng-repeat="cat in categoryIncludes" value="{{cat}}" >{{cat}}</option>
+                            
+                        </select>
+                    </div><!-- Category -->
             </div>
             <div class="form-group">
                 <label for="startdate" class="col-sm-1 control-label">Start Date </label>
@@ -103,6 +103,12 @@
                     <textarea class="form-control" data-ng-model="announcement.description" name="desc" ng-maxlength="1500" rows="7" required/>
                     <span>{{500-announcement.description.length}} characters left</span>
                 </div>
+            </div> 
+            <div class="form-group" >
+                <label for="uploadFile" class="col-sm-1 control-label">Related Documents </label>
+                <div class="col-sm-9">
+                    <input type="file" class="form-control" name="uploadFile"  file-model="myFile" id = "uploadFile" accept="application/pdf" data-ng-model="announcementEdit.file" ngf-select ngf-max-size ="50MB"/>
+                </div><!-- FILE -->
             </div> 
             <div class="form-group">
                 <div class="col-sm-3 col-sm-offset-8"><!-- Button -->

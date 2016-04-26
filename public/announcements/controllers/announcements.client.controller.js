@@ -1,22 +1,3 @@
-//alert("client-controller");
-angular.module('announcements').directive('fileModel',['$parse', function ($parse){
-    return{
-        restrict: 'A',
-        link: function(scope, element, attrs){
-            var model = $parse(attrs.fileModel);
-            var modelSetter = model.assign;
-                  console.log("in fileModel");
-            element.bind('change', function(){
-                scope.$apply(function(){
-                    modelSetter(scope, element[0].files[0]);
-                });
-            });
-        }
-    };
-}]);
-
-
-
 angular.module('announcements',['ngFileUpload']).controller('AnnouncementController', ['$scope', 'Authentication', 'Upload', '$window', '$uibModal', '$routeParams', '$location', 'Announcements', 'Projects', '$timeout',
     function($scope, Authentication, Upload, $window, $uibModal, $routeParams, $location, Announcements, Projects, $timeout) {
         
@@ -24,6 +5,7 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
         $scope.statusIncludes = ['open'];
         $scope.categoryIncludes = ['Accounting', 'Arts', 'Capstone', 'IT', 'Social Psychology'];
 
+        $scope.fileName = '///';
         //console.log(Projects);
         //console.log($scope.Projects);
         $scope.includeStatus = function(status) {
@@ -101,20 +83,9 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
        
         $scope.upload = function(file){
             var val;
-            console.log(file);
-            var fileName = file.name.split('.')[0];
-            var extension = file.name.split('.')[1];
-            console.log(fileName);
-            console.log(Date.now());
-            var newName = fileName + '_' + Date.now() + '.' + extension;
-            console.log(newName);
-            file.name = newName;
-            console.log('after');
-            console.log(file);
             Upload.upload({
-                url: '../upload',
-                data: {file:file},
-                newName : newName
+                url: '../upload/announcement',
+                data: {file:file}
             }).then(function(resp){
                 console.log(resp);
 
@@ -139,24 +110,103 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
                 //console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
                 //vm.progress = 'progress: ' + progressPercentage + '% '; // capture upload progress
             })
-            return "";
+            return "test";
         }
 
-        $scope.add = function() {
+        $scope.uploadingFile = function(action) {
             
             var newAnnouncement = new Announcements();
+            
+            var f = document.getElementById('uploadFile').files[0],
+                r = new FileReader();
+                if(f){
+                    r.onloadend = function(e){
+                    var data = e.target.result;
+                    //send you binary data via $http or $resource or do anything else with it
+                    }
+                    r.readAsBinaryString(f);
+                    var filename = "";
+                   
+                    if(action === 'add'){
+                        if($scope.announcementAdd.file){
+                            //console.log('found the file');
+                            var name = $scope.upload($scope.announcementAdd.file);
+                                
+                            $scope.$watch('fileName', function() {
+                                //console.log($scope.fileName);
+                                newAnnouncement.uploadFile = $scope.fileName;
+                                if($scope.fileName !== '///'){
+                                        $scope.add(newAnnouncement);
+                                    
+                                    $scope.fileName = '///';
+                                }
+                                
+                            });    
+
+                           // wait();  
+                            //console.log(fileName);
+                            var name;
+                        }
+                    }else if(action === 'update'){
+                        if($scope.announcementEdit.file){
+                            console.log(uploadFile);
+                            console.log('found the file');
+                            var name = $scope.upload($scope.announcementEdit.file);
+                                
+                            $scope.$watch('fileName', function() {
+                                //console.log($scope.fileName);
+                                newAnnouncement.uploadFile = $scope.fileName;
+                                if($scope.fileName !== '///'){
+                                    
+                                        $scope.update($scope.fileName);
+                                    console.log($scope.fileName);
+                                    $scope.fileName = '///';
+                                }
+                                
+                            });    
+
+                           // wait();  
+                            //console.log(fileName);
+                            var name;
+                        }
+                    }
+                    
+                    
+
+                    //console.log(f);
+                    
+                    //console.log(f);
+                //if (nweProject.hp === undefined) {newProject.hp = null}
+                newAnnouncement.uploadFile = f.name;
+                console.log(f.name);
+                }else{
+                    if(action === 'add'){
+                        $scope.add(newAnnouncement);
+                    }else if(action === 'update'){
+                        $scope.update('');
+                    }
+                    
+                }
+                
+            
+           
+        };
+
+        $scope.add = function(announc) {
+            console.log("in add");
+            var newAnnouncement = announc;
             newAnnouncement.title = this.title;
             //console.log(this.title);
             newAnnouncement.category = this.category;
             
-            if($scope.start_date !== null){
+            if(this.start_date !== null){
                 var yyyy = this.start_date.getFullYear().toString();
                 var mm = (this.start_date.getMonth()+1).toString(); // getMonth() is zero-based
                 var dd  = this.start_date.getDate().toString();
                 newAnnouncement.start_date = yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
 
             }
-            if($scope.end_date !== null){
+            if(this.end_date !== null){
                 yyyy = this.end_date.getFullYear().toString();
                 mm = (this.end_date.getMonth()+1).toString(); // getMonth() is zero-based
                 dd  = this.end_date.getDate().toString();
@@ -168,7 +218,7 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
             newAnnouncement.description = this.description;
             //console.log(this.term);
             newAnnouncement.course_id = this.course_id;
-
+            console.log(newAnnouncement)
             /**var file = $scope.myFile;
                
             console.log('file is ' );
@@ -176,42 +226,41 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
                
             var uploadUrl = "public/upload";
             fileUpload.uploadFileToUrl(file, uploadUrl);**///
-            
+            /**
             var f = document.getElementById('uploadFile').files[0],
                 r = new FileReader();
-                r.onloadend = function(e){
+                if(f){
+                    r.onloadend = function(e){
                     var data = e.target.result;
                     //send you binary data via $http or $resource or do anything else with it
-                }
-                r.readAsBinaryString(f);
-                var filename = "";
-               
-                if($scope.announcementAdd.file){
-                    console.log('found the file');
-                    $scope.upload($scope.announcementAdd.file);
-                        
-                    $scope.$watch('fileName', function() {
-                        //alert('hey, myVar has changed!');
-                        console.log($scope.fileName);
-                        newAnnouncement.filename = $scope.fileName;
-                    });    
+                    }
+                    r.readAsBinaryString(f);
+                    var filename = "";
+                   
+                    if($scope.announcementAdd.file){
+                        //console.log('found the file');
+                        $scope.upload($scope.announcementAdd.file).then(function(result){
+                            console.log("it is successful");
+                        });
+                            
+                        $scope.$watch('fileName', function() {
+                            //alert('hey, myVar has changed!');
+                            console.log($scope.fileName);
+                            newAnnouncement.filename = $scope.fileName;
+                        });    
 
-                   // wait();  
-                    //console.log(fileName);
-                }
-                var f = document.getElementById('uploadFile').files[0],
-                r = new FileReader();
-                r.onloadend = function(e){
-                    var data = e.target.result;
-                    //send you binary data via $http or $resource or do anything else with it
-                }
-                r.readAsBinaryString(f);
+                       // wait();  
+                        //console.log(fileName);
+                    }
+                    
 
-                //console.log(f);
-                
-                //console.log(f);
-            //if (nweProject.hp === undefined) {newProject.hp = null}
-            newAnnouncement.uploadFile = f.name;
+                    //console.log(f);
+                    
+                    //console.log(f);
+                //if (nweProject.hp === undefined) {newProject.hp = null}
+                newAnnouncement.uploadFile = f.name;
+                }
+                **/
             
             //console.log(newAnnouncement.uploadFile);
             newAnnouncement.$save(function(response) {
@@ -223,11 +272,6 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
             });
         };
 
-        function wait(){
-            if(fileName === ''){
-                $timeout(function(){},1000);
-            }
-        }
 
         $scope.read = function() {
             //alert($routeParams.announcId);
@@ -255,17 +299,25 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
         }
 
 
-        $scope.update = function() {
-            
-            var yyyy = $scope.announcement.start_date.getFullYear().toString();
-            var mm = ($scope.announcement.start_date.getMonth()+1).toString(); // getMonth() is zero-based
-            var dd  = $scope.announcement.start_date.getDate().toString();
-            $scope.announcement.start_date = yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
-            yyyy = $scope.announcement.end_date.getFullYear().toString();
-            mm = ($scope.announcement.end_date.getMonth()+1).toString(); // getMonth() is zero-based
-            dd  = $scope.announcement.end_date.getDate().toString();
-            $scope.announcement.end_date = yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
+        $scope.update = function(filename) {
+            console.log('in update');
+            console.log(filename);
+            if($scope.start_date !== null){
+                var yyyy = this.start_date.getFullYear().toString();
+                var mm = (this.start_date.getMonth()+1).toString(); // getMonth() is zero-based
+                var dd  = this.start_date.getDate().toString();
+                $scope.announcement.start_date = yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
 
+            }
+            if($scope.end_date !== null){
+                yyyy = this.end_date.getFullYear().toString();
+                mm = (this.end_date.getMonth()+1).toString(); // getMonth() is zero-based
+                dd  = this.end_date.getDate().toString();
+                $scope.announcement.end_date = yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
+            
+            }
+
+            $scope.announcement.uploadFile = filename;
             $scope.announcement.$update(function(response) {
                 $window.alert('Updated Successfully!');
                 //$location.path('projects/' + $scope.project._id);

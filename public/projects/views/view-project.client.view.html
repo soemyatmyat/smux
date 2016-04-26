@@ -44,7 +44,7 @@
         <ol class="breadcrumb"><li><a href="#!/projects">Projects</a></li><li class="active" data-ng-bind="(project.title)" ></li></ol>
         
         <!--<form data-ng-if="(authentication.user.role == 'Admin' || authentication.user.role == 'Organization') && project.status == 'open'"-->
-        <form data-ng-if="edit" data-ng-submit="update()" name="projectEdit" class="form-horizontal display" novalidate>
+        <form data-ng-if="edit" data-ng-submit="uploadingFile('update')" name="projectEdit" class="form-horizontal display" novalidate>
 
             <!-- Error Message -->
             <div class="col-md-offset-1">

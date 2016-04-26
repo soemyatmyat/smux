@@ -41,7 +41,7 @@
     <!-- Begin Page Content -->
     <section class="main-content-body col-md-12"><br/>
         <ol class="breadcrumb"><li><a href="/#!/announcements">Announcements</a></li><li class="active">New Announcement</li></ol>
-        <form data-ng-submit="add()" name="announcementAdd" class="form-horizontal display" novalidate>
+        <form data-ng-submit="uploadingFile('add')" name="announcementAdd" class="form-horizontal display" novalidate>
             <!-- Error Message -->
             <div class="col-md-offset-1">
                 <p ng-show="!announcementAdd.title.$pristine && announcementAdd.title.$invalid && announcementAdd.title.$touched" class="help-block">Title cannot be empty.</p><p ng-show="announcementAdd.title.$error.maxlength && announcementAdd.title.$touched && !announcementAdd.title.$pristine" class="help-block">Title cannot be longer than 100 characters.</p>

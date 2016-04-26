@@ -7,10 +7,10 @@ angular.module('announcements').config(['$routeProvider',
 			templateUrl: 'announcements/views/list-announcements.client.view.html'
 		}).
 		when('/announcements/create', {
-			templateUrl: 'announcements/views/create-announcements.client.view.html'
+			templateUrl: 'announcements/views/create-announcement.client.view.html'
 		}).
 		when('/announcements/:announcId', {
-			templateUrl: 'announcements/views/view-announcements.client.view.html'
+			templateUrl: 'announcements/views/view-announcement.client.view.html'
 		});
 	}
 ]);

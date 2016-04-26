@@ -112,6 +112,11 @@
 
                       <p class="item"><strong>Description</strong></p>
                       <p class="item">{{announcement.description}}</p>
+                      <div class="row item" >
+                            <p class="col-md-3 col-sm-4"><strong>Related Document:</strong></p><p class="col-md-9 col-sm-8">
+                            <a ng-show='announcement.uploadFile' href='../upload/{{announcement.uploadFile}}'  target="_blank">Download here</a>
+                            </p>
+                        </div>
                       <div class="item btn-toolbar col-md-offset-6 pull-right" style="padding-bottom: 3%;">
                           <button type="button" class="btn btn-danger warningBtn " data-ng-if="authentication.user.role == 'Faculty' || authentication.user.role == 'Admin'" data-toggle="modal" data-warningtext="Are you sure you want to withdraw this announcement?" data-target="#warning" data-action="delete(announcement)">Withdraw Announcement</button><!-- Perform delete-->
                         
@@ -126,7 +131,7 @@
                       </div>
                       <div class="row item" >
                             <p class="col-md-3 col-sm-4"><strong>Related Document:</strong></p><p class="col-md-9 col-sm-8">
-                            <a ng-show='announcement.uploadFile' href='../upload/{{announcement.uploadFile}}'  target="_blank">Download here</a>
+                            <a ng-show='announcement.uploadFile' href='../upload/announcement/{{announcement.uploadFile}}'  target="_blank">Download here</a>
                             </p>
                         </div>
                       <br/><br/>

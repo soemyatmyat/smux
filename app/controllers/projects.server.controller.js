@@ -29,8 +29,8 @@ exports.list = function(req, res, next) {
 			return res.status(400).send({ message: getErrorMessage(err) });
 		} else {
 			if (role == "Faculty" || role == "Admin") {
-				Connection.query("SELECT temp._id as _id, title, category, description, posted_date, org_id, temp.status, org_name, requests._id as req_id " +
-					"FROM (SELECT projects._id as _id, title, category, description, posted_date, org_id, status, users.name as org_name " + 
+				Connection.query("SELECT temp._id as _id, title, category, description, posted_date, org_id, temp.status, org_name, requests._id as req_id, uploadFile " +
+					"FROM (SELECT projects._id as _id, title, category, description, posted_date, org_id, status, users.name as org_name, uploadFile " + 
 					"FROM `projects` left outer join `users` on projects.org_id = users._id WHERE status = ? OR faculty_id = ?) as temp " + 
 					"left outer join requests on temp._id = requests.project_id and faculty_id = ?", 
 					["open", req.user._id, req.user._id], function(err,rows){
@@ -51,8 +51,8 @@ exports.list = function(req, res, next) {
 				})
 			} else {
 				var org_id = req.user._id;
-				Connection.query("SELECT project._id, title, category, description, posted_date, org_id, status, org_name, feedbacks._id as feedback_id from " + 
-					"(SELECT projects._id as _id, title, category, description, posted_date, org_id, status, users.name as org_name " + 
+				Connection.query("SELECT project._id, title, category, description, posted_date, org_id, status, org_name, feedbacks._id as feedback_id, uploadFile from " + 
+					"(SELECT projects._id as _id, title, category, description, posted_date, org_id, status, users.name as org_name, uploadFile " + 
 					"FROM `projects` left outer join `users` on projects.org_id = users._id WHERE org_id = ?) as project left outer join feedbacks on " + 
 					"project._id = feedbacks.project_id and feedbacks.user_id = org_id", 
 					[org_id], function(err,rows){
@@ -129,11 +129,11 @@ exports.read = function(req, res) {
 		return res.status(400).send({ message: getErrorMessage(err) });
 	} else {
 		Connection.query("SELECT project._id, title, category, contact_person, contact_email, contact_HP, description, posted_date, start_date, end_date, " +
-			"org_id, faculty_id, course_id, status, term, faculty_name, org_name, feedbacks._id as feedback_id " + 
+			"org_id, faculty_id, course_id, status, term, faculty_name, org_name, feedbacks._id as feedback_id, uploadFile " + 
 			"FROM (SELECT temp._id, title, category, contact_person, contact_email, contact_HP, description, posted_date, start_date, end_date, " + 
-			"org_id, faculty_id, course_id, status, term, faculty_name, users.name as org_name from " + 
+			"org_id, faculty_id, course_id, status, term, faculty_name, users.name as org_name, uploadFile from " + 
 			"(SELECT projects._id, title, category, contact_person, contact_email, contact_HP, description, posted_date, start_date, " + 
-			"end_date, org_id, faculty_id, course_id, status, term, users.name as faculty_name from `projects` left outer join `users` " + 
+			"end_date, org_id, faculty_id, course_id, status, term, users.name as faculty_name, uploadFile from `projects` left outer join `users` " + 
 			"on projects.faculty_id = users._id where projects._id = ?) as temp left outer join users on temp.org_id = users._id) as Project " +
 			"left outer join FEEDBACKS on project._id = feedbacks.project_id and feedbacks.user_id = org_id;", [id], function(err,rows){	
 			if (err) {
@@ -182,7 +182,8 @@ exports.update = function(req, res) {
 		contact_email: req.body.contact_email,
 		contact_HP: req.body.contact_HP,
 		description: req.body.description,
-		status: "open"
+		status: "open",
+		uploadFile : req.body.uploadFile
 	}
 	if (project.start_date != null) {
 		project.start_date = new Date(project.start_date);
@@ -212,7 +213,8 @@ exports.update = function(req, res) {
 						contact_email: req.body.contact_email,
 						contact_HP: req.body.contact_HP,
 						description: req.body.description,
-						status: "open"
+						status: "open",
+						uploadFile: req.body.uploadFile
 					}
 					res.json(project);
 				}
@@ -240,7 +242,8 @@ exports.add = function(req, res) {
 		org_id: req.user._id,
 		faculty_id: null,
 		course_id: null,
-		status: "open"
+		status: "open",
+		uploadFile : req.body.uploadFile
 	}
 	db.getConnection(function(err, Connection) {
 		//db.connect(function(err,results) {});

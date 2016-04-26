@@ -41,7 +41,7 @@
     <!-- Begin Page Content -->
     <section class="main-content-body col-md-12"><br/>
         <ol class="breadcrumb"><li><a href="/#!/projects">Projects</a></li><li class="active">New Project</li></ol>
-        <form data-ng-submit="add()" name="projectAdd" class="form-horizontal display" novalidate>
+        <form data-ng-submit="uploadingFile('add')" name="projectAdd" class="form-horizontal display" novalidate>
             <!-- Error Message -->
             <div class="col-md-offset-1">
                 <p ng-show="!projectAdd.title.$pristine && projectAdd.title.$invalid && projectAdd.title.$touched" class="help-block">Title cannot be empty.</p><p ng-show="projectAdd.title.$error.maxlength && projectAdd.title.$touched && !projectAdd.title.$pristine" class="help-block">Title cannot be longer than 100 characters.</p>
@@ -127,6 +127,12 @@
                     <textarea class="form-control" data-ng-model="description" name="description" ng-maxlength="1500" rows="7" required/>
                     <span>{{1500-description.length}} characters left</span>
                 </div>
+            </div> 
+            <div class="form-group" >
+                <label for="uploadFile" class="col-sm-1 control-label">Related Documents </label>
+                <div class="col-sm-9">
+                    <input type="file" class="form-control" name="uploadFile"  file-model="myFile" id = "uploadFile" accept="application/pdf" data-ng-model="projectAdd.file" ngf-select ngf-max-size ="50MB"/>
+                </div><!-- FILE -->
             </div> 
             <div class="col-sm-3 pull-right"><!-- Button -->
                 <button type="submit" ng-disabled="projectAdd.$invalid" class="btn btn-primary">Post</button>  

@@ -50,13 +50,8 @@ module.exports = function() {
     filename: function (req, file, cb) {
         //console.log(req);
         var datetimestamp = Date.now();
-        //console.log("express js line 53");
-        //console.log(req);
-        //console.log(file);
-        var newName = file.originalname.split('.')[0] + '.' + file.originalname.split('.')[file.originalname.split('.').length -1];
-        //console.log(file);
-        cb(null, file.originalname);
-        //return newName;
+        var newName = datetimestamp + "_" + file.originalname;
+        cb(null, newName);
     }
   });
 
@@ -67,15 +62,10 @@ module.exports = function() {
   /** API path that will upload the files **/
   app.post('/upload', function(req, res) {
       upload(req,res,function(err){
-        //console.log(res.req);
-        //console.log(res.req);
-        //console.log(res.req.file.filename);
+
         var fileName = res.req.file.filename;
-        console.log(req);
-        console.log(res.req.newName);
           if(err){
                res.json({error_code:1,err_desc:err});
-               //console.log(storage.filename);
                return 'abc';
           }
           //console.log(res.file.filename);

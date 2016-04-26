@@ -5,7 +5,7 @@ angular.module('projects').controller('ProjectsController', ['$scope', 'Authenti
     	$scope.authentication = Authentication;
     	$scope.statusIncludes = ['open'];
     	$scope.categoryIncludes = ['Accounting', 'Arts', 'Capstone', 'IT', 'Social Psychology'];
-
+        $scope.fileName = '///';
     	$scope.includeStatus = function(status) {
     		//alert("filterText");
     		if (status == 'On-Going') $scope.ongoing = !$scope.ongoing;
@@ -87,8 +87,119 @@ angular.module('projects').controller('ProjectsController', ['$scope', 'Authenti
 	          return text === "View More" ? "View Less" : "View More";
 	      });
 		};
+
+        $scope.upload = function(file){
+            var val;
+            Upload.upload({
+                url: '../upload',
+                data: {file:file}
+            }).then(function(resp){
+                console.log(resp);
+
+                if(resp.data.error_code === 0){
+                    //vaidate success
+                    //$window.alert('Success ' + resp.config.data.file.name + 'uploaded. Response: ');
+                    $scope.fileName = resp.data.filename;
+                    console.log(resp.data.filename);
+                    
+                    return resp.data.filename;
+                }else{
+                    $window.alert('an error occured');
+                    return "";
+                }
+            }, function (resp) { //catch error
+                console.log('Error status: ' + resp.status);
+                $window.alert('Error status: ' + resp.status);
+                return resp.status;
+            }, function (evt) { 
+                //console.log(evt);
+                var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                //console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
+                //vm.progress = 'progress: ' + progressPercentage + '% '; // capture upload progress
+            })
+            return "test";
+        }
 		
-    	$scope.update = function() {
+        $scope.uploadingFile = function(action) {
+            
+            var newProject = new Projects();
+            
+            var f = document.getElementById('uploadFile').files[0],
+                r = new FileReader();
+                if(f){
+                    r.onloadend = function(e){
+                    var data = e.target.result;
+                    //send you binary data via $http or $resource or do anything else with it
+                    }
+                    r.readAsBinaryString(f);
+                    var filename = "";
+                   
+                    if(action === 'add'){
+                        if($scope.projectAdd.file){
+                            //console.log('found the file');
+                            var name = $scope.upload($scope.projectAdd.file);
+                                
+                            $scope.$watch('fileName', function() {
+                                //console.log($scope.fileName);
+                                newProject.uploadFile = $scope.fileName;
+                                if($scope.fileName !== '///'){
+                                        $scope.add(newProject);
+                                    
+                                    $scope.fileName = '///';
+                                }
+                                
+                            });    
+
+                           // wait();  
+                            //console.log(fileName);
+                            var name;
+                        }
+                    }else if(action === 'update'){
+                        if($scope.projectEdit.file){
+                            console.log(uploadFile);
+                            console.log('found the file');
+                            var name = $scope.upload($scope.projectEdit.file);
+                                
+                            $scope.$watch('fileName', function() {
+                                //console.log($scope.fileName);
+                                newProject.uploadFile = $scope.fileName;
+                                if($scope.fileName !== '///'){
+                                    
+                                    $scope.update($scope.fileName);
+                                    console.log($scope.fileName);
+                                    $scope.fileName = '///';
+                                }
+                                
+                            });    
+
+                           // wait();  
+                            //console.log(fileName);
+                            var name;
+                        }
+                    }
+                    
+                    
+
+                    //console.log(f);
+                    
+                    //console.log(f);
+                //if (nweProject.hp === undefined) {newProject.hp = null}
+                newProject.uploadFile = f.name;
+                
+                }else{
+                    if(action === 'add'){
+                        $scope.add(newProject);
+                    }else if(action === 'update'){
+                        $scope.update('');
+                    }
+                    
+                }
+                
+            
+           
+        };
+
+    	$scope.update = function(filename) {
             $scope.edit = !$scope.edit;
             var yyyy;
             var mm;
@@ -106,6 +217,8 @@ angular.module('projects').controller('ProjectsController', ['$scope', 'Authenti
                 dd  = $scope.project.end_date.getDate().toString();
                 $scope.project.end_date = yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
             }
+
+            $scope.project.uploadFile = filename;
 
             $scope.project.$update(function(response) {
                 $window.alert('Updated Successfully!');
@@ -162,8 +275,8 @@ angular.module('projects').controller('ProjectsController', ['$scope', 'Authenti
             });
         };
 
-		$scope.add = function() {
-			var newProject = new Projects();
+		$scope.add = function(proj) {
+			var newProject = proj;
 			newProject.title = this.title;
 			newProject.category = this.category;
 			if(this.start_date != null){
