@@ -19,13 +19,11 @@ var getErrorMessage = function(err) {
 // list categories ///
 ///////////////////
 exports.list = function(req, res) {
-	var role = req.user.role;
-	console.log("here in list");
 	db.getConnection(function(err, Connection){
 		if (err) {
 			return res.status(400).send({ message: getErrorMessage(err) });
 		} else {
-			Connection.query("SELECT _id, description FROM `Category`", function(err, rows) {
+			Connection.query("SELECT _id, description FROM `Category` order by `order_id` ASC", function(err, rows) {
 				Connection.release();
 				if (err) {
 					return res.status(400).send({
@@ -48,52 +46,80 @@ exports.list = function(req, res) {
 // edit a category  ///
 //////////////////////
 exports.update = function(req, res) {
-	console.log("--- update start here ---")
-	console.log(req);
-	res.json("sth");
+	var id = req.body._id;
+	var category = {
+		_id: req.body._id,
+		description: req.body.description,
+		order_id: req.body.order_id
+	}
+	db.getConnection(function(err, Connection){
+		//db.connect(function(err,results) {});
+		if (err) {
+			return res.status(400).send({ message: getErrorMessage(err) });
+		} else {
+			if (id !== 0) {
+				Connection.query("UPDATE `Category` SET ? WHERE `_id` = ?", [category, id], function(err,rows){
+					Connection.release();
+					if (err) {
+						return res.status(400).send({
+							message: getErrorMessage(err)
+						});
+					} else {
+						category = {
+							_id: id,
+							description:req.body.description,
+							order_id: req.body.order_id
+						}
+						res.json(category);
+					}
+				});
+			} else {
+				Connection.query("INSERT INTO `Category` SET ? ", [category], function(err,rows){
+					Connection.release();
+					if (err) {
+						return res.status(400).send({
+							message: getErrorMessage(err)
+						});
+					} else {
+						category = {
+							_id: id,
+							description:req.body.description,
+							order_id: req.body.order_id
+						}
+						res.json(category);
+					}
+				});
+			}
+		}
+	});
 };
-
-
-///////////////////
-// new category //
-/////////////////
-exports.add = function(req, res) {
-	console.log("--- update start here ---")
-	console.log(req);
-	res.json("sth");
-};
-
 
 //////////////////////
 // delete category //
 ////////////////////
 exports.delete = function(req, res) {
-	var id = req.params.projectId;
+
+	
+	var id = req.params.categoryId;
 	db.getConnection(function(err, Connection){
 	//db.connect(function(err, results) {});	
 		if (err) {
 			return res.status(400).send({ message: getErrorMessage(err) });
 		} else {
-			Connection.query("DELETE FROM `projects` WHERE `_id` = '" + [id] + "';" , function(err,rows){
+			Connection.query("DELETE FROM `category` WHERE `_id` = '" + [id] + "';" , function(err,rows){
 				Connection.release();
 				if (err) {
 					return res.status(400).send({
 						message: getErrorMessage(err)
 					});
 				} else {
-					res.json(req.params.projectId);
+					res.json(req.params.categoryId);
 				}	
 			});
 		}
 	});
 };
 
-var getDateFormat = function(date) {
-	var yyyy = date.getFullYear().toString();
-	var mm = (date.getMonth()+1).toString(); // getMonth() is zero-based
-	var dd  = date.getDate().toString();
-	return yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
-};	
 
 
 

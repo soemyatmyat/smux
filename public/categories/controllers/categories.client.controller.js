@@ -15,10 +15,10 @@ angular.module('categories').controller('CategoriesController', ['$scope', 'Auth
                 }
             };
 
-            //$scope.models.lists = Projects.query();
-            // alert($scope.models.lists.A);
             $scope.models.lists.A = Categories.query();
-            //alert($scope.models.lists.A);
+            $scope.origin = Categories.query();
+
+
 
         };
 
@@ -28,18 +28,50 @@ angular.module('categories').controller('CategoriesController', ['$scope', 'Auth
 
 
         $scope.update = function(sth) {
+
+            var originIds = [];
+            for (var i = 0; i < $scope.origin.length; i++) {
+                originIds.push($scope.origin[i]._id);
+            }
+
+            // update & add
             var category = new Categories();
+            var categoriesList = [];
             for (var i = 0; i < sth.A.length; i++) {
+                var category = new Categories();
                 category._id = sth.A[i]._id;
                 category.description = sth.A[i].description;
                 category.order_id = i+1;
-                category.$save(function(response) {
-                    $window.alert('Updated Successfully!');
-                    $location.path('categories/');
+                categoriesList.push(category);
+            }
+
+
+            for (var i = 0; i < categoriesList.length; i++) {
+                if (originIds.indexOf(categoriesList[i]._id) > -1) {
+                    originIds.splice(originIds.indexOf(categoriesList[i]._id),1);
+                }
+                categoriesList[i].$update(function(response) {
                 }, function(errorResponse) {
                     $scope.error = errorResponse.data.message;
                 });
             }
+
+            // delete
+            var deleteCategories = [];
+            for (var i = 0; i < originIds.length; i++) {
+                var category = new Categories();
+                category._id = originIds[i];
+                deleteCategories.push(category);
+            }
+
+            for (var i = 0; i < deleteCategories.length; i++) {
+                deleteCategories[i].$remove(function(response) {
+                }, function(errorResponse) {
+                    $scope.error = errorResponse.data.message;
+                });
+            }
+
+            $location.path('categories/');
 
         };
 
