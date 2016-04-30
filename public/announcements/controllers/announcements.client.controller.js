@@ -84,14 +84,14 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
         $scope.upload = function(file){
             var val;
             Upload.upload({
-                url: '../upload/announcement',
+                url: '../upload',
                 data: {file:file}
             }).then(function(resp){
-                console.log(resp);
+                //console.log(resp);
 
                 if(resp.data.error_code === 0){
                     //vaidate success
-                    //$window.alert('Success ' + resp.config.data.file.name + 'uploaded. Response: ');
+                    $window.alert('Success ' + resp.config.data.file.name + 'uploaded. Response: ');
                     $scope.fileName = resp.data.filename;
                     console.log(resp.data.filename);
                     
@@ -128,16 +128,20 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
                     var filename = "";
                    
                     if(action === 'add'){
+
                         if($scope.announcementAdd.file){
-                            //console.log('found the file');
+                            console.log('found the file');
                             var name = $scope.upload($scope.announcementAdd.file);
                                 
                             $scope.$watch('fileName', function() {
-                                //console.log($scope.fileName);
+                            	console.log('line 137');
+                                console.log($scope.fileName);
                                 newAnnouncement.uploadFile = $scope.fileName;
+                                console.log($scope.fileName);
                                 if($scope.fileName !== '///'){
+                                	console.log("going to call add method");
                                         $scope.add(newAnnouncement);
-                                    
+                                    	
                                     $scope.fileName = '///';
                                 }
                                 
@@ -181,6 +185,7 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
                 console.log(f.name);
                 }else{
                     if(action === 'add'){
+                    	console.log("going to call purely from add")
                         $scope.add(newAnnouncement);
                     }else if(action === 'update'){
                         $scope.update('');
