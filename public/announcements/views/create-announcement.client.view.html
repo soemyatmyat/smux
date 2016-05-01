@@ -58,11 +58,11 @@
                     <input type="text" class="form-control" data-ng-model="title" name="title" ng-maxlength="100" required autofocus/>
                 </div><!-- Title -->
             </div> 
-            <div class="form-group">
+            <div data-ng-init="categoryList()" class="form-group">
                     <label for="category" class="col-sm-1 control-label">Category </label>
                     <div class="col-sm-9">
                         <select class="form-control" data-ng-class="{'has-error' : announcementAdd.category.$invalid && !announcementAdd.category.$pristine}" data-ng-model="category"  required>
-                            <option ng-repeat="cat in categoryIncludes" value="{{cat}}">{{cat}}</option>
+                            <option ng-repeat="cat in categories" value="{{cat.description}}">{{cat.description}}</option>
                         </select>
                     </div><!-- Category -->
             </div>

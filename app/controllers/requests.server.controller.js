@@ -79,7 +79,7 @@ exports.read = function(req, res) {
 ///////////////////
 // new request ///
 /////////////////
-exports.add = function(req, res) {	
+exports.add = function(req, res, next) {	
 	var today = new Date();
 	var request = {
 		course_code: req.body.course_code,
@@ -117,6 +117,7 @@ exports.add = function(req, res) {
 			});
 		}
 	});
+	next();
 };
 
 

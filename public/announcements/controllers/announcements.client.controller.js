@@ -1,5 +1,5 @@
-angular.module('announcements',['ngFileUpload']).controller('AnnouncementController', ['$scope', 'Authentication', 'Upload', '$window', '$uibModal', '$routeParams', '$location', 'Announcements', 'Projects', '$timeout',
-    function($scope, Authentication, Upload, $window, $uibModal, $routeParams, $location, Announcements, Projects, $timeout) {
+angular.module('announcements',['ngFileUpload']).controller('AnnouncementController', ['$scope', 'Authentication', 'Upload', '$window', '$uibModal', '$routeParams', '$location', 'Announcements', 'Projects', '$timeout', 'Categories',
+    function($scope, Authentication, Upload, $window, $uibModal, $routeParams, $location, Announcements, Projects, $timeout, Categories) {
         
         $scope.authentication = Authentication;
         $scope.statusIncludes = ['open'];
@@ -340,6 +340,10 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
                     $scope.error = errorResponse.data.message;
                 });
         };
+
+        $scope.categoryList = function() {
+            $scope.categories = Categories.query();
+        }
 
         $scope.dateOptions = {
             formatYear: 'yy',
