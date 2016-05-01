@@ -21,14 +21,14 @@
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav">
-                            <li><a href="/">Home </a></li>
+                            <!--li><a href="/">Home </a></li-->
                             <!--show only if the user is admin-->
                             <li data-ng-if="authentication.user.role == 'Admin'"><a href="/#!/users">User Management</a></li>
                             <li data-ng-if="authentication.user.role == 'Admin'"><a href="/#!/categories">Category Management</a></li>
                             <!---->
                             <li><a href="/#!/projects">Projects <span class="sr-only">(current)</span></a></li>
                             <li data-ng-if="authentication.user.role == 'Organization'"><a href="/#!/requests">Request Inbox</a></li>
-                            <li><a href="/#!/announcements">Faculty Announcements</a></li>
+                            <li><a href="/#!/announcements">Announcements</a></li>
                             <li class="active" data-ng-if="authentication.user.role == 'Faculty'"><a href="/#!/announcementrequests">Request Inbox</a></li>
                             <li><a class="menu1"  href="faq.html">FAQ</a></li>
                         </ul>
@@ -49,12 +49,31 @@
         </p-->
         <!--- Requests Lists -->    
         <div class = "panel panel-default">
-            <div class = "panel-heading">Requests</div>       
+            <div class = "panel-heading"><h3>Requests</h3></div>       
             <ul class="list-group">
                 <li class="list-group-item" data-ng-repeat="request in announcementrequests">
                     <p>
-                        <a data-ng-href="/#!/announcements/{{request.announcement_id}}"><h4>{{request.title}}</a> <em class="small pull-right">Requested on: {{request.requested_date}}</em></h4>
-                        <h5>Organization: {{request.organization}} </h5>
+                        <a data-ng-href="/#!/announcements/{{request.announcement_id}}"><h4>{{request.announcementTitle}}</a> <em class="small pull-right">Requested on: {{request.requested_date}}</em></h4>
+                        <div class="row">
+                        <table class="col-md-6 col-sm-6 col-xs-10" style="font-weight: bold">
+                            <tr>
+                                <td class="col-md-2 col-sm-2 col-xs-4">Organization</td>
+                                <td class="col-md-1 col-sm-1 col-xs-1">:</td>
+                                <td class="col-md-3 col-sm-3 col-xs-5">{{request.organization}}</td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-2 col-sm-2 col-xs-4">Message</td>
+                                <td class="col-md-1 col-sm-1 col-xs-1">:</td>
+                                <td class="col-md-3 col-sm-3 col-xs-5">{{request.message}}</td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-2 col-sm-2 col-xs-4">Project</td>
+                                <td class="col-md-1 col-sm-1 col-xs-1">:</td>
+                                <td class="col-md-3 col-sm-3 col-xs-5"><a href="#!/projects/{{request.project_id}}"><strong>{{request.projectTitle}}</strong></a></td>
+                            </tr>
+                        </table>
+                        </div>
+                       <br/>
                     </p>
                     <p>
                         <button class="btn btn-primary" type="button" data-ng-click="accept(request, $event)">Accept</button>

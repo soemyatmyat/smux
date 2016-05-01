@@ -30,13 +30,15 @@ exports.list = function(req, res) {
 			if(role == 'Faculty'){
 		//db.query("Select * from AnnouncementRequests", [], function(err, rows) {
 		
-				Connection.query("SELECT t1._id as _id, org_id, announcement_id, title, t1.requested_date as requested_date, t1.message as message, t1.project_id as project_id, name as organization FROM " + 
+				Connection.query("SELECT t2.*, Projects.title as projectTitle from(" +
+				"SELECT t1._id as _id, org_id, announcement_id, title as announcementTitle, t1.requested_date as requested_date, t1.message as message, t1.project_id as project_id, name as organization FROM " + 
 				"(SELECT AR._id as _id, org_id, announcement_id, title, AR.posted_date as requested_date, " +
 				" AR.course_id, AR.project_id, message, AR.status" +
 				" FROM AnnouncementRequests as AR LEFT OUTER JOIN Announcements " +
 				" ON announcement_id = Announcements._id " +
 				" WHERE Announcements.faculty_id = ? AND AR.status = ?) AS t1 " + 
-				" LEFT OUTER JOIN Users ON t1.org_id = Users._id;", [id, 'requested'], function(err, rows) {
+				" LEFT OUTER JOIN Users ON t1.org_id = Users._id) as t2"+
+				" LEFT OUTER JOIN Projects ON t2.project_id = Projects._id;", [id, 'requested'], function(err, rows) {
 					Connection.release();
 			
 					/**db.query("SELECT AnnouncementRequests._id, org_id, announcement_id," + 

@@ -104,12 +104,12 @@ angular.module('projects',['ngFileUpload']).controller('ProjectsController', ['$
                     
                     return resp.data.filename;
                 }else{
-                    $window.alert('an error occured');
+                    //$window.alert('an error occured');
                     return "";
                 }
             }, function (resp) { //catch error
-                console.log('Error status: ' + resp.status);
-                $window.alert('Error status: ' + resp.status);
+                //console.log('Error status: ' + resp.status);
+                //$window.alert('Error status: ' + resp.status);
                 return resp.status;
             }, function (evt) { 
                 //console.log(evt);
@@ -135,7 +135,7 @@ angular.module('projects',['ngFileUpload']).controller('ProjectsController', ['$
                     var filename = "";
                    
                     if(action === 'add'){
-                        if($scope.projectAdd.file){
+                        //if($scope.projectAdd.file){
                             //console.log('found the file');
                             var name = $scope.upload($scope.projectAdd.file);
                                 
@@ -153,12 +153,12 @@ angular.module('projects',['ngFileUpload']).controller('ProjectsController', ['$
                            // wait();  
                             //console.log(fileName);
                             var name;
-                        }
+                        //}
                     }else if(action === 'update'){
-                        if($scope.projectEdit.file){
-                            console.log(uploadFile);
-                            console.log('found the file');
-                            var name = $scope.upload($scope.projectEdit.file);
+                        //if($scope.projectEdit.file){
+                            //console.log(uploadFile);
+                            //console.log('found the file');
+                            var name = $scope.upload(f);
                                 
                             $scope.$watch('fileName', function() {
                                 //console.log($scope.fileName);
@@ -175,7 +175,7 @@ angular.module('projects',['ngFileUpload']).controller('ProjectsController', ['$
                            // wait();  
                             //console.log(fileName);
                             var name;
-                        }
+                        //}
                     }
                     
                     

@@ -4,8 +4,9 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
         $scope.authentication = Authentication;
         $scope.statusIncludes = ['open'];
         $scope.categoryIncludes = ['Accounting', 'Arts', 'Capstone', 'IT', 'Social Psychology'];
-
+        $scope.filters ={};
         $scope.fileName = '///';
+        $scope.selectedCategory = '';
         //console.log(Projects);
         //console.log($scope.Projects);
         $scope.includeStatus = function(status) {
@@ -34,15 +35,21 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
             }
         }
 
+        $scope.categoryList = function() {
+            $scope.categories = Categories.query();
+        }
+
         $scope.includeCategory = function(category) {
+            console.log(category);
+            console.log(category.description);
             //alert(category);
-            if (category == 'Accounting') $scope.accounting = !$scope.accounting;
+            if (category == 'Analytics') $scope.analytics = !$scope.analytics;
             if (category == 'Arts') $scope.arts = !$scope.arts;
             if (category == 'Capstone') $scope.capstone = !$scope.capstone;
             if (category == 'IT') $scope.it = !$scope.it;
             if (category == 'Social Psychology') $scope.social = !$scope.social;
             
-            var i = $.inArray(category, $scope.categoryIncludes);
+            var i = $.inArray(category, $scope.categoryList);
             if (i > -1) {
                 $scope.categoryIncludes.splice(i, 1);
             } else {
@@ -91,18 +98,18 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
 
                 if(resp.data.error_code === 0){
                     //vaidate success
-                    $window.alert('Success ' + resp.config.data.file.name + 'uploaded. Response: ');
+                    //$window.alert('Success ' + resp.config.data.file.name + 'uploaded. Response: ');
                     $scope.fileName = resp.data.filename;
-                    console.log(resp.data.filename);
+                    //console.log(resp.data.filename);
                     
                     return resp.data.filename;
                 }else{
-                    $window.alert('an error occured');
+                    //$window.alert('an error occured');
                     return "";
                 }
             }, function (resp) { //catch error
-                console.log('Error status: ' + resp.status);
-                $window.alert('Error status: ' + resp.status);
+                //console.log('Error status: ' + resp.status);
+                //$window.alert('Error status: ' + resp.status);
                 return resp.status;
             }, function (evt) { 
                 //console.log(evt);
@@ -129,17 +136,16 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
                    
                     if(action === 'add'){
 
-                        if($scope.announcementAdd.file){
+                        //if($scope.announcementAdd.file){
                             console.log('found the file');
                             var name = $scope.upload($scope.announcementAdd.file);
                                 
                             $scope.$watch('fileName', function() {
-                            	console.log('line 137');
-                                console.log($scope.fileName);
+                            	
                                 newAnnouncement.uploadFile = $scope.fileName;
-                                console.log($scope.fileName);
+                                
                                 if($scope.fileName !== '///'){
-                                	console.log("going to call add method");
+                                	
                                         $scope.add(newAnnouncement);
                                     	
                                     $scope.fileName = '///';
@@ -150,12 +156,12 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
                            // wait();  
                             //console.log(fileName);
                             var name;
-                        }
+                        //}
                     }else if(action === 'update'){
-                        if($scope.announcementEdit.file){
-                            console.log(uploadFile);
-                            console.log('found the file');
-                            var name = $scope.upload($scope.announcementEdit.file);
+                        console.log($scope.announcementEdit)
+                        //if($scope.announcementEdit.file){
+                            
+                            var name = $scope.upload(f);
                                 
                             $scope.$watch('fileName', function() {
                                 //console.log($scope.fileName);
@@ -163,7 +169,7 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
                                 if($scope.fileName !== '///'){
                                     
                                         $scope.update($scope.fileName);
-                                    console.log($scope.fileName);
+                                    //console.log($scope.fileName);
                                     $scope.fileName = '///';
                                 }
                                 
@@ -172,7 +178,7 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
                            // wait();  
                             //console.log(fileName);
                             var name;
-                        }
+                        //}
                     }
                     
                     
@@ -185,7 +191,7 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
                 console.log(f.name);
                 }else{
                     if(action === 'add'){
-                    	console.log("going to call purely from add")
+                    	
                         $scope.add(newAnnouncement);
                     }else if(action === 'update'){
                         $scope.update('');
@@ -198,7 +204,7 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
         };
 
         $scope.add = function(announc) {
-            console.log("in add");
+            //console.log("in add");
             var newAnnouncement = announc;
             newAnnouncement.title = this.title;
             //console.log(this.title);
@@ -285,12 +291,14 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
             });
         };
 
+
+
         $scope.list = function() {
             $scope.open= true;
             $scope.ongoing = false;
             $scope.completed = false;
             $scope.requested = false;
-            $scope.accounting = true;
+            $scope.analytics = true;
             $scope.arts = true;
             $scope.capstone = true;
             $scope.it = true;
@@ -307,14 +315,15 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
         $scope.update = function(filename) {
             console.log('in update');
             console.log(filename);
-            if($scope.start_date !== null){
+            console.log(this.start_date);
+            if(this.start_date != null){
                 var yyyy = this.start_date.getFullYear().toString();
                 var mm = (this.start_date.getMonth()+1).toString(); // getMonth() is zero-based
                 var dd  = this.start_date.getDate().toString();
                 $scope.announcement.start_date = yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
 
             }
-            if($scope.end_date !== null){
+            if(this.end_date != null){
                 yyyy = this.end_date.getFullYear().toString();
                 mm = (this.end_date.getMonth()+1).toString(); // getMonth() is zero-based
                 dd  = this.end_date.getDate().toString();
@@ -333,17 +342,16 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
         };
 
         $scope.delete = function(announcement) {
-            	
-                announcement.$remove(function(response) {
-                    $location.path('announcements/')
-                }, function(errorResponse) {
-                    $scope.error = errorResponse.data.message;
-                });
+            	var deleteProject = $window.confirm('Are you sure you want to withdrawal the Announcement?');
+                if(deleteProject){
+                    announcement.$remove(function(response) {
+                        $location.path('announcements/')
+                    }, function(errorResponse) {
+                        $scope.error = errorResponse.data.message;
+                    });
+                }
+                
         };
-
-        $scope.categoryList = function() {
-            $scope.categories = Categories.query();
-        }
 
         $scope.dateOptions = {
             formatYear: 'yy',

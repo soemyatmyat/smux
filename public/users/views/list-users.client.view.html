@@ -21,14 +21,14 @@
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav">
-                            <li><a href="/#!/home">Home </a></li>
+                            <!--li><a href="/#!/home">Home </a></li>
                             <!--show only if the user is admin-->
                             <li class="active" data-ng-if="authentication.user.role == 'Admin'"><a href="/#!/users">User Management</a></li>
                             <li data-ng-if="authentication.user.role == 'Admin'"><a href="/#!/categories">Category Management</a></li>
                             <!---->
                             <li><a href="/#!/projects">Projects <span class="sr-only">(current)</span></a></li>
                             <li data-ng-if="authentication.user.role == 'Organization'"><a href="/#!/requests">Request Inbox</a></li>
-                            <li><a href="/#!/announcements">Faculty Announcements</a></li>
+                            <li><a href="/#!/announcements">Announcements</a></li>
                             <li data-ng-if="authentication.user.role == 'Faculty'"><a href="/#!/announcementrequests">
                             <li><a class="menu1"  href="faq.html">FAQ</a></li>
                         </ul>

@@ -22,14 +22,14 @@
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav">
-                            <li><a href="/">Home </a></li>
+                            <!--li><a href="/">Home </a></li>
                             <!--show only if the user is admin-->
                             <li data-ng-if="authentication.user.role == 'Admin'"><a href="/#!/users">User Management</a></li>
                             <li data-ng-if="authentication.user.role == 'Admin'"><a href="/#!/categories">Category Management</a></li>
                             <!---->
                             <li><a href="/#!/projects">Projects <span class="sr-only">(current)</span></a></li>
                             <li data-ng-if="authentication.user.role == 'Organization'"><a href="/#!/requests">Request Inbox</a></li>
-                            <li class="active non-click"><a href="">Faculty Announcements</a></li>
+                            <li class="active non-click"><a href="">Announcements</a></li>
                             <li data-ng-if="authentication.user.role == 'Faculty'"><a href="/#!/announcementrequests">Request Inbox</a></li>
                             <li><a class="menu1"  href="faq.html">FAQ</a></li>
                         </ul>
@@ -39,23 +39,19 @@
         </div>
     </div>
     
-    <section data-ng-init="list(); tab = 'open';" class="main-content-body col-md-12" >
+    <section data-ng-init="list();categoryList(); tab = 'open';" class="main-content-body col-md-12" >
         <br/>
 
         <p >
             <button type="button" ng-class="{active:tab === 'open'}" class="btn btn-default btn-sm" ng-click="tab = 'open'">Open Announcements</button>
             <button type="button" ng-class="{active:tab === 'closed'}"  class="btn btn-default btn-sm" ng-click="tab = 'closed'">Closed Announcements</button>
             <button type="button" ng-show="authentication.user.role == 'Organization'" ng-class="{active:tab === 'requested'}"  class="btn btn-default btn-sm" ng-click="tab = 'requested'" >Requested Announcements</button>
-            
+            <button type="button" data-ng-class="{'btn-primary':arts,'btn-default':!arts}" class="btn btn-sm" data-ng-click="includeCategory('Arts')">Arts</button>
             
             
             <a data-ng-if="authentication.user.role == 'Faculty' || authentication.user.role =='Admin'" class="btn btn-primary pull-right" href="/#!/announcements/create">Add A New Announcement</a>
             <br/><br/>
-            <button type="button" data-ng-class="{'btn-primary':accounting,'btn-default':!accounting}" class="btn btn-sm" data-ng-click="includeCategory('Accounting')">Accounting</button>
-            <button type="button" data-ng-class="{'btn-primary':arts,'btn-default':!arts}" class="btn btn-sm" data-ng-click="includeCategory('Arts')">Arts</button>
-            <button type="button" data-ng-class="{'btn-primary':capstone,'btn-default':!capstone}" class="btn btn-sm" data-ng-click="includeCategory('Capstone')">Capstone</button>
-            <button type="button" data-ng-class="{'btn-primary':it,'btn-default':!it}" class="btn btn-sm" data-ng-click="includeCategory('IT')">IT</button>
-            <button type="button" data-ng-class="{'btn-primary':social,'btn-default':!social}" class="btn btn-sm" data-ng-click="includeCategory('Social Psychology')">Social Psychology</button> 
+            <button ng-repeat="category in categories" type="button" data-ng-class="{'btn-primary':{{category.description}},'btn-default':!{{category.description}}}" class="btn btn-sm" data-ng-model="selectedCategory" value="{{category.description}}" data-ng-click="filterTags(category.description)">{{category.description}}</button>
         </p>
 
         <!--tabs-->
@@ -75,13 +71,13 @@
                   <input class="form-control" name="searchText" id="searchText" type="text" ng-model="query.$">
                 </div>
             </div>
-
+            Selected category here: {{selectedCategory}}
             <br/>
             <br/>
             <!--List of announcement-->
             <ul class="lists">
                 <!--To add status filter-->
-                <li class="listItem col-md-12 col-sm-12 col-xs-12" data-ng-repeat="announcement in announcements |filter:{status: '!close'}|filter:categoryFilter  |orderBy : '-posted_date' | filter:query">
+                <li class="listItem col-md-12 col-sm-12 col-xs-12" data-ng-repeat="announcement in announcements |filter:{status: '!close'}  |orderBy : '-posted_date' | filter:query">
 
                     <div>
 
@@ -118,7 +114,7 @@
                             </p>
                         </div>
                       <div class="item btn-toolbar col-md-offset-6 pull-right" style="padding-bottom: 3%;">
-                          <button type="button" class="btn btn-danger warningBtn " data-ng-if="authentication.user.role == 'Faculty' || authentication.user.role == 'Admin'" data-toggle="modal" data-warningtext="Are you sure you want to withdraw this announcement?" data-target="#warning" data-action="delete(announcement)">Withdraw Announcement</button><!-- Perform delete-->
+                          <button type="button" class="btn btn-danger warningBtn " data-ng-if="authentication.user.role == 'Faculty' || authentication.user.role == 'Admin'" data-ng-click="delete(announcement, $event)">Withdraw Announcement</button><!-- Perform delete-->
                         
                           <button type="button" data-ng-if="authentication.user.role == 'Organization' || authentication.user.role == 'Admin'" class="btn btn-primary"  data-annocid="{{announcement._id}}" id="proposeProjBtn" data-toggle="modal" data-target="#interestModal">Propose Project</button><!-- call a modal-->
                         
@@ -319,27 +315,6 @@
 
 </script>
 
-
-    <!--Modals-->
-    <div class="modal fade" id="warning" tabindex="-1" role="dialog" aria-labelledby="warningLabel" style="z-index:2147483647;">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="newAnnocLabel">You are about to withdraw..</h4>
-                </div>
-
-                <div class="modal-body">
-                <strong><p class="text-danger" id="warningTextarea"></p></strong>
-
-                <button style="margin-left:3%;" type="button" class="btn btn-danger pull-right" data-dismiss="modal">No</button>
-                <button type="button" class="btn btn-primary pull-right proceedBtn">Yes</button>
-                <br/>
-                <br/>
-                </div>
-            </div>
-        </div>
-    </div>
 
 
 

@@ -173,18 +173,33 @@ exports.read = function(req, res) {
 //////////////////////
 exports.update = function(req, res) {
 	var id = req.body._id;
-	var	project = {
-		title:req.body.title,
-		category: req.body.category,
-		start_date: req.body.start_date,
-		end_date: req.body.end_date,
-		contact_person: req.body.contact_person,
-		contact_email: req.body.contact_email,
-		contact_HP: req.body.contact_HP,
-		description: req.body.description,
-		status: "open",
-		uploadFile : req.body.uploadFile
+	if(req.body.uploadFile != ''){
+		var	project = {
+			title:req.body.title,
+			category: req.body.category,
+			start_date: req.body.start_date,
+			end_date: req.body.end_date,
+			contact_person: req.body.contact_person,
+			contact_email: req.body.contact_email,
+			contact_HP: req.body.contact_HP,
+			description: req.body.description,
+			status: "open",
+			uploadFile : req.body.uploadFile
+		}
+	}else{
+		project = {
+			title:req.body.title,
+			category: req.body.category,
+			start_date: req.body.start_date,
+			end_date: req.body.end_date,
+			contact_person: req.body.contact_person,
+			contact_email: req.body.contact_email,
+			contact_HP: req.body.contact_HP,
+			description: req.body.description,
+			status: "open"
+		}
 	}
+	
 	if (project.start_date != null) {
 		project.start_date = new Date(project.start_date);
 	}

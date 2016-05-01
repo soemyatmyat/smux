@@ -22,14 +22,14 @@
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav">
-                            <li><a href="/">Home </a></li>
+                            <!--li><a href="/">Home </a></li>
                             <!--show only if the user is admin-->
                             <li data-ng-if="authentication.user.role == 'Admin'"><a href="/#!/users">User Management</a></li>
                             <li data-ng-if="authentication.user.role == 'Admin'"><a href="/#!/categories">Category Management</a></li>
                             <!---->
                             <li class="active"><a href="/#!/projects">Projects <span class="sr-only">(current)</span></a></li>
                             <li data-ng-if="authentication.user.role == 'Organization'"><a href="/#!/requests">Request Inbox</a></li>
-                            <li class="active non-click"><a href="">Faculty Announcements</a></li>
+                            <li class="active non-click"><a href="">Announcements</a></li>
                           
                             <li><a class="menu1"  href="faq.html">FAQ</a></li>
                         </ul>
@@ -107,12 +107,14 @@
             <div class="form-group" >
                 <label for="uploadFile" class="col-sm-1 control-label">Related Documents </label>
                 <div class="col-sm-9">
-                    <input type="file" class="form-control" name="uploadFile"  file-model="myFile" id = "uploadFile" accept="application/pdf" data-ng-model="announcementEdit.file" ngf-select ngf-max-size ="50MB"/>
+
+                    <input type="file" class="form-control" name="uploadFile"  file-model="myFile" id = "uploadFile" accept="application/pdf" data-ng-model="announcement.uploadFile" value="upload\{{announcement.uploadFile}}" ngf-select ngf-max-size ="50MB"/>
+                
                 </div><!-- FILE -->
             </div> 
             <div class="form-group">
                 <div class="col-sm-3 col-sm-offset-8"><!-- Button -->
-                    <button type="button" data-ng-click="delete(announcement, $event)" class="btn btn-danger">Withdraw</button>  
+                    <button type="button" data-ng-click="delete(announcement, $event)"  class="btn btn-danger">Withdraw</button>  
                     <button type="submit" class="btn btn-primary">Update</button>  
                 </div>
             </div>
