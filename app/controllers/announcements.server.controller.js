@@ -91,6 +91,7 @@ exports.read = function(req, res) {
 	} else {
 		Connection.query("SELECT _id, title, category, description, posted_date, faculty_id, start_date, end_date, project_id, course_id, status FROM `Announcements` WHERE  _id = ?", [id], function(err,rows){
 		if (err) {
+			console.log(err);
 			return res.status(400).send({
 					message: getErrorMessage(err)
 			});
@@ -98,6 +99,7 @@ exports.read = function(req, res) {
 			Connection.query("SELECT * from `AnnouncementRequests` WHERE `announcement_id` =? and `org_id` = ?", [rows[0]._id, req.user._id], function(err, results) {
 				Connection.release();
 				if (err) {
+					console.log(err);
 					return res.status(400).send({
 						message: getErrorMessage(err)
 					});

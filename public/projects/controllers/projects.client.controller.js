@@ -1,6 +1,6 @@
 //alert("client-controller");
-angular.module('projects',['ngFileUpload']).controller('ProjectsController', ['$scope', 'Authentication', 'Upload', '$window', '$uibModal', '$routeParams', '$location', 'Projects',
-    function($scope, Authentication, Upload,  $window, $uibModal, $routeParams, $location, Projects) {
+angular.module('projects',['ngFileUpload']).controller('ProjectsController', ['$scope', 'Authentication', 'Upload', '$window', '$uibModal', '$routeParams', '$location', 'Projects', 'Categories',
+    function($scope, Authentication, Upload,  $window, $uibModal, $routeParams, $location, Projects, Categories) {
     	
     	$scope.authentication = Authentication;
     	$scope.statusIncludes = ['open'];
@@ -194,9 +194,6 @@ angular.module('projects',['ngFileUpload']).controller('ProjectsController', ['$
                     }
                     
                 }
-                
-            
-           
         };
 
     	$scope.update = function(filename) {
@@ -240,6 +237,10 @@ angular.module('projects',['ngFileUpload']).controller('ProjectsController', ['$
 				});
 			}
     	}
+
+        $scope.categoryList = function() {
+            $scope.categories = Categories.query();
+        }
         //alert("client-controller2");
         //$scope.filteredProjects = [],
         $scope.currentPage = 1,

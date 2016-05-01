@@ -50,7 +50,7 @@
             <a class="pointer" data-ng-click="show=!show">Show Filters<span class="caret"></span></a>
         </div><br/>
 
-        <div class="row display" data-ng-show="show">
+        <div data-ng-init="categoryList()" class="row display" data-ng-show="show">
             <div class="col-md-8">
                 <button type="button" data-ng-class="{'btn-primary':open,'btn-default':!open}" class="btn btn-sm" data-ng-click="includeStatus('open')">Available Projects</button>
                 <button type="button" data-ng-class="{'btn-primary':ongoing,'btn-default':!ongoing}" class="btn btn-sm" data-ng-click="includeStatus('On-Going')">My On-Going Projects</button>
@@ -59,9 +59,11 @@
                 <br/><br/>
                 <button type="button" data-ng-class="{'btn-primary':accounting,'btn-default':!accounting}" class="btn btn-sm" data-ng-click="includeCategory('Accounting')">Accounting</button>
                 <button type="button" data-ng-class="{'btn-primary':arts,'btn-default':!arts}" class="btn btn-sm" data-ng-click="includeCategory('Arts')">Arts</button>
+                
                 <button type="button" data-ng-class="{'btn-primary':capstone,'btn-default':!capstone}" class="btn btn-sm" data-ng-click="includeCategory('Capstone')">Capstone</button>
                 <button type="button" data-ng-class="{'btn-primary':it,'btn-default':!it}" class="btn btn-sm" data-ng-click="includeCategory('IT')">IT</button>
-                <button type="button" data-ng-class="{'btn-primary':social,'btn-default':!social}" class="btn btn-sm" data-ng-click="includeCategory('Social Psychology')">Social Psychology</button> 
+                <button type="button" data-ng-class="{'btn-primary':social,'btn-default':!social}" class="btn btn-sm" data-ng-click="includeCategory('Social Psychology')">Social Psychology</button>
+                <button ng-repeat="category in categories" type="button" data-ng-class="{'btn-primary':social,'btn-default':!social}" class="btn btn-sm" data-ng-click="includeCategory('Social Psychology')">{{category.description}}</button>
                 <br/><br/>
             </div>
         </div>

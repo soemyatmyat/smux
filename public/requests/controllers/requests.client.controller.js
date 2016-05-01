@@ -54,6 +54,7 @@ angular.module('requests').controller('RequestsController', ['$scope', 'Authenti
             newRequest.course_code = this.course_code;
             newRequest.project_id = this.project._id;
             newRequest.message = this.message;
+            newRequest.title = this.project.title;
             newRequest.$save(function(response) {
                 $location.path('projects/' + response.project_id);
             }, function(errorResponse) {

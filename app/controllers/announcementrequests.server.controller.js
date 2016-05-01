@@ -18,7 +18,7 @@ var getErrorMessage = function(err) {
 /////////////////////
 // list requests ///
 ///////////////////
-exports.list = function(req, res, next) {
+exports.list = function(req, res) {
 	var role = req.user.role;
 
 	var id = req.user._id;
@@ -124,7 +124,7 @@ exports.read = function(req, res) {
 ///////////////////
 // new request ///
 /////////////////
-exports.add = function(req, res) {	
+exports.add = function(req, res, next) {	
 	var today = new Date();
 	var request = {
 		org_id: req.user._id,
@@ -143,7 +143,6 @@ exports.add = function(req, res) {
 			Connection.query("INSERT INTO `AnnouncementRequests` SET ? ", request, function(err,rows){
 			//Connection.release();
 			if (err) {
-				console.log("stuck in inserting");
 				return res.status(400).send({
 					message: getErrorMessage(err)
 				});
@@ -164,6 +163,7 @@ exports.add = function(req, res) {
 		});
 		}
 	});
+	next();
 	
 };
 
