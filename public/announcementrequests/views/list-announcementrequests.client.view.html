@@ -53,6 +53,7 @@
             <ul class="list-group">
                 <li class="list-group-item" data-ng-repeat="request in announcementrequests">
                     <p>
+                    {{request}}
                         <a data-ng-href="/#!/announcements/{{request.announcement_id}}"><h4>{{request.announcementTitle}}</a> <em class="small pull-right">Requested on: {{request.requested_date}}</em></h4>
                         <div class="row">
                         <table class="col-md-6 col-sm-6 col-xs-10" style="font-weight: bold">

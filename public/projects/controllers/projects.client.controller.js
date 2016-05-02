@@ -4,7 +4,7 @@ angular.module('projects',['ngFileUpload']).controller('ProjectsController', ['$
     	
     	$scope.authentication = Authentication;
     	$scope.statusIncludes = ['open'];
-    	$scope.categoryIncludes = ['Accounting', 'Arts', 'Capstone', 'IT', 'Social Psychology'];
+    	$scope.categoryIncludes = ['Accounting', 'Arts', 'Analytics', 'Capstone', 'IT', 'Social Psychology'];
         $scope.fileName = '///';
     	$scope.includeStatus = function(status) {
     		if (status == 'On-Going') $scope.ongoing = !$scope.ongoing;
@@ -43,6 +43,10 @@ angular.module('projects',['ngFileUpload']).controller('ProjectsController', ['$
     		} else {
     			$scope.categoryIncludes.push(category.description);
     		}
+        }
+
+        $scope.categoryList = function(){
+            $scope.categories = Categories.query();
         }
 
         $scope.categoryFilter = function(project) {  

@@ -30,7 +30,7 @@ exports.list = function(req, res) {
 			if(role == 'Faculty'){
 		//db.query("Select * from AnnouncementRequests", [], function(err, rows) {
 		
-				Connection.query("SELECT t2.*, Projects.title as projectTitle from(" +
+				Connection.query("SELECT t2._id as _id, t2.org_id, t2.announcement_id, announcementTitle, t2.requested_date as requested_date, t2.message as message, t2.project_id as project_id, organization, Projects.title as projectTitle from(" +
 				"SELECT t1._id as _id, org_id, announcement_id, title as announcementTitle, t1.requested_date as requested_date, t1.message as message, t1.project_id as project_id, name as organization FROM " + 
 				"(SELECT AR._id as _id, org_id, announcement_id, title, AR.posted_date as requested_date, " +
 				" AR.course_id, AR.project_id, message, AR.status" +
@@ -200,17 +200,28 @@ exports.update = function(req, res) {
 					message: getErrorMessage(err)
 				});
 			} else {
-				Connection.query("DELETE FROM `AnnouncementRequests` WHERE `announcement_id` = ? AND '_id' != ?", [announcement_id,req_id], function(err, rows) {
-					Connection.release();
+				//console.log("to update announcement");
+				Connection.query("UPDATE `Announcements` SET `status` = ?, `project_id` = ? WHERE `_id` = ?", ['completed', project_id, announcement_id], function(err, rows){
 					if (err) {
-						console.log("error in deleting");
+						console.log("error in updating announcement");
 						return res.status(400).send({
 							message: getErrorMessage(err)
 						});
 					} else {
-						res.json(announcement);
+						Connection.query("DELETE FROM `AnnouncementRequests` WHERE `announcement_id` = ? AND '_id' != ?", [announcement_id,req_id], function(err, rows) {
+							Connection.release();
+							if (err) {
+								console.log("error in deleting");
+								return res.status(400).send({
+									message: getErrorMessage(err)
+								});
+							} else {
+								res.json(announcement);
+							}
+						})
 					}
 				})
+				
 			}
 	})
 		}

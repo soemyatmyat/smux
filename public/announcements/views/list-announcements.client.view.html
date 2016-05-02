@@ -46,7 +46,6 @@
             <button type="button" ng-class="{active:tab === 'open'}" class="btn btn-default btn-sm" ng-click="tab = 'open'">Open Announcements</button>
             <button type="button" ng-class="{active:tab === 'closed'}"  class="btn btn-default btn-sm" ng-click="tab = 'closed'">Closed Announcements</button>
             <button type="button" ng-show="authentication.user.role == 'Organization'" ng-class="{active:tab === 'requested'}"  class="btn btn-default btn-sm" ng-click="tab = 'requested'" >Requested Announcements</button>
-            <button type="button" data-ng-class="{'btn-primary':arts,'btn-default':!arts}" class="btn btn-sm" data-ng-click="includeCategory('Arts')">Arts</button>
             
             
             <a data-ng-if="authentication.user.role == 'Faculty' || authentication.user.role =='Admin'" class="btn btn-primary pull-right" href="/#!/announcements/create">Add A New Announcement</a>
@@ -77,7 +76,7 @@
             <!--List of announcement-->
             <ul class="lists">
                 <!--To add status filter-->
-                <li class="listItem col-md-12 col-sm-12 col-xs-12" data-ng-repeat="announcement in announcements |filter:{status: '!close'}  |orderBy : '-posted_date' | filter:query |filter:categoryFilter">
+                <li class="listItem col-md-12 col-sm-12 col-xs-12" data-ng-repeat="announcement in announcements |filter:{status: 'open'}  |orderBy : '-posted_date' | filter:query |filter:categoryFilter">
 
                     <div>
 
@@ -99,7 +98,7 @@
                             <p class="col-md-3 col-sm-4"><strong>Course Name:</strong></p><p class="col-md-3 col-sm-8">{{announcement.course_id}}</p>
                         </div>
                         <div class="row item">
-                            <p class="col-md-3 col-sm-4"><strong>Faculty Name:</strong></p><p class="col-md-9 col-sm-8">{{announcement.faculty_id}}</p>
+                            <p class="col-md-3 col-sm-4"><strong>Faculty Name:</strong></p><p class="col-md-9 col-sm-8">{{announcement.faculty_name}}</p>
                         </div>
                       <div class="row item">
                             <p class="col-md-3 col-sm-4"><strong>Expected Start Date:</strong></p><p class="col-md-3 col-sm-8">{{announcement.start_date}}</p>
@@ -117,7 +116,7 @@
                           <button type="button" class="btn btn-danger warningBtn " data-ng-if="authentication.user.role == 'Faculty' || authentication.user.role == 'Admin'" data-ng-click="delete(announcement, $event)">Withdraw Announcement</button><!-- Perform delete-->
                         
                           <button type="button" data-ng-if="authentication.user.role == 'Organization' || authentication.user.role == 'Admin'" class="btn btn-primary"  data-annocid="{{announcement._id}}" id="proposeProjBtn" data-toggle="modal" data-target="#interestModal">Propose Project</button><!-- call a modal-->
-                        
+                             <button type="button" data-ng-if="authentication.user.role == 'Organization'" data-ng-show="announcement.status === 'requested'" data-ng-click="openModal()" class="btn btn-primary">View Request Message</button> 
                           <button type="button" 
                           class="btn btn-default togglebtn " 
                           ng-click="toggleBtn('avail', announcement._id)" 
@@ -157,7 +156,7 @@
             <!--List of announcement-->
             <ul class="lists">
                 <!--To add status filter-->
-                <li class="listItem col-md-12 col-sm-12 col-xs-12" data-ng-repeat="announcement in announcements |filter:{status: 'close'}|filter:categoryFilter  |orderBy : '-posted_date' | filter:query">
+                <li class="listItem col-md-12 col-sm-12 col-xs-12" data-ng-repeat="announcement in announcements |filter:{status: 'completed'}|filter:categoryFilter  |orderBy : '-posted_date' | filter:query">
 
                     <div>
 
@@ -335,8 +334,6 @@
               <label class="col-md-6" for="projectId">Project ID</label>
               <div class="col-md-6">
               <select class="form-control" ng-model="projectId" name="projectId" id="projectId">
-
-                  
                   <option ng-repeat = "project in projects " value="{{project._id}}">{{project.title}}</option>
               </select>
               </div>
@@ -346,6 +343,7 @@
               <textarea rows="3" ng-model="description" class="form-control" id="descIn" placeholder="Description" ng-maxlength="1000" required></textarea>
             </div>
             <input type="hidden" id="announcementId" >
+            
             <div class="col-md-offset-9 col-sm-offset-6">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
               <button type="submit" ng-click="cancel()" id="projPropose"  class="btn btn-primary">Send</button>

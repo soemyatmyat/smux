@@ -7,7 +7,7 @@ angular.module('announcementrequests').controller('AnnouncementRequestsControlle
 
         $scope.accept = function(request) {
             var acceptRequest = $window.confirm('Are you sure you want to accept this Request?');   
-            console.log(request);
+            //console.log(request);
             request.$update(function(response) {
                 $location.path('announcements/');   
             }, function(errorResponse) {

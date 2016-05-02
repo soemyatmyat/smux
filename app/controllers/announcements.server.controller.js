@@ -26,7 +26,12 @@ exports.list = function(req, res, next) {
 	} else {
 
 		if (role == "Faculty") {
-			Connection.query("SELECT _id, title, category, description, posted_date, faculty_id, start_date, end_date, project_id, course_id, status, uploadFile FROM `Announcements` WHERE  faculty_id = ?", [req.user._id], function(err,rows){
+			Connection.query("SELECT temp._id as _id, temp.title as title, temp.category as category, temp.description as description, temp.posted_date as posted_date, temp.faculty_id, faculty_name, start_date, end_date, requests.project_id, temp.course_id, temp.status, uploadFile " + 
+				" FROM (SELECT Announcements._id, title, category, description, posted_date, faculty_id, Users.name as faculty_name, start_date, end_date, project_id, course_id, status, uploadFile" + 
+				" FROM `Announcements` LEFT OUTER JOIN Users" + 
+				" ON faculty_id = Users._id AND faculty_id = ?) AS temp " + 
+				" LEFT OUTER JOIN AnnouncementRequests as requests ON temp._id = requests.announcement_id", [req.user._id], function(err,rows){
+				
 				Connection.release();
 				if (err) {
 					return res.status(400).send({
@@ -41,8 +46,13 @@ exports.list = function(req, res, next) {
 			})
 		} else if(role == "Admin"){
 			
-			Connection.query("SELECT _id, title, category, description, posted_date, start_date, end_date faculty_id, project_id, course_id, status, uploadFile FROM `Announcements`", function(err,rows){
+			Connection.query("SELECT temp._id as _id, temp.title as title, temp.category as category, temp.description as description, temp.posted_date as posted_date, temp.faculty_id, faculty_name, start_date, end_date, requests.project_id, temp.course_id, temp.status, uploadFile " + 
+				" FROM (SELECT Announcements._id, title, category, description, posted_date, faculty_id, Users.name as faculty_name, start_date, end_date, project_id, course_id, status, uploadFile" + 
+				" FROM `Announcements` LEFT OUTER JOIN Users" + 
+				" ON faculty_id = Users._id ) AS temp " + 
+				" LEFT OUTER JOIN AnnouncementRequests as requests ON temp._id = requests.announcement_id", function(err,rows){
 				Connection.release();
+				
 				if (err) {
 					return res.status(400).send({
 						message: getErrorMessage(err)
@@ -58,7 +68,12 @@ exports.list = function(req, res, next) {
 			})
 		}else {
 			var org_id = req.user._id;
-			Connection.query("SELECT _id, title, category, description, posted_date, start_date, end_date faculty_id, project_id, course_id, status, uploadFile FROM `Announcements` WHERE status != ? AND status != ?", ["completed", "ongoing"], function(err,rows){
+			Connection.query("SELECT temp._id as _id, temp.title as title, temp.category as category, temp.description as description, temp.posted_date as posted_date, temp.faculty_id, faculty_name, start_date, end_date, requests.project_id, temp.course_id, temp.status, uploadFile " + 
+				" FROM (SELECT Announcements._id, title, category, description, posted_date, faculty_id, Users.name as faculty_name, start_date, end_date, project_id, course_id, status, uploadFile" + 
+				" FROM `Announcements` LEFT OUTER JOIN Users" + 
+				" ON faculty_id = Users._id ) AS temp " + 
+				" LEFT OUTER JOIN AnnouncementRequests as requests ON temp._id = requests.announcement_id", function(err,rows){
+				
 				Connection.release();
 				if (err) {
 					return res.status(400).send({
@@ -67,6 +82,11 @@ exports.list = function(req, res, next) {
 				} else {
 					for (var i =0; i <rows.length; i++) {
 						rows[i].posted_date = getDateFormat(rows[i].posted_date);
+						
+						if(rows[i].project_id != null){
+							rows[i].status = "requested";
+							
+						} 
 					}
 					res.json(rows);
 				}

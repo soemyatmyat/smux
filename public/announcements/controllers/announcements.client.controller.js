@@ -3,7 +3,7 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
         
         $scope.authentication = Authentication;
         $scope.statusIncludes = ['open'];
-        $scope.categoryIncludes = ['Accounting', 'Arts', 'Capstone', 'IT', 'Social Psychology'];
+        $scope.categoryIncludes = ['Accounting', 'Analytics', 'Arts', 'Capstone', 'IT', 'Social Psychology'];
         $scope.filters ={};
         $scope.fileName = '///';
         $scope.selectedCategory = '';
@@ -34,22 +34,35 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
             }
         }
 
+
+
+        $scope.categoryList = function(){
+            $scope.categories = Categories.query();
+
+        }
+        
+
         $scope.includeCategory = function(category) {
             if ($scope[category.short_form] === undefined) {
                 $scope[category.short_form] = true;
+                //console.log("if");
             } else {
+                //console.log('else');
                 $scope[category.short_form] = !$scope[category.short_form];
             }
+            console.log($scope.categoryIncludes);
             var i = $.inArray(category.description, $scope.categoryIncludes);
             if (i > -1) {
+                console.log( ' i > -1');
                 $scope.categoryIncludes.splice(i, 1);
             } else {
+                console.log('i !> -1')
                 $scope.categoryIncludes.push(category.description);
             }
         }
 
         $scope.categoryFilter = function(announcement) {
-            if ($scope.categoryIncludes.length > 0) {
+            if ($scope.categories.length > 0) {
                 if ($.inArray(announcement.category, $scope.categoryIncludes) < 0) {
                     return;
                 } else {
@@ -150,36 +163,25 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
                         //}
                     }else if(action === 'update'){
                         console.log($scope.announcementEdit)
-                        //if($scope.announcementEdit.file){
                             
                             var name = $scope.upload(f);
                                 
                             $scope.$watch('fileName', function() {
-                                //console.log($scope.fileName);
                                 newAnnouncement.uploadFile = $scope.fileName;
                                 if($scope.fileName !== '///'){
                                     
                                         $scope.update($scope.fileName);
-                                    //console.log($scope.fileName);
+                 
                                     $scope.fileName = '///';
                                 }
                                 
                             });    
 
-                           // wait();  
-                            //console.log(fileName);
+                  
                             var name;
-                        //}
+             
                     }
-                    
-                    
-
-                    //console.log(f);
-                    
-                    //console.log(f);
-                //if (nweProject.hp === undefined) {newProject.hp = null}
-                newAnnouncement.uploadFile = f.name;
-                console.log(f.name);
+                    newAnnouncement.uploadFile = f.name;
                 }else{
                     if(action === 'add'){
                     	
@@ -218,53 +220,10 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
             newAnnouncement.faculty_id = $scope.authentication.user._id;
             
             newAnnouncement.description = this.description;
-            //console.log(this.term);
+          
             newAnnouncement.course_id = this.course_id;
-            console.log(newAnnouncement)
-            /**var file = $scope.myFile;
-               
-            console.log('file is ' );
-            console.dir(file);
-               
-            var uploadUrl = "public/upload";
-            fileUpload.uploadFileToUrl(file, uploadUrl);**///
-            /**
-            var f = document.getElementById('uploadFile').files[0],
-                r = new FileReader();
-                if(f){
-                    r.onloadend = function(e){
-                    var data = e.target.result;
-                    //send you binary data via $http or $resource or do anything else with it
-                    }
-                    r.readAsBinaryString(f);
-                    var filename = "";
-                   
-                    if($scope.announcementAdd.file){
-                        //console.log('found the file');
-                        $scope.upload($scope.announcementAdd.file).then(function(result){
-                            console.log("it is successful");
-                        });
-                            
-                        $scope.$watch('fileName', function() {
-                            //alert('hey, myVar has changed!');
-                            console.log($scope.fileName);
-                            newAnnouncement.filename = $scope.fileName;
-                        });    
-
-                       // wait();  
-                        //console.log(fileName);
-                    }
-                    
-
-                    //console.log(f);
-                    
-                    //console.log(f);
-                //if (nweProject.hp === undefined) {newProject.hp = null}
-                newAnnouncement.uploadFile = f.name;
-                }
-                **/
             
-            //console.log(newAnnouncement.uploadFile);
+           
             newAnnouncement.$save(function(response) {
                 console.log($scope.fileName);
                 $location.path('announcements/');
@@ -289,7 +248,6 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
             $scope.ongoing = false;
             $scope.completed = false;
             $scope.requested = false;
-            $scope.analytics = true;
             $scope.categories = Categories.query();
             $scope.announcements = Announcements.query();
         };
