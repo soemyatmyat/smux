@@ -34,8 +34,15 @@ CREATE TABLE Category /* for Project Grace Email */
 (
 	_id int not null AUTO_INCREMENT PRIMARY KEY,
 	order_id int not null,
-	description VARCHAR(100) not null
+	description VARCHAR(100) not null,
+	short_form VARCHAR(100) not null
 )ENGINE = InnoDB;
+
+INSERT INTO Category(order_id, description, short_form) VALUES ("1", "Accounting", "Accounting");
+INSERT INTO Category(order_id, description, short_form) VALUES ("2", "Arts", "Arts");
+INSERT INTO Category(order_id, description, short_form) VALUES ("3", "Capstone", "Capstone");
+INSERT INTO Category(order_id, description, short_form) VALUES ("4", "IT", "IT");
+INSERT INTO Category(order_id, description, short_form) VALUES ("5", "Social Psychology", "Social_Psychology");
 
 CREATE TABLE Status /* Project Status - Open, Requested, On-Going, Closed */
 (

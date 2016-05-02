@@ -41,11 +41,7 @@
         <br/>
         <div class="row display">
             <div class="col-md-8">
-                <button type="button" data-ng-class="{'btn-primary':accounting,'btn-default':!accounting}" class="btn btn-sm" data-ng-click="includeCategory('Accounting')">Accounting</button>
-                <button type="button" data-ng-class="{'btn-primary':arts,'btn-default':!arts}" class="btn btn-sm" data-ng-click="includeCategory('Arts')">Arts</button>
-                <button type="button" data-ng-class="{'btn-primary':capstone,'btn-default':!capstone}" class="btn btn-sm" data-ng-click="includeCategory('Capstone')">Capstone</button>
-                <button type="button" data-ng-class="{'btn-primary':it,'btn-default':!it}" class="btn btn-sm" data-ng-click="includeCategory('IT')">IT</button>
-                <button type="button" data-ng-class="{'btn-primary':social,'btn-default':!social}" class="btn btn-sm" data-ng-click="includeCategory('Social Psychology')">Social Psychology</button> 
+                <button style="margin-right: 3px" ng-repeat="category in categories" type="button" data-ng-class="{'btn-primary':!{{category.short_form}},'btn-default':{{category.short_form}}}" class="btn btn-sm" data-ng-click="includeCategory(category)">{{category.description}}</button>
             </div>
         </div><br/>
 

@@ -39,7 +39,7 @@
         </div>
     </div>
     
-    <section data-ng-init="list();categoryList(); tab = 'open';" class="main-content-body col-md-12" >
+    <section data-ng-init="list(); tab = 'open';" class="main-content-body col-md-12" >
         <br/>
 
         <p >
@@ -51,7 +51,7 @@
             
             <a data-ng-if="authentication.user.role == 'Faculty' || authentication.user.role =='Admin'" class="btn btn-primary pull-right" href="/#!/announcements/create">Add A New Announcement</a>
             <br/><br/>
-            <button ng-repeat="category in categories" type="button" data-ng-class="{'btn-primary':{{category.description}},'btn-default':!{{category.description}}}" class="btn btn-sm" data-ng-model="selectedCategory" value="{{category.description}}" data-ng-click="filterTags(category.description)">{{category.description}}</button>
+            <button style="margin-right: 3px" ng-repeat="category in categories" type="button" data-ng-class="{'btn-primary':!{{category.short_form}},'btn-default':{{category.short_form}}}" class="btn btn-sm" data-ng-click="includeCategory(category)">{{category.description}}</button>
         </p>
 
         <!--tabs-->
@@ -77,7 +77,7 @@
             <!--List of announcement-->
             <ul class="lists">
                 <!--To add status filter-->
-                <li class="listItem col-md-12 col-sm-12 col-xs-12" data-ng-repeat="announcement in announcements |filter:{status: '!close'}  |orderBy : '-posted_date' | filter:query">
+                <li class="listItem col-md-12 col-sm-12 col-xs-12" data-ng-repeat="announcement in announcements |filter:{status: '!close'}  |orderBy : '-posted_date' | filter:query |filter:categoryFilter">
 
                     <div>
 

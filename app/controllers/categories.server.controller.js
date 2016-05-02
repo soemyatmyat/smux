@@ -23,7 +23,7 @@ exports.list = function(req, res) {
 		if (err) {
 			return res.status(400).send({ message: getErrorMessage(err) });
 		} else {
-			Connection.query("SELECT _id, description FROM `Category` order by `order_id` ASC", function(err, rows) {
+			Connection.query("SELECT _id, description, short_form FROM `Category` order by `order_id` ASC", function(err, rows) {
 				Connection.release();
 				if (err) {
 					return res.status(400).send({
@@ -50,6 +50,7 @@ exports.update = function(req, res) {
 	var category = {
 		_id: req.body._id,
 		description: req.body.description,
+		short_form: req.body.description.replace(/\s+/g, "-"),
 		order_id: req.body.order_id
 	}
 	db.getConnection(function(err, Connection){

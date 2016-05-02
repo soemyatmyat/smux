@@ -1,20 +1,20 @@
-angular.module('requests').controller('RequestsController', ['$scope', 'Authentication', '$window', '$routeParams', '$location', 'Requests', 
-    function($scope, Authentication, $window, $routeParams, $location, Requests) {
+angular.module('requests').controller('RequestsController', ['$scope', 'Authentication', '$window', '$routeParams', '$location', 'Requests', 'Categories',
+    function($scope, Authentication, $window, $routeParams, $location, Requests, Categories) {
 
         $scope.authentication = Authentication;
         $scope.categoryIncludes = ['Accounting', 'Arts', 'Capstone', 'IT', 'Social Psychology'];
 
         $scope.includeCategory = function(category) {
-            if (category == 'Accounting') $scope.accounting = !$scope.accounting;
-            if (category == 'Arts') $scope.arts = !$scope.arts;
-            if (category == 'Capstone') $scope.capstone = !$scope.capstone;
-            if (category == 'IT') $scope.it = !$scope.it;
-            if (category == 'Social Psychology') $scope.social = !$scope.social;
-            var i = $.inArray(category, $scope.categoryIncludes);
+            if ($scope[category.short_form] === undefined) {
+                $scope[category.short_form] = true;
+            } else {
+                $scope[category.short_form] = !$scope[category.short_form];
+            }
+            var i = $.inArray(category.description, $scope.categoryIncludes);
             if (i > -1) {
                 $scope.categoryIncludes.splice(i, 1);
             } else {
-                $scope.categoryIncludes.push(category);
+                $scope.categoryIncludes.push(category.description);
             }
         }
 
@@ -41,11 +41,7 @@ angular.module('requests').controller('RequestsController', ['$scope', 'Authenti
         };
 
         $scope.list = function() {
-            $scope.accounting = true;
-            $scope.arts = true;
-            $scope.capstone = true;
-            $scope.it = true;
-            $scope.social = true;
+            $scope.categories = Categories.query();
             $scope.requests = Requests.query();
         };
 

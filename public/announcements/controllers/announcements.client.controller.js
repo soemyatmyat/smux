@@ -10,7 +10,6 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
         //console.log(Projects);
         //console.log($scope.Projects);
         $scope.includeStatus = function(status) {
-            //alert("filterText");
             if (status == 'On-Going') $scope.ongoing = !$scope.ongoing;
             if (status == 'open') $scope.open = !$scope.open;
             if (status == 'Completed') $scope.completed = !$scope.completed;
@@ -35,25 +34,17 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
             }
         }
 
-        $scope.categoryList = function() {
-            $scope.categories = Categories.query();
-        }
-
         $scope.includeCategory = function(category) {
-            console.log(category);
-            console.log(category.description);
-            //alert(category);
-            if (category == 'Analytics') $scope.analytics = !$scope.analytics;
-            if (category == 'Arts') $scope.arts = !$scope.arts;
-            if (category == 'Capstone') $scope.capstone = !$scope.capstone;
-            if (category == 'IT') $scope.it = !$scope.it;
-            if (category == 'Social Psychology') $scope.social = !$scope.social;
-            
-            var i = $.inArray(category, $scope.categoryList);
+            if ($scope[category.short_form] === undefined) {
+                $scope[category.short_form] = true;
+            } else {
+                $scope[category.short_form] = !$scope[category.short_form];
+            }
+            var i = $.inArray(category.description, $scope.categoryIncludes);
             if (i > -1) {
                 $scope.categoryIncludes.splice(i, 1);
             } else {
-                $scope.categoryIncludes.push(category);
+                $scope.categoryIncludes.push(category.description);
             }
         }
 
@@ -299,10 +290,7 @@ angular.module('announcements',['ngFileUpload']).controller('AnnouncementControl
             $scope.completed = false;
             $scope.requested = false;
             $scope.analytics = true;
-            $scope.arts = true;
-            $scope.capstone = true;
-            $scope.it = true;
-            $scope.social = true;
+            $scope.categories = Categories.query();
             $scope.announcements = Announcements.query();
         };
 

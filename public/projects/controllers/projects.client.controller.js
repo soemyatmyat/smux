@@ -7,7 +7,6 @@ angular.module('projects',['ngFileUpload']).controller('ProjectsController', ['$
     	$scope.categoryIncludes = ['Accounting', 'Arts', 'Capstone', 'IT', 'Social Psychology'];
         $scope.fileName = '///';
     	$scope.includeStatus = function(status) {
-    		//alert("filterText");
     		if (status == 'On-Going') $scope.ongoing = !$scope.ongoing;
     		if (status == 'open') $scope.open = !$scope.open;
     		if (status == 'Completed') $scope.completed = !$scope.completed;
@@ -33,16 +32,16 @@ angular.module('projects',['ngFileUpload']).controller('ProjectsController', ['$
         }
 
         $scope.includeCategory = function(category) {
-    		if (category == 'Accounting') $scope.accounting = !$scope.accounting;
-    		if (category == 'Arts') $scope.arts = !$scope.arts;
-    		if (category == 'Capstone') $scope.capstone = !$scope.capstone;
-    		if (category == 'IT') $scope.it = !$scope.it;
-    		if (category == 'Social Psychology') $scope.social = !$scope.social;
-    		var i = $.inArray(category, $scope.categoryIncludes);
+            if ($scope[category.short_form] === undefined) {
+                $scope[category.short_form] = true;
+            } else {
+                $scope[category.short_form] = !$scope[category.short_form];
+            }
+    		var i = $.inArray(category.description, $scope.categoryIncludes);
     		if (i > -1) {
     			$scope.categoryIncludes.splice(i, 1);
     		} else {
-    			$scope.categoryIncludes.push(category);
+    			$scope.categoryIncludes.push(category.description);
     		}
         }
 
@@ -82,11 +81,6 @@ angular.module('projects',['ngFileUpload']).controller('ProjectsController', ['$
     		});
     	}
 
-    	$scope.toggleBtn = function(category,id){
-			$("." +category + id).text(function(i, text){
-	          return text === "View More" ? "View Less" : "View More";
-	      });
-		};
 
         $scope.upload = function(file){
             var val;
@@ -238,25 +232,16 @@ angular.module('projects',['ngFileUpload']).controller('ProjectsController', ['$
 			}
     	}
 
-        $scope.categoryList = function() {
-            $scope.categories = Categories.query();
-        }
-        //alert("client-controller2");
-        //$scope.filteredProjects = [],
         $scope.currentPage = 1,
         $scope.itemsPerPage = 5,
       	$scope.maxSize = 5;
 
         $scope.list = function() {
+            $scope.categories = Categories.query();
         	$scope.open= true;
         	$scope.ongoing = false;
         	$scope.completed = false;
         	$scope.requested = false;
-        	$scope.accounting = true;
-        	$scope.arts = true;
-        	$scope.capstone = true;
-        	$scope.it = true;
-        	$scope.social = true;
             $scope.projects = Projects.query();
         };
 
